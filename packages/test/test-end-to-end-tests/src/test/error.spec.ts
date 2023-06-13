@@ -114,4 +114,8 @@ describeNoCompat("Errors Types", (getTestObjectProvider) => {
 		assert.deepEqual(networkError, error1, "networkError, error1 should be the same!");
 		assert.deepEqual(error1, error2, "error1, error2 should be the same!");
 	});
+
+	it("Invalid test - expected to fail", async () => {
+		assert.fail("This test should fail");
+	});
 });
