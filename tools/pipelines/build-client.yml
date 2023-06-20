@@ -132,3 +132,11 @@ extends:
     - syncpack:versions
     - prettier
     - check:versions
+    preCG:
+    - task: Bash@3
+      displayName: 'Copy lock file to scope'
+      inputs:
+        targetType: 'inline'
+        script: |
+          cp pnpm-lock.yaml packages/pnpm-lock.yaml
+    cgSubDirectory: packages
