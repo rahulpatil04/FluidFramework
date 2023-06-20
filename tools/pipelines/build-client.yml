@@ -138,5 +138,6 @@ extends:
       inputs:
         targetType: 'inline'
         script: |
+          cp package.json packages/package.json
           cp pnpm-lock.yaml packages/pnpm-lock.yaml
     cgSubDirectory: packages
