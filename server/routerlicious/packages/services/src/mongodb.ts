@@ -444,6 +444,9 @@ export class MongoCollection<T> implements core.ICollection<T>, core.IRetryable 
 
 	private terminateBasedOnCounterThreshold(counters: Record<string, number>): void {
 		if (this.apiFailureRateTerminationThreshold > 1) {
+			Lumberjack.info(
+				`apiFailureRateTerminationThreshold ${this.apiFailureRateTerminationThreshold}, not enabled`,
+			);
 			return; // If threshold set more than 1, meaning we should never terminate and skip followings.
 		}
 		let totalCount = 0;

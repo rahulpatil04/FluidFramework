@@ -116,6 +116,8 @@ export class ScribeLambda implements IPartitionLambda {
 	}
 
 	public async handler(message: IQueuedMessage) {
+		Lumberjack.info("Xin debug, terminate from scribe");
+		process.kill(process.pid, "SIGTERM");
 		// Skip any log messages we have already processed. Can occur in the case Kafka needed to restart but
 		// we had already checkpointed at a given offset.
 		if (this.lastOffset !== undefined && message.offset <= this.lastOffset) {

@@ -11,6 +11,7 @@ import {
 	ITenantManager,
 	MongoManager,
 } from "@fluidframework/server-services-core";
+import { Lumberjack } from "@fluidframework/server-services-telemetry";
 
 export class DeltaService implements IDeltaService {
 	constructor(
@@ -25,6 +26,8 @@ export class DeltaService implements IDeltaService {
 		from?: number,
 		to?: number,
 	): Promise<ISequencedDocumentMessage[]> {
+		Lumberjack.info("Xin debug, terminate from getDeltas");
+		process.kill(process.pid, "SIGTERM");
 		// Create an optional filter to restrict the delta range
 		const query: any = { documentId, tenantId };
 		if (from !== undefined || to !== undefined) {
