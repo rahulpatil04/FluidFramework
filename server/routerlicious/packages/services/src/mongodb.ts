@@ -551,6 +551,7 @@ const DefaultApiCounterIntervalMS = 60000;
 // 1 means 100%, using 2 just for safety for incorrect calculations and meaning this feature disabled
 const DefaultApiFailureRateTerminationThreshold = 2;
 const DefaultApiMinimumCountToEnableTermination = 100;
+const DefaultServerSelectionTimeoutMS = 30000;
 
 interface IMongoDBConfig {
 	operationsDbEndpoint: string;
@@ -572,6 +573,7 @@ interface IMongoDBConfig {
 	apiCounterIntervalMS?: number;
 	apiFailureRateTerminationThreshold?: number;
 	apiMinimumCountToEnableTermination?: number;
+	serverSelectionTimeoutMS?: number;
 }
 
 export class MongoDbFactory implements core.IDbFactory {
@@ -593,6 +595,7 @@ export class MongoDbFactory implements core.IDbFactory {
 	private readonly apiCounterIntervalMS: number;
 	private readonly apiFailureRateTerminationThreshold: number;
 	private readonly apiMinimumCountToEnableTermination: number;
+	private readonly serverSelectionTimeoutMS: number;
 
 	constructor(config: IMongoDBConfig) {
 		const {
@@ -612,6 +615,7 @@ export class MongoDbFactory implements core.IDbFactory {
 			apiCounterIntervalMS,
 			apiFailureRateTerminationThreshold,
 			apiMinimumCountToEnableTermination,
+			serverSelectionTimeoutMS,
 		} = config;
 		if (globalDbEnabled) {
 			this.globalDbEndpoint = globalDbEndpoint;
@@ -638,6 +642,7 @@ export class MongoDbFactory implements core.IDbFactory {
 			apiFailureRateTerminationThreshold ?? DefaultApiFailureRateTerminationThreshold;
 		this.apiMinimumCountToEnableTermination =
 			apiMinimumCountToEnableTermination ?? DefaultApiMinimumCountToEnableTermination;
+		this.serverSelectionTimeoutMS = serverSelectionTimeoutMS ?? DefaultServerSelectionTimeoutMS;
 	}
 
 	public async connect(global = false): Promise<core.IDb> {
@@ -655,6 +660,7 @@ export class MongoDbFactory implements core.IDbFactory {
 			connectTimeoutMS: this.connectionTimeoutMS,
 			heartbeatFrequencyMS: this.heartbeatFrequencyMS,
 			minHeartbeatFrequencyMS: this.minHeartbeatFrequencyMS,
+			serverSelectionTimeoutMS: this.serverSelectionTimeoutMS,
 		};
 		if (this.connectionPoolMinSize) {
 			options.minPoolSize = this.connectionPoolMinSize;
