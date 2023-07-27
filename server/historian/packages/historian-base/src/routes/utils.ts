@@ -104,7 +104,9 @@ export async function createGitService(createArgs: createGitServiceArgs): Promis
 	const customData: ITenantCustomDataExternal = details.customData;
 	const writeToExternalStorage = !!customData?.externalStorageData;
 	const storageUrl = config.get("storageUrl") as string | undefined;
-	Lumberjack.info(`Xin debug createGitService: initialUpload: ${initialUpload}, storageName: ${storageName}`);
+	Lumberjack.info(
+		`Xin debug createGitService: initialUpload: ${initialUpload}, storageName: ${storageName}`,
+	);
 	const calculatedStorageName =
 		initialUpload && storageName
 			? storageName
