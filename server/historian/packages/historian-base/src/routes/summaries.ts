@@ -22,6 +22,7 @@ import {
 import { Router } from "express";
 import * as nconf from "nconf";
 import winston from "winston";
+import { Lumberjack } from "@fluidframework/server-services-telemetry";
 import { ICache, ITenantService } from "../services";
 import { parseToken, Constants } from "../utils";
 import * as utils from "./utils";
@@ -186,7 +187,11 @@ export function create(
 					: typeof request.query.initial === "boolean"
 					? request.query.initial
 					: request.query.initial === "true";
-
+			Lumberjack.info(
+				`Xin debug summary: initial: ${initial}, storageName: ${request.get(
+					"StorageName",
+				)}`,
+			);
 			const summaryP = createSummary(
 				request.params.tenantId,
 				request.get("Authorization"),
