@@ -49,6 +49,13 @@ parameters:
 - name: r11sSelfSignedCertSecureFile
   type: string
   default: ""
+  
+# Source branch from which to download the build artifacts.
+# Default: "$(Build.SourceBranch)"
+# Useful when wanting to run tests defined on a branch (e.g. a branch with test changes) against the build artifacts from another branch (e.g. main or lts)
+- name: buildArtifactSourceBranch
+  type: string
+  default: $(Build.SourceBranch)
 
 jobs:
   - ${{ each variant in parameters.splitTestVariants }}:
