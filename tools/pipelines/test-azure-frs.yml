@@ -5,6 +5,14 @@
 
 name: $(Build.BuildId)
 
+parameters:
+# Source branch from which to download the build artifacts.
+# Default: "$(Build.SourceBranch)"
+# Useful when wanting to run tests defined on a branch (e.g. a branch with test changes) against the build artifacts from another branch (e.g. main or lts)
+- name: buildArtifactSourceBranch
+  type: string
+  default: $(Build.SourceBranch)
+
 trigger:
   branches:
     include:
@@ -55,6 +63,7 @@ stages:
         testCommand: test:realsvc:azure
         testFileTarName: azure-client
         extraDependencies: "cross-env mocha @fluidframework/test-client-utils"
+        buildArtifactSourceBranch: ${{ parameters.buildArtifactSourceBranch }}
         env:
           FLUID_TEST_LOGGER_PKG_PATH: ${{ variables.testWorkspace }}/node_modules/@ff-internal/aria-logger # Contains getTestLogger impl to inject
           azure__fluid__relay__service__tenantId: $(azure-fluid-relay-service-tenantId)
