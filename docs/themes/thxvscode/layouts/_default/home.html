@@ -10,6 +10,75 @@
     {{- end }}
 
     {{ .Content }}
+    <div class="value-props">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3 col-xs-6"><a class="value-prop" id="home-value-prop-better-perf-link" href="#better-perf"><div class="value-prop-icon better-perf-icon"></div>BBetter Performance</a></div>
+                <div class="col-sm-3 col-xs-6"><a class="value-prop" id="home-value-prop-easy-to-use-link" href="#easy-to-use"><div class="value-prop-icon easy-to-use-icon"></div>Easy to use</a></div>
+                <div class="col-sm-3 col-xs-6"><a class="value-prop" id="home-value-prop-client-code-link" href="#client-code"><div class="value-prop-icon client-code-icon"></div>Client Code</a></div>
+                <div class="col-sm-3 col-xs-6"><a class="value-prop" id="home-value-prop-open-source-link" href="#open-source"><div class="value-prop-icon open-source-icon"></div>Open Source</a></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Swimlanes -->
+<div class="swimlane-container">
+    <div id="better-perf" class="swimlane">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <img src='/assets/images/better-perf.svg' alt="Better Perf" class="screenshot"/>
+                </div>
+                <div class="col-sm-7 col-sm-push-1">
+                    <h2>BBetter Performance</h2>
+                    <p>There is a significant difference in capacity depending on whether users are purely viewers vs. editors. Adding viewers scales far more than adding editors because each editor increases the volume of changes and viewers do not</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="easy-to-use" class="swimlane">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-sm-push-8">
+                    <img src='/assets/images/easy-to-use.svg' alt="Easy to use" class="screenshot"/>
+                </div>
+                <div class="col-sm-7 col-sm-pull-4">
+                    <h2>Easy to use</h2>
+                    <p>There is a significant difference in capacity depending on whether users are purely viewers vs. editors. Adding viewers scales far more than adding editors because each editor increases the volume of changes and viewers do not</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="client-code" class="swimlane">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <img src='/assets/images/client-code.svg' alt="Client Code" class="screenshot"/>
+                </div>
+                <div class="col-sm-7 col-sm-push-1">
+                    <h2>Client Code</h2>
+                    <p>There is a significant difference in capacity depending on whether users are purely viewers vs. editors. Adding viewers scales far more than adding editors because each editor increases the volume of changes and viewers do not</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="open-source" class="swimlane open-source">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-sm-push-8">
+                    <img src="/assets/images/open-source.png" class="open-source-img" alt="open-source" />
+                </div>
+                <div class="col-sm-7 col-sm-pull-4">
+                    <h2>Extensible and customizable.</h2>
+                    <p>There is a significant difference in capacity depending on whether users are purely viewers vs. editors. Adding viewers scales far more than adding editors because each editor increases the volume of changes and viewers do not </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{- if templates.Exists "partials/extra-foot.html" -}}
