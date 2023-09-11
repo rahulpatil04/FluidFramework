@@ -360,16 +360,16 @@
 			background-size: 20.6rem 10.4rem;
 			margin: auto;
 			margin-bottom: 1rem;
-			&.intellisense {
+			&.better-perf {
 				background-position: 0 0;
 			}
-			&.debugging {
+			&.easy-to-use {
 				background-position: -5.2rem 0;
 			}
-			&.git {
+			&.client-code {
 				background-position: -10.4rem 0;
 			}
-			&.extensions-icon {
+			&.open-source {
 				background-position: -15.6rem 0;
 			}
 		}
@@ -384,16 +384,16 @@
 				background: $lightgray;
 				text-decoration: none;
 				.value-prop-icon {
-					&.intellisense {
+					&.better-perf {
 						background-position: 0 -5.3rem;
 					}
-					&.debugging {
+					&.easy-to-use {
 						background-position: -5.2rem -5.3rem;
 					}
-					&.git {
+					&.client-code {
 						background-position: -10.4rem -5.3rem;
 					}
-					&.extensions-icon {
+					&.open-source {
 						background-position: -15.6rem -5.3rem;
 					}
 				}
