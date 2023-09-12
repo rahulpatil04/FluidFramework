@@ -10,24 +10,16 @@
     {{- end }}
 
     {{ .Content }}
-    <div class="value-props">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-3 col-xs-6"><a class="value-prop" id="home-value-prop-better-perf-link" href="#better-perf"><div class="value-prop-icon better-perf"></div>BCetter Performance</a></div>
-                <div class="col-sm-3 col-xs-6"><a class="value-prop" id="home-value-prop-easy-to-use-link" href="#easy-to-use"><div class="value-prop-icon easy-to-use"></div>Easy to use</a></div>
-                <div class="col-sm-3 col-xs-6"><a class="value-prop" id="home-value-prop-client-code-link" href="#client-code"><div class="value-prop-icon client-code"></div>Client Code</a></div>
-                <div class="col-sm-3 col-xs-6"><a class="value-prop" id="home-value-prop-open-source-link" href="#open-source"><div class="value-prop-icon open-source"></div>Open Source</a></div>
-            </div>
-        </div>
-    </div>
+    
+    
 
-    <!-- Swimlanes -->
-<div class="swimlane-container">
+    <!-- Swimlanes -->  
+<!-- <div class="swimlane-container">
     <div id="better-perf" class="swimlane">
         <div class="container">
             <div class="row">
                 <div class="col-sm-4">
-                    <img src='/assets/images/fluid-objects.png' alt="Better Perf" class="screenshot"/>
+                    <img src='/images/first-value-prop.png' alt="Better Perf" class="screenshot"/>
                 </div>
                 <div class="col-sm-7 col-sm-push-1">
                     <h2>Better Performance</h2>
@@ -41,7 +33,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-4 col-sm-push-8">
-                    <img src='/assets/images/easy-to-use.svg' alt="Easy to use" class="screenshot"/>
+                    <img src='/images/second-value-prop.png' alt="Easy to use" class="screenshot"/>
                 </div>
                 <div class="col-sm-7 col-sm-pull-4">
                     <h2>Easy to use</h2>
@@ -56,7 +48,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-4">
-                    <img src='/assets/images/client-code.svg' alt="Client Code" class="screenshot"/>
+                    <img src='/images/third-value-prop.png' alt="Client Code" class="screenshot"/>
                 </div>
                 <div class="col-sm-7 col-sm-push-1">
                     <h2>Client Code</h2>
@@ -70,7 +62,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-4 col-sm-push-8">
-                    <img src="/assets/images/open-source.png" class="open-source-img" alt="open-source" />
+                    <img src="/images/fourth-value-prop.png" class="open-source-img" alt="open-source" />
                 </div>
                 <div class="col-sm-7 col-sm-pull-4">
                     <h2>Extensible and customizable.</h2>
@@ -79,7 +71,9 @@
             </div>
         </div>
     </div>
-</div>
+
+      
+</div> -->
 
 {{- if templates.Exists "partials/extra-foot.html" -}}
 {{ partial "extra-foot.html" . }}
