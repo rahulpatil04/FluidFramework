@@ -7,7 +7,7 @@ aliases:
 {{< jumbotron
   lead=`Data Sync <strong>Reimagined</strong>`
   subText="Real time. Web first. Open source."
-  img="/images/home-page-illustration.png"
+  img="https://www.youtube.com/embed/1okQVFqlMxU"
 >}}
 
 <div class="value-props">

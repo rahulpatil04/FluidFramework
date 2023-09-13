@@ -30,12 +30,22 @@
                 <div class="lead">
                     <p>{{ $subText }}</p>
                 </div>
-
-                <div id="download-buttons" class="download-hero alt-downloads"></div>
+                
+                <div class="link-button download-hero primary-buttons">
+                    <div class="col-sm-6">
+                        <a id="home-get-started-now-link" class="link-button" href="/docs/start/quick-start">Get Started</a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a id="home-demo-link" class="link-button" href="/docs/start/tutorial">Demo</a>
+                    </div>
+                </div>
             </div>
             <div class="col-md-8">
-                <div class="hero-img" id="jumbotron-{{$uniqueImgID}}" style="background-image: url('{{$imgURL}}')">
+                <div class="ratio ratio-16x9">
+                    <iframe width="560" height="315" src="{{$imgURL}}" title="Fluid Framework video"></iframe>
                 </div>
+                <!-- <div class="hero-img" id="jumbotron-{{$uniqueImgID}}" style="background-image: url('{{$imgURL}}')">
+                </div> -->
             </div>
         </div>
     </div>
