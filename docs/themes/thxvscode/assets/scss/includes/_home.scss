@@ -29,7 +29,7 @@
 			}
 			.copy {
 				@include vertical-center(0, -50%);
-				top: 45%; //approximately puts download button in middle of hero image
+				top: 75%; //approximately puts download button in middle of hero image
 			}
 		}
 
@@ -133,7 +133,7 @@
 					color: white;
 					margin: 2.5rem 0 0 0;
 					background-color: $accent-primary;
-					height: 6.5rem;
+					height: 7.5rem;
 					img {
 						top: 0;
 					}
