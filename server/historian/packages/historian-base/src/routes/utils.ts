@@ -104,9 +104,9 @@ export async function createGitService(createArgs: createGitServiceArgs): Promis
 					isEphemeral = staticProps?.isEphemeralContainer ?? false;
 					await cache?.set(isEphemeralKey, isEphemeral); // Cache the value from the static data
 				} catch (e) {
-					Lumberjack.verbose(
+					Lumberjack.error(
 						`Failed to retrieve static data from document when checking isEphemeral flag.`,
-						getLumberBaseProperties(documentId, tenantId),
+						getLumberBaseProperties(documentId, tenantId), e,
 					);
 					isEphemeral = false;
 				}
