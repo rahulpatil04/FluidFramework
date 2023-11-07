@@ -212,3 +212,10 @@ summary: "An open-source client technology stack that enables real-time collabor
         imgAlt="better performance"
       >}}
     {{</swimlane_container>}}
+
+{{<swimlane_container fullPage="yes">}}
+<h2><strong><center>See how it works:</center></strong></h2>
+{{< fluid_bundle_loader idPrefix="dice-roller"
+    bundleName="dice-roller.2021-09-24.js" >}}
+{{</swimlane_container>}}
+
