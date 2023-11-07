@@ -455,11 +455,23 @@ export interface Named<TName> {
  * Placeholder for `Symbol.dispose`.
  *
  * Replace this with `Symbol.dispose` when it is available.
+<<<<<<< HEAD
  */
 export const disposeSymbol: unique symbol = Symbol("Symbol.dispose");
 
 /**
  * An object with an explicit lifetime that can be ended.
+=======
+ * @alpha
+ */
+export const disposeSymbol: unique symbol = Symbol("Symbol.dispose placeholder");
+
+/**
+ * An object with an explicit lifetime that can be ended.
+ * @privateRemarks
+ * TODO: align this with core-utils/IDisposable.
+ * @alpha
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
  */
 export interface IDisposable {
 	/**

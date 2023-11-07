@@ -103,9 +103,14 @@ export {
 	TransactionResult,
 	BrandedKey,
 	BrandedMapSubset,
-	RangeEntry,
+	RangeQueryResult,
 	Named,
 	oneFromSet,
+<<<<<<< HEAD
+=======
+	disposeSymbol,
+	IDisposable,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 } from "./util";
 
 export {
@@ -135,6 +140,7 @@ export {
 	Multiplicity,
 	isNeverField,
 	FullSchemaPolicy,
+<<<<<<< HEAD
 	UnwrappedEditableField,
 	isEditableTree,
 	isEditableField,
@@ -144,13 +150,11 @@ export {
 	EditableTree,
 	EditableField,
 	isPrimitive,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	getPrimaryField,
-	typeSymbol,
 	typeNameSymbol,
 	valueSymbol,
-	proxyTargetSymbol,
-	getField,
-	contextSymbol,
 	ContextuallyTypedNodeDataObject,
 	ContextuallyTypedNodeData,
 	MarkedArrayLike,
@@ -161,7 +165,6 @@ export {
 	StableNodeKey,
 	LocalNodeKey,
 	compareLocalNodeKeys,
-	localNodeKeySymbol,
 	IDefaultEditBuilder,
 	ValueFieldEditBuilder,
 	OptionalFieldEditBuilder,
@@ -172,15 +175,18 @@ export {
 	singleStackTreeCursor,
 	CursorAdapter,
 	CursorWithNode,
+<<<<<<< HEAD
 	parentField,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	EditableTreeEvents,
-	on,
 	InternalTypedSchemaTypes,
 	SchemaAware,
 	ArrayLikeMut,
 	FieldKinds,
 	ContextuallyTypedFieldData,
 	cursorFromContextualData,
+<<<<<<< HEAD
 	UntypedField,
 	UntypedTree,
 	UntypedTreeContext,
@@ -188,6 +194,8 @@ export {
 	UnwrappedUntypedField,
 	UnwrappedUntypedTree,
 	UntypedTreeOrPrimitive,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	AllowedTypes,
 	TreeNodeSchema,
 	TreeSchema,
@@ -201,6 +209,7 @@ export {
 	LazyTreeNodeSchema,
 	FieldGenerator,
 	TreeDataContext,
+<<<<<<< HEAD
 	createDataBinderBuffering,
 	createDataBinderDirect,
 	createDataBinderInvalidating,
@@ -241,6 +250,11 @@ export {
 	SchemaLintConfiguration,
 	TreeStatus,
 	treeStatus,
+=======
+	nodeKeyFieldKey,
+	SchemaLintConfiguration,
+	TreeStatus,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	FieldNode,
 	FlexibleFieldContent,
 	FlexibleNodeContent,
@@ -257,7 +271,11 @@ export {
 	TypedField,
 	TypedNode,
 	TypedNodeUnion,
+<<<<<<< HEAD
 	Tree,
+=======
+	TreeEntity,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	TreeField,
 	TreeNode,
 	FieldNodeSchema,
@@ -280,8 +298,13 @@ export {
 	ProxyNodeUnion,
 	SharedTreeMap,
 	SharedTreeObject,
+<<<<<<< HEAD
 	node,
 	NodeApi,
+=======
+	Tree,
+	TreeApi,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	SharedTreeNode,
 	Typed,
 	TreeEvent,
@@ -310,6 +333,11 @@ export {
 	TypedTreeOptions,
 	TypedTreeChannel,
 	SharedTreeContentSnapshot,
+<<<<<<< HEAD
+=======
+	ISharedTreeView2,
+	TypedTreeView,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 } from "./shared-tree";
 
 export type { ICodecOptions, JsonValidator, SchemaValidationFunction } from "./codec";

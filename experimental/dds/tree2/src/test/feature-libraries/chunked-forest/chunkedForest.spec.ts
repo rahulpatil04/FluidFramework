@@ -4,7 +4,11 @@
  */
 
 // Allow importing from this specific file which is being tested:
+<<<<<<< HEAD
 /* eslint-disable-next-line import/no-internal-modules */
+=======
+// eslint-disable-next-line import/no-internal-modules
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { buildChunkedForest } from "../../../feature-libraries/chunked-forest/chunkedForest";
 import {
 	IChunker,

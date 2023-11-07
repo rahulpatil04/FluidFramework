@@ -8,8 +8,11 @@ import {
 	type IChannelServices,
 	type IChannelStorageService,
 } from "@fluidframework/datastore-definitions";
+<<<<<<< HEAD
 import { ShimDeltaConnection } from "./shimDeltaConnection.js";
 import { type IShimDeltaHandler } from "./types.js";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 /**
  * ShimChannelServices wraps an existing IChannelServices object and provides a new ShimDeltaConnection
@@ -21,6 +24,7 @@ import { type IShimDeltaHandler } from "./types.js";
  * we call attach, we need to swap out the deltaConnection object for the ShimDeltaConnection object. This makes
  * it consistent as we will always be passing this shim
  */
+<<<<<<< HEAD
 export class ShimChannelServices implements IChannelServices {
 	public constructor(channelServices: IChannelServices, shimDeltaHandler: IShimDeltaHandler) {
 		this.deltaConnection = new ShimDeltaConnection(
@@ -31,6 +35,11 @@ export class ShimChannelServices implements IChannelServices {
 	}
 	public readonly deltaConnection: ShimDeltaConnection;
 	public readonly objectStorage: IChannelStorageService;
+=======
+export interface IShimChannelServices extends IChannelServices {
+	readonly objectStorage: IChannelStorageService;
+	readonly deltaConnection: IDeltaConnection;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 }
 
 /**

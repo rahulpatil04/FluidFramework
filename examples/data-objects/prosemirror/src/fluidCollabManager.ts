@@ -8,7 +8,10 @@
 
 import { EventEmitter } from "events";
 import { assert } from "@fluidframework/core-utils";
+<<<<<<< HEAD
 import { ILoader } from "@fluidframework/container-definitions";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import {
 	createGroupOp,
 	createRemoveRangeOp,
@@ -24,7 +27,6 @@ import { addListNodes } from "prosemirror-schema-list";
 import { EditorState, Plugin, Transaction } from "prosemirror-state";
 
 import { EditorView } from "prosemirror-view";
-import { ComponentView } from "./componentView";
 import {
 	IProseMirrorNode,
 	nodeTypeKey,
@@ -32,7 +34,6 @@ import {
 	sliceToGroupOps,
 } from "./fluidBridge";
 import { schema } from "./fluidSchema";
-import { FootnoteView } from "./footnoteView";
 import { create as createSelection } from "./selection";
 export const IRichTextEditor: keyof IProvideRichTextEditor = "IRichTextEditor";
 
@@ -56,10 +57,14 @@ export class FluidCollabManager extends EventEmitter implements IRichTextEditor 
 	private state: EditorState;
 	private editorView: EditorView | undefined;
 
+<<<<<<< HEAD
 	constructor(
 		private readonly text: SharedString,
 		private readonly loader: ILoader,
 	) {
+=======
+	constructor(private readonly text: SharedString) {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		super();
 
 		this.plugin = new Plugin({
@@ -235,10 +240,6 @@ export class FluidCollabManager extends EventEmitter implements IRichTextEditor 
 
 		const editorView = new EditorView(textArea, {
 			state: this.state,
-			nodeViews: {
-				fluid: (node, view, getPos) => new ComponentView(node, view, getPos, this.loader),
-				footnote: (node, view, getPos) => new FootnoteView(node, view, getPos, this.loader),
-			},
 		});
 
 		this.editorView = editorView;

@@ -345,6 +345,7 @@ describe("SharedTreeCore", () => {
 			factory.attributes,
 		);
 
+<<<<<<< HEAD
 		const config: InitializeAndSchematizeConfiguration = {
 			schema,
 			initialTree: undefined,
@@ -355,6 +356,18 @@ describe("SharedTreeCore", () => {
 		const view2 = tree2.schematizeView(config);
 		const editable1 = view1.editableTree2(schema);
 		const editable2 = view2.editableTree2(schema);
+=======
+		const config = {
+			schema,
+			initialTree: undefined,
+			allowedSchemaModifications: AllowedUpdateType.None,
+		} satisfies InitializeAndSchematizeConfiguration;
+
+		const view1 = tree1.schematize(config);
+		const view2 = tree2.schematize(config);
+		const editable1 = view1.editableTree;
+		const editable2 = view2.editableTree;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 		editable2.content = { [typeNameSymbol]: node.name, child: undefined };
 		editable1.content = { [typeNameSymbol]: node.name, child: undefined };

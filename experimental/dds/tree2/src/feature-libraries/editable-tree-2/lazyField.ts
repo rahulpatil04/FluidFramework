@@ -156,7 +156,11 @@ export abstract class LazyField<TKind extends FieldKind, TTypes extends AllowedT
 		return this[cursorSymbol].getFieldLength();
 	}
 
+<<<<<<< HEAD
 	public at(index: number): UnboxNodeUnion<TTypes> {
+=======
+	public atIndex(index: number): UnboxNodeUnion<TTypes> {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		return inCursorNode(this[cursorSymbol], index, (cursor) =>
 			unboxedUnion(this.context, this.schema, cursor),
 		);
@@ -238,6 +242,26 @@ export class LazySequence<TTypes extends AllowedTypes>
 		makePropertyEnumerableOwn(this, "asArray", LazySequence.prototype);
 	}
 
+<<<<<<< HEAD
+=======
+	public at(index: number): UnboxNodeUnion<TTypes> | undefined {
+		// The logic here follows what Array.prototype.at does to handle any kind of index at runtime.
+		// See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at for details.
+		let finalIndex = Math.trunc(+index);
+		if (isNaN(finalIndex)) {
+			finalIndex = 0;
+		}
+		if (finalIndex < -this.length || finalIndex >= this.length) {
+			return undefined;
+		}
+		if (finalIndex < 0) {
+			finalIndex = finalIndex + this.length;
+		}
+		return inCursorNode(this[cursorSymbol], finalIndex, (cursor) =>
+			unboxedUnion(this.context, this.schema, cursor),
+		);
+	}
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	public get asArray(): readonly UnboxNodeUnion<TTypes>[] {
 		return this.map((x) => x);
 	}
@@ -360,6 +384,7 @@ export class LazySequence<TTypes extends AllowedTypes>
 			}
 		}
 		const movedCount = sourceEnd - sourceStart;
+<<<<<<< HEAD
 		let destinationIndex = index;
 		if (sourceField === this) {
 			if (destinationIndex > sourceStart) {
@@ -370,6 +395,9 @@ export class LazySequence<TTypes extends AllowedTypes>
 			}
 		}
 		assertValidIndex(destinationIndex, this, true);
+=======
+		assertValidIndex(index, this, true);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		const sourceFieldPath = sourceField.getFieldPath();
 		const destinationFieldPath = this.getFieldPath();
 		this.context.editor.move(
@@ -377,7 +405,11 @@ export class LazySequence<TTypes extends AllowedTypes>
 			sourceStart,
 			movedCount,
 			destinationFieldPath,
+<<<<<<< HEAD
 			destinationIndex,
+=======
+			index,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		);
 	}
 }
@@ -404,7 +436,11 @@ export class LazyValueField<TTypes extends AllowedTypes>
 	}
 
 	public get content(): UnboxNodeUnion<TTypes> {
+<<<<<<< HEAD
 		return this.at(0);
+=======
+		return this.atIndex(0);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 
 	public set content(newContent: FlexibleNodeContent<TTypes>) {
@@ -441,7 +477,11 @@ export class LazyOptionalField<TTypes extends AllowedTypes>
 	}
 
 	public get content(): UnboxNodeUnion<TTypes> | undefined {
+<<<<<<< HEAD
 		return this.length === 0 ? undefined : this.at(0);
+=======
+		return this.length === 0 ? undefined : this.atIndex(0);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 
 	public set content(newContent: FlexibleNodeContent<TTypes> | undefined) {

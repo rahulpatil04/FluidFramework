@@ -7,11 +7,15 @@ import type { IMigrationTool } from "@fluid-example/example-utils";
 import {
 	ModelContainerRuntimeFactory,
 	MigrationToolInstantiationFactory,
+	getDataStoreEntryPoint,
 } from "@fluid-example/example-utils";
 import type { IContainer } from "@fluidframework/container-definitions";
 import type { IContainerRuntime } from "@fluidframework/container-runtime-definitions";
+<<<<<<< HEAD
 // eslint-disable-next-line import/no-deprecated
 import { requestFluidObject } from "@fluidframework/runtime-utils";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 import type { IInventoryList, IInventoryListAppModel } from "../modelInterfaces";
 import { InventoryListAppModel } from "./appModel";
@@ -59,14 +63,19 @@ export class InventoryListContainerRuntimeFactory extends ModelContainerRuntimeF
 		// Force the MigrationTool to instantiate in all cases.  The Quorum it uses must be loaded and running in
 		// order to respond with accept ops, and without this call the MigrationTool won't be instantiated on the
 		// summarizer client.
+<<<<<<< HEAD
 		// eslint-disable-next-line import/no-deprecated
 		await requestFluidObject(await runtime.getRootDataStore(migrationToolId), "");
+=======
+		await getDataStoreEntryPoint(runtime, migrationToolId);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 
 	/**
 	 * {@inheritDoc ModelContainerRuntimeFactory.createModel}
 	 */
 	protected async createModel(runtime: IContainerRuntime, container: IContainer) {
+<<<<<<< HEAD
 		// eslint-disable-next-line import/no-deprecated
 		const inventoryList = await requestFluidObject<IInventoryList>(
 			await runtime.getRootDataStore(inventoryListId),
@@ -78,5 +87,12 @@ export class InventoryListContainerRuntimeFactory extends ModelContainerRuntimeF
 			"",
 		);
 		return new InventoryListAppModel(inventoryList, migrationTool, container);
+=======
+		return new InventoryListAppModel(
+			await getDataStoreEntryPoint<IInventoryList>(runtime, inventoryListId),
+			await getDataStoreEntryPoint<IMigrationTool>(runtime, migrationToolId),
+			container,
+		);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 }

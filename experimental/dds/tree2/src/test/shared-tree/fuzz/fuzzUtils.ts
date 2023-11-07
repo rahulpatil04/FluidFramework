@@ -48,11 +48,19 @@ export type FuzzNode = ObjectNodeTyped<FuzzNodeSchema>;
 export const fuzzSchema = builder.intoSchema(fuzzNode.objectNodeFieldsObject.optionalChild);
 
 export function fuzzViewFromTree(tree: ISharedTree): ISharedTreeView {
+<<<<<<< HEAD
 	return tree.schematizeView({
 		initialTree: undefined,
 		schema: fuzzSchema,
 		allowedSchemaModifications: AllowedUpdateType.None,
 	});
+=======
+	return tree.schematize({
+		initialTree: undefined,
+		schema: fuzzSchema,
+		allowedSchemaModifications: AllowedUpdateType.None,
+	}).branch;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 }
 
 export const onCreate = (tree: SharedTree) => {

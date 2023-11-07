@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 
+<<<<<<< HEAD
 import { Assume, fail } from "../../../util";
 import { typeNameSymbol } from "../../contextuallyTyped";
 import { ObjectNodeSchema, TreeNodeSchema } from "../../typed-schema";
@@ -13,12 +14,20 @@ interface HasFactoryContent<T> {
 	[factoryContentSymbol]: T;
 }
 
+=======
+import { Assume } from "../../../util";
+import { ObjectNodeSchema, TreeNodeSchema } from "../../typed-schema";
+import { createRawObjectProxy } from "./proxies";
+import { ProxyNode, SharedTreeObject } from "./types";
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 /**
  * Adds a factory function (`create`) to the given schema so that it satisfies the {@link SharedTreeObjectFactory} interface.
  */
 export function addFactory<TSchema extends ObjectNodeSchema>(
 	schema: TSchema,
 ): FactoryTreeSchema<TSchema> {
+<<<<<<< HEAD
 	const create = (content: ProxyNode<TSchema, "javaScript">): SharedTreeObject<TSchema> => {
 		const node = Object.create(null);
 		// Shallow copy the content and then add the type name symbol to it.
@@ -40,12 +49,18 @@ export function addFactory<TSchema extends ObjectNodeSchema>(
 
 	return Object.defineProperty(schema, "create", {
 		value: create,
+=======
+	return Object.defineProperty(schema, "create", {
+		value: (content: ProxyNode<TSchema, "javaScript">): SharedTreeObject<TSchema> =>
+			createRawObjectProxy(schema, content),
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		configurable: true,
 		enumerable: true,
 	}) as FactoryTreeSchema<TSchema>;
 }
 
 /**
+<<<<<<< HEAD
  * Given a content tree that is to be inserted into the shared tree, replace all subtrees that were created by factories
  * (via {@link SharedTreeObjectFactory.create}) with the content that was passed to those factories.
  * @remarks
@@ -111,6 +126,8 @@ export function extractFactoryContent<T extends ProxyNode<TreeNodeSchema, "javaS
 }
 
 /**
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
  * Creates `{@link SharedTreeObject}`s of the given schema type via a `create` method.
  * @alpha
  */
@@ -133,6 +150,7 @@ export interface SharedTreeObjectFactory<TSchema extends TreeNodeSchema<string, 
  */
 export type FactoryTreeSchema<TSchema extends TreeNodeSchema<string, unknown>> = TSchema &
 	SharedTreeObjectFactory<TSchema>;
+<<<<<<< HEAD
 
 function factoryObjectError(): never {
 	throw new Error(factoryObjectErrorMessage);
@@ -140,3 +158,5 @@ function factoryObjectError(): never {
 
 export const factoryObjectErrorMessage =
 	"Newly created node must be inserted into the tree before being queried";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df

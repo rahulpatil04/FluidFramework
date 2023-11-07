@@ -71,6 +71,10 @@ const singleNodeHandler: FieldChangeHandler<NodeChangeset> = {
 	intoDelta: ({ change }, deltaFromChild): Delta.FieldChanges => ({
 		local: [{ count: 1, fields: deltaFromChild(change) }],
 	}),
+<<<<<<< HEAD
+=======
+	relevantRemovedTrees: (change, removedTreesFromChild) => removedTreesFromChild(change),
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	isEmpty: (change) => change.fieldChanges === undefined,
 };
 
@@ -671,7 +675,13 @@ describe("ModularChangeFamily", () => {
 			{ getIndex, tryGetInfo },
 		): RevisionTag[] => {
 			const relevantRevisions = [rev1, rev2, rev3, rev4];
+<<<<<<< HEAD
 			const revsIndices: number[] = relevantRevisions.map((c) => getIndex(c));
+=======
+			const revsIndices: number[] = relevantRevisions.map((c) =>
+				ensureIndexDefined(getIndex(c)),
+			);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			const revsInfos: RevisionInfo[] = relevantRevisions.map(
 				(c) => tryGetInfo(c) ?? assert.fail(),
 			);
@@ -697,7 +707,13 @@ describe("ModularChangeFamily", () => {
 			{ getIndex, tryGetInfo },
 		): RevisionTag[] => {
 			const relevantRevisions = [rev1, rev2, rev4];
+<<<<<<< HEAD
 			const revsIndices: number[] = relevantRevisions.map((c) => getIndex(c));
+=======
+			const revsIndices: number[] = relevantRevisions.map((c) =>
+				ensureIndexDefined(getIndex(c)),
+			);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			const revsInfos: RevisionInfo[] = relevantRevisions.map(
 				(c) => tryGetInfo(c) ?? assert.fail(),
 			);
@@ -788,4 +804,9 @@ describe("ModularChangeFamily", () => {
 		assert.deepEqual(rebased.revisions, expectedRebaseInfo);
 		assert(rebaseWasTested);
 	});
+
+	function ensureIndexDefined(index: number | undefined): number {
+		assert(index !== undefined, "Unexpected undefined index");
+		return index;
+	}
 });

@@ -14,6 +14,10 @@ import { JsonCompatible, brand } from "../../util";
 
 import { testForest } from "../forestTestSuite";
 import { singleJsonCursor } from "../../domains";
+<<<<<<< HEAD
+=======
+import { singleMapTreeCursor } from "../../feature-libraries";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 describe("object-forest", () => {
 	testForest({
@@ -78,4 +82,15 @@ describe("object-forest", () => {
 			visitor.free();
 		});
 	});
+<<<<<<< HEAD
+=======
+
+	it("moveCursorToPath with an undefined path points to dummy node above detachedFields.", () => {
+		const forest = buildForest();
+		initializeForest(forest, [singleJsonCursor([1, 2])]);
+		const cursor = forest.allocateCursor();
+		forest.moveCursorToPath(undefined, cursor);
+		assert.deepEqual(cursor.getFieldKey(), singleMapTreeCursor(forest.roots).getFieldKey());
+	});
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 });

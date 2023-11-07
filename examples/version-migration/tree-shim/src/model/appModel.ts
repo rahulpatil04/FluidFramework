@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 
+<<<<<<< HEAD
 import { TypedEmitter } from "tiny-typed-emitter";
 import type {
 	IInventoryList,
@@ -26,4 +27,19 @@ export class InventoryListAppModel
 		super();
 		// inventoryList.on("migrationFinished", () => { this.emit("inventoryListChanged"); });
 	}
+=======
+import type {
+	IInventoryList,
+	IInventoryListAppModel,
+	IMigrateBackingData,
+} from "../modelInterfaces";
+
+/**
+ * The InventoryListAppModel just provides the inventory list, which is also capable of migrating its backing data.
+ */
+export class InventoryListAppModel implements IInventoryListAppModel {
+	public constructor(
+		public readonly migratingInventoryList: IInventoryList & IMigrateBackingData,
+	) {}
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 }

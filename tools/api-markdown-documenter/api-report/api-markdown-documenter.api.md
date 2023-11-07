@@ -281,8 +281,13 @@ export interface DocumentItemMetadata {
 // @public
 export class DocumentNode implements Parent<SectionNode>, DocumentNodeProps {
     constructor(properties: DocumentNodeProps);
+<<<<<<< HEAD
     readonly children: SectionNode[];
     readonly documentItemMetadata: DocumentItemMetadata;
+=======
+    readonly apiItem?: ApiItem;
+    readonly children: SectionNode[];
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
     readonly documentPath: string;
     readonly frontMatter?: string;
     readonly type = DocumentationNodeType.Document;
@@ -290,8 +295,12 @@ export class DocumentNode implements Parent<SectionNode>, DocumentNodeProps {
 
 // @public
 export interface DocumentNodeProps {
+    readonly apiItem?: ApiItem;
     readonly children: SectionNode[];
+<<<<<<< HEAD
     readonly documentItemMetadata: DocumentItemMetadata;
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
     readonly documentPath: string;
     readonly frontMatter?: string;
 }

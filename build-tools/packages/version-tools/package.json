@@ -1,6 +1,10 @@
 {
 	"name": "@fluid-tools/version-tools",
+<<<<<<< HEAD
 	"version": "0.26.2",
+=======
+	"version": "0.27.0",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	"description": "Versioning tools for Fluid Framework",
 	"homepage": "https://fluidframework.com",
 	"repository": {
@@ -35,11 +39,20 @@
 		"build:compile": "npm run build:commonjs && npm run build:readme",
 		"build:docs": "api-extractor run --local",
 		"build:manifest": "oclif manifest",
+<<<<<<< HEAD
 		"build:readme": "npm run build:manifest && fluid-readme generate readme",
 		"build:test": "tsc --project ./src/test/tsconfig.json",
 		"ci:build:docs": "api-extractor run",
 		"clean": "rimraf --glob dist lib oclif.manifest.json \"*.tsbuildinfo\" \"*.build.log\" _api-extractor-temp nyc",
 		"clean:manifest": "rimraf --glob \"oclif.manifest.json\"",
+=======
+		"build:readme": "fluid-readme generate readme",
+		"build:test": "tsc --project ./src/test/tsconfig.json",
+		"ci:build:docs": "api-extractor run",
+		"clean": "rimraf --glob dist lib oclif.manifest.json \"*.tsbuildinfo\" \"*.build.log\" _api-extractor-temp nyc",
+		"clean:manifest": "rimraf --glob oclif.manifest.json",
+		"compile": "fluid-build . --task compile",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"eslint": "eslint --format stylish src",
 		"eslint:fix": "eslint --format stylish src --fix --fix-type problem,suggestion,layout",
 		"format": "npm run prettier:fix",
@@ -85,9 +98,15 @@
 		"table": "^6.8.1"
 	},
 	"devDependencies": {
+<<<<<<< HEAD
 		"@fluid-private/readme-command": "workspace:*",
 		"@fluidframework/build-common": "^2.0.3",
 		"@fluidframework/eslint-config-fluid": "^3.0.0",
+=======
+		"@fluid-private/readme-command": "workspace:~",
+		"@fluidframework/build-common": "^2.0.3",
+		"@fluidframework/eslint-config-fluid": "^3.1.0",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"@microsoft/api-extractor": "^7.36.1",
 		"@oclif/test": "~2.3.33",
 		"@types/chai": "^4.3.5",

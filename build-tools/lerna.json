@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
 	"version": "0.26.2",
+=======
+	"version": "0.27.0",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	"npmClient": "pnpm",
 	"useWorkspaces": true
 }

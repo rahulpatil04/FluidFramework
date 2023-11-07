@@ -34,7 +34,11 @@
 		"@fluid-tools/build-cli": "^0.26.1",
 		"@fluidframework/build-common": "^2.0.3",
 		"@fluidframework/build-tools": "^0.26.1",
+<<<<<<< HEAD
 		"@fluidframework/eslint-config-fluid": "^3.0.0",
+=======
+		"@fluidframework/eslint-config-fluid": "^3.1.0",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"@types/expect-puppeteer": "2.2.1",
 		"@types/node": "^16.18.38",
 		"@types/puppeteer": "1.3.0",

@@ -23,15 +23,15 @@ import {
 } from "../core";
 import { HasListeners, IEmitter, ISubscribable, createEmitter } from "../events";
 import {
-	UnwrappedEditableField,
-	EditableTreeContext,
 	IDefaultEditBuilder,
 	DefaultChangeset,
 	buildForest,
 	DefaultChangeFamily,
+<<<<<<< HEAD
 	getEditableTreeContext,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	DefaultEditBuilder,
-	NewFieldContent,
 	NodeKeyManager,
 	TreeFieldSchema,
 	TreeSchema,
@@ -40,7 +40,10 @@ import {
 	createNodeKeyManager,
 	nodeKeyFieldKey as nodeKeyFieldKeyDefault,
 	getProxyForField,
+<<<<<<< HEAD
 	ProxyField,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 } from "../feature-libraries";
 import { SharedTreeBranch, getChangeReplaceType } from "../shared-tree-core";
 import { TransactionResult, brand } from "../util";
@@ -75,11 +78,16 @@ export interface ViewEvents {
  * Provides a means for interacting with a SharedTree.
  * This includes reading data from the tree and running transactions to mutate the tree.
  * @remarks This interface should not have any implementations other than those provided by the SharedTree package libraries.
- * @privateRemarks Implementations of this interface must implement the {@link branchKey} property.
+ * @privateRemarks
+ * Implementations of this interface must implement the {@link branchKey} property.
+ * TODO:
+ * This interface is the one without a View schema.
+ * For clarity it should be renamed to something like "BranchCheckout"
  * @alpha
  */
 export interface ISharedTreeView extends AnchorLocator {
 	/**
+<<<<<<< HEAD
 	 * Gets the root field of the tree.
 	 *
 	 * See {@link EditableTreeContext.unwrappedRoot} on how its setter works.
@@ -109,6 +117,8 @@ export interface ISharedTreeView extends AnchorLocator {
 	readonly context: EditableTreeContext;
 
 	/**
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	 * Read and Write access for schema stored in the document.
 	 *
 	 * These APIs are temporary and will be replaced with different abstractions (View Schema based) in a different place later.
@@ -193,10 +203,17 @@ export interface ISharedTreeView extends AnchorLocator {
 	 * As long as it is passed in here as a workaround, the caller must ensure that the stored schema is compatible.
 	 * If the stored schema is edited and becomes incompatible (or was not originally compatible),
 	 * using the returned tree is invalid and is likely to error or corrupt the document.
+<<<<<<< HEAD
 	 */
 	editableTree2<TRoot extends TreeFieldSchema>(viewSchema: TreeSchema<TRoot>): TypedField<TRoot>;
 
 	root2<TRoot extends TreeFieldSchema>(viewSchema: TreeSchema<TRoot>): ProxyField<TRoot>;
+=======
+	 *
+	 * @deprecated Use {@link ISharedTreeView2}.
+	 */
+	editableTree2<TRoot extends TreeFieldSchema>(viewSchema: TreeSchema<TRoot>): TypedField<TRoot>;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 }
 
 /**
@@ -227,7 +244,10 @@ export function createSharedTreeView(args?: {
 			},
 			changeFamily,
 		);
+<<<<<<< HEAD
 	const context = getEditableTreeContext(forest, schema, branch.editor);
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	const events = args?.events ?? createEmitter();
 
 	const transaction = new Transaction(branch);
@@ -238,7 +258,10 @@ export function createSharedTreeView(args?: {
 		changeFamily,
 		schema,
 		forest,
+<<<<<<< HEAD
 		context,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		events,
 		args?.removedTrees,
 	);
@@ -325,7 +348,10 @@ export class SharedTreeView implements ISharedTreeBranchView {
 		private readonly changeFamily: DefaultChangeFamily,
 		public readonly storedSchema: StoredSchemaRepository,
 		public readonly forest: IEditableForest,
+<<<<<<< HEAD
 		public readonly context: EditableTreeContext,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		public readonly events: ISubscribable<ViewEvents> &
 			IEmitter<ViewEvents> &
 			HasListeners<ViewEvents>,
@@ -407,7 +433,10 @@ export class SharedTreeView implements ISharedTreeBranchView {
 		const storedSchema = new InMemoryStoredSchemaRepository(this.storedSchema);
 		const forest = this.forest.clone(storedSchema, anchors);
 		const branch = this.branch.fork();
+<<<<<<< HEAD
 		const context = getEditableTreeContext(forest, storedSchema, branch.editor);
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		const transaction = new Transaction(branch);
 		return new SharedTreeView(
 			transaction,
@@ -415,7 +444,10 @@ export class SharedTreeView implements ISharedTreeBranchView {
 			this.changeFamily,
 			storedSchema,
 			forest,
+<<<<<<< HEAD
 			context,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			createEmitter(),
 			this.removedTrees.clone(),
 		);
@@ -443,14 +475,6 @@ export class SharedTreeView implements ISharedTreeBranchView {
 		if (disposeView) {
 			view.dispose();
 		}
-	}
-
-	public get root(): UnwrappedEditableField {
-		return this.context.unwrappedRoot;
-	}
-
-	public setContent(data: NewFieldContent) {
-		this.context.setContent(data);
 	}
 
 	/**

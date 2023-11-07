@@ -13,7 +13,10 @@ import {
 import { MockFluidDataStoreRuntime } from "@fluidframework/test-runtime-utils";
 import React from "react";
 import { SinonSandbox, createSandbox } from "sinon";
+<<<<<<< HEAD
 import { useTreeContext } from "..";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { Inventory, schema } from "./schema";
 
 // TODO: why do failing tests in this suite not cause CI to fail?
@@ -33,7 +36,11 @@ describe("useTree()", () => {
 			},
 			allowedSchemaModifications: AllowedUpdateType.None,
 			schema,
+<<<<<<< HEAD
 		});
+=======
+		}).root;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 
 	// Mock 'React.setState()'
@@ -72,11 +79,18 @@ describe("useTree()", () => {
 
 	it("works", () => {
 		const tree = createLocalTree("tree");
+<<<<<<< HEAD
 		useTreeContext(tree.context);
 		assert.deepEqual(JSON.parse(JSON.stringify(tree.content)), {
 			nuts: 0,
 			bolts: 0,
 			type: "tree-react-api.Contoso:Inventory-1.0.0",
+=======
+		// TODO test use functions
+		assert.deepEqual(JSON.parse(JSON.stringify(tree)), {
+			nuts: 0,
+			bolts: 0,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		});
 	});
 });

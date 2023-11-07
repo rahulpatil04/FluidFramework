@@ -25,6 +25,7 @@
 	},
 	{
 		"type": "cycle",
+<<<<<<< HEAD
 		"from": "src/feature-libraries/contextuallyTyped.ts",
 		"to": "src/feature-libraries/editable-tree/index.ts",
 		"rule": {
@@ -39,6 +40,8 @@
 	},
 	{
 		"type": "cycle",
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"from": "src/feature-libraries/editable-tree-2/context.ts",
 		"to": "src/feature-libraries/editable-tree-2/lazyField.ts",
 		"rule": {
@@ -47,9 +50,14 @@
 		},
 		"cycle": [
 			"src/feature-libraries/editable-tree-2/lazyField.ts",
+<<<<<<< HEAD
 			"src/feature-libraries/contextuallyTyped.ts",
 			"src/feature-libraries/editable-tree/index.ts",
 			"src/feature-libraries/editable-tree/editableField.ts",
+=======
+			"src/feature-libraries/node-key/index.ts",
+			"src/feature-libraries/node-key/nodeKeyIndex.ts",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			"src/feature-libraries/editable-tree-2/index.ts",
 			"src/feature-libraries/editable-tree-2/context.ts"
 		]
@@ -79,11 +87,20 @@
 		},
 		"cycle": [
 			"src/feature-libraries/editable-tree-2/proxies/index.ts",
+<<<<<<< HEAD
 			"src/feature-libraries/editable-tree-2/proxies/proxies.ts",
 			"src/feature-libraries/editable-tree-2/lazyField.ts",
 			"src/feature-libraries/contextuallyTyped.ts",
 			"src/feature-libraries/editable-tree/index.ts",
 			"src/feature-libraries/editable-tree/editableField.ts",
+=======
+			"src/feature-libraries/editable-tree-2/proxies/node.ts",
+			"src/feature-libraries/editable-tree-2/proxies/proxies.ts",
+			"src/feature-libraries/editable-tree-2/lazyTree.ts",
+			"src/feature-libraries/editable-tree-2/lazyField.ts",
+			"src/feature-libraries/node-key/index.ts",
+			"src/feature-libraries/node-key/nodeKeyIndex.ts",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			"src/feature-libraries/editable-tree-2/index.ts"
 		]
 	},
@@ -130,6 +147,7 @@
 	},
 	{
 		"type": "cycle",
+<<<<<<< HEAD
 		"from": "src/feature-libraries/editable-tree-2/lazyField.ts",
 		"to": "src/feature-libraries/node-key/index.ts",
 		"rule": {
@@ -146,6 +164,8 @@
 	},
 	{
 		"type": "cycle",
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"from": "src/feature-libraries/editable-tree-2/lazyTree.ts",
 		"to": "src/feature-libraries/editable-tree-2/unboxed.ts",
 		"rule": {
@@ -175,13 +195,19 @@
 	},
 	{
 		"type": "cycle",
+<<<<<<< HEAD
 		"from": "src/feature-libraries/editable-tree-2/proxies/proxies.ts",
 		"to": "src/feature-libraries/editable-tree-2/lazyTree.ts",
+=======
+		"from": "src/feature-libraries/editable-tree-2/proxies/index.ts",
+		"to": "src/feature-libraries/editable-tree-2/proxies/objectFactory.ts",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"rule": {
 			"severity": "error",
 			"name": "no-circular"
 		},
 		"cycle": [
+<<<<<<< HEAD
 			"src/feature-libraries/editable-tree-2/lazyTree.ts",
 			"src/feature-libraries/editable-tree-2/lazyField.ts",
 			"src/feature-libraries/contextuallyTyped.ts",
@@ -190,17 +216,33 @@
 			"src/feature-libraries/editable-tree-2/index.ts",
 			"src/feature-libraries/editable-tree-2/proxies/index.ts",
 			"src/feature-libraries/editable-tree-2/proxies/proxies.ts"
+=======
+			"src/feature-libraries/editable-tree-2/proxies/objectFactory.ts",
+			"src/feature-libraries/editable-tree-2/proxies/proxies.ts",
+			"src/feature-libraries/editable-tree-2/lazyTree.ts",
+			"src/feature-libraries/editable-tree-2/lazyField.ts",
+			"src/feature-libraries/node-key/index.ts",
+			"src/feature-libraries/node-key/nodeKeyIndex.ts",
+			"src/feature-libraries/editable-tree-2/index.ts",
+			"src/feature-libraries/editable-tree-2/proxies/index.ts"
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		]
 	},
 	{
 		"type": "cycle",
+<<<<<<< HEAD
 		"from": "src/feature-libraries/editable-tree/editableField.ts",
 		"to": "src/feature-libraries/editable-tree/editableTree.ts",
+=======
+		"from": "src/feature-libraries/editable-tree-2/proxies/index.ts",
+		"to": "src/feature-libraries/editable-tree-2/proxies/proxies.ts",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"rule": {
 			"severity": "error",
 			"name": "no-circular"
 		},
 		"cycle": [
+<<<<<<< HEAD
 			"src/feature-libraries/editable-tree/editableTree.ts",
 			"src/feature-libraries/editable-tree/editableField.ts"
 		]
@@ -380,6 +422,15 @@
 			"src/feature-libraries/contextuallyTyped.ts",
 			"src/feature-libraries/editable-tree/index.ts",
 			"src/feature-libraries/editable-tree/utilities.ts"
+=======
+			"src/feature-libraries/editable-tree-2/proxies/proxies.ts",
+			"src/feature-libraries/editable-tree-2/lazyTree.ts",
+			"src/feature-libraries/editable-tree-2/lazyField.ts",
+			"src/feature-libraries/node-key/index.ts",
+			"src/feature-libraries/node-key/nodeKeyIndex.ts",
+			"src/feature-libraries/editable-tree-2/index.ts",
+			"src/feature-libraries/editable-tree-2/proxies/index.ts"
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		]
 	},
 	{
@@ -420,6 +471,7 @@
 			"src/feature-libraries/sequence-field/utils.ts",
 			"src/feature-libraries/sequence-field/moveEffectTable.ts"
 		]
+<<<<<<< HEAD
 	},
 	{
 		"type": "cycle",
@@ -510,5 +562,7 @@
 			"src/feature-libraries/editable-tree/editableField.ts",
 			"src/feature-libraries/editable-tree-2/index.ts"
 		]
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 ]

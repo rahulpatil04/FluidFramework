@@ -45,7 +45,11 @@ export const boxedIterator = Symbol();
  *
  * @alpha
  */
+<<<<<<< HEAD
 export interface Tree<out TSchema = unknown> {
+=======
+export interface TreeEntity<out TSchema = unknown> {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	/**
 	 * Schema for this entity.
 	 * If well-formed, it must follow this schema.
@@ -71,11 +75,19 @@ export interface Tree<out TSchema = unknown> {
 	 * @remarks
 	 * No mutations to the current view of the shared tree are permitted during iteration.
 	 */
+<<<<<<< HEAD
 	[boxedIterator](): IterableIterator<Tree>;
 }
 
 /**
  * Status of the tree that a particular node in {@link EditableTree} and {@link UntypedTree} belongs to.
+=======
+	[boxedIterator](): IterableIterator<TreeEntity>;
+}
+
+/**
+ * Status of the tree that a particular node in {@link Tree} belongs to.
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
  * @alpha
  */
 export enum TreeStatus {
@@ -113,7 +125,11 @@ export enum TreeStatus {
  *
  * @alpha
  */
+<<<<<<< HEAD
 export interface TreeNode extends Tree<TreeNodeSchema> {
+=======
+export interface TreeNode extends TreeEntity<TreeNodeSchema> {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	/**
 	 * Value stored on this node.
 	 */
@@ -153,7 +169,11 @@ export interface TreeNode extends Tree<TreeNodeSchema> {
 }
 
 /**
+<<<<<<< HEAD
  * A collaboratively editable collection of nodes within a {@link Tree}.
+=======
+ * A collaboratively editable collection of nodes within a {@link TreeEntity}.
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
  *
  * Fields are inherently part of their parent, and thus cannot be moved.
  * Instead their content can be moved, deleted or created.
@@ -164,7 +184,11 @@ export interface TreeNode extends Tree<TreeNodeSchema> {
  * Fields are used wherever an editable collection of nodes is required.
  * This is required in two places:
  * 1. To hold the children of non-leaf {@link TreeNode}s.
+<<<<<<< HEAD
  * 2. As the root of a {@link Tree}.
+=======
+ * 2. As the root of a {@link TreeEntity}.
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
  *
  * Down-casting (via {@link TreeField.is}) is required to access Schema-Aware APIs, including editing.
  * All content in the tree is accessible without down-casting, but if the schema is known,
@@ -172,7 +196,11 @@ export interface TreeNode extends Tree<TreeNodeSchema> {
  *
  * @alpha
  */
+<<<<<<< HEAD
 export interface TreeField extends Tree<TreeFieldSchema> {
+=======
+export interface TreeField extends TreeEntity<TreeFieldSchema> {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	/**
 	 * The `FieldKey` this field is under.
 	 * Defines what part of its parent this field makes up.
@@ -297,8 +325,34 @@ export interface MapNode<in out TSchema extends MapSchema> extends TreeNode {
 		thisArg?: any,
 	): void;
 
+<<<<<<< HEAD
 	// TODO: Add `set` method when FieldKind provides a setter (and derive the type from it).
 	// set(key: string, content: FlexibleFieldContent<TSchema["mapFields"]>): void;
+=======
+	/**
+	 * Adds or updates an entry in the map with a specified `key` and a `value`.
+	 *
+	 * @param key - The key of the element to add to the map.
+	 * @param value - The value of the element to add to the map.
+	 */
+	set(key: string, value: FlexibleFieldContent<TSchema["mapFields"]>): void;
+
+	/**
+	 * Removes the specified element from this map by its `key`.
+	 *
+	 * @remarks
+	 * Note: unlike JavaScript's Map API, this method does not return a flag indicating whether or not the value was
+	 * deleted.
+	 *
+	 * @privateRemarks
+	 * Regarding the choice to not return a boolean: Since this data structure is distributed in nature, it isn't
+	 * possible to tell whether or not the item was deleted as a result of this method call. Returning a "best guess"
+	 * is more likely to create issues / promote bad usage patterns than offer useful information.
+	 *
+	 * @param key - The key of the element to remove from the map.
+	 */
+	delete(key: string): void;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 	/**
 	 * Iterate through all fields in the map.
@@ -538,9 +592,21 @@ export type CheckTypesOverlap<T, TCheck> = [Extract<T, TCheck> extends never ? n
 export interface Sequence<in out TTypes extends AllowedTypes> extends TreeField {
 	/**
 	 * Gets a node of this field by its index with unboxing.
+<<<<<<< HEAD
 	 * Note that a node must exist at the given index.
 	 */
 	at(index: number): UnboxNodeUnion<TTypes>;
+=======
+	 * @param index - Zero-based index of the item to retrieve. Negative values are interpreted from the end of the sequence.
+	 *
+	 * @returns The element in the sequence matching the given index. Always returns undefined if index \< -sequence.length
+	 * or index \>= array.length.
+	 *
+	 * @remarks
+	 * Semantics match {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at | Array.at}.
+	 */
+	at(index: number): UnboxNodeUnion<TTypes> | undefined;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 	/**
 	 * Gets a boxed node of this field by its index.
@@ -850,7 +916,11 @@ export type FixedSizeTypeArrayToTypedTree<T extends readonly TreeNodeSchema[]> =
 ][_InlineTrick];
 
 /**
+<<<<<<< HEAD
  * Schema aware specialization of {@link Tree}.
+=======
+ * Schema aware specialization of {@link TreeEntity}.
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
  * @alpha
  */
 export type Typed<TSchema extends TreeFieldSchema | TreeNodeSchema> = TSchema extends TreeNodeSchema

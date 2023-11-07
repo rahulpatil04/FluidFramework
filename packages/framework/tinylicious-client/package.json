@@ -34,7 +34,11 @@
 		"test": "npm run test:realsvc",
 		"test:realsvc": "npm run test:realsvc:tinylicious",
 		"test:realsvc:tinylicious": "start-server-and-test start:tinylicious:test 7070 test:realsvc:tinylicious:run",
+<<<<<<< HEAD
 		"test:realsvc:tinylicious:run": "mocha --recursive 'dist/test/**/*.spec.js' --exit",
+=======
+		"test:realsvc:tinylicious:run": "mocha --recursive \"dist/test/**/*.spec.js\" --exit",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"tsc": "tsc",
 		"typetests:gen": "fluid-type-test-generator",
 		"typetests:prepare": "flub typetests --dir . --reset --previous --normalize"
@@ -61,9 +65,15 @@
 		"@fluidframework/build-tools": "^0.26.1",
 		"@fluidframework/container-runtime": "workspace:~",
 		"@fluidframework/container-runtime-definitions": "workspace:~",
+<<<<<<< HEAD
 		"@fluidframework/eslint-config-fluid": "^3.0.0",
 		"@fluidframework/test-utils": "workspace:~",
 		"@fluidframework/tinylicious-client-previous": "npm:@fluidframework/tinylicious-client@2.0.0-internal.7.1.0",
+=======
+		"@fluidframework/eslint-config-fluid": "^3.1.0",
+		"@fluidframework/test-utils": "workspace:~",
+		"@fluidframework/tinylicious-client-previous": "npm:@fluidframework/tinylicious-client@2.0.0-internal.7.2.0",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"@microsoft/api-extractor": "^7.37.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "^16.18.38",

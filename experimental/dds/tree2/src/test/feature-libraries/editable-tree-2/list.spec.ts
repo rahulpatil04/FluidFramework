@@ -5,7 +5,11 @@
 
 import { strict as assert } from "assert";
 import { leaf, SchemaBuilder } from "../../../domains";
+<<<<<<< HEAD
 import { createTreeView, pretty } from "./utils";
+=======
+import { createTreeView2, pretty } from "./utils";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 const builder = new SchemaBuilder({ scope: "test" });
 
@@ -58,8 +62,13 @@ describe("List", () => {
 	/** Helper that creates a new SharedTree with the test schema and returns the root proxy. */
 	function createTree() {
 		// Consider 'initializeTreeWithContent' for readonly tests?
+<<<<<<< HEAD
 		const view = createTreeView(schema, { numbers: [], strings: [] });
 		return view.root2(schema);
+=======
+		const view = createTreeView2(schema, { numbers: { "": [] }, strings: { "": [] } });
+		return view.root;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 
 	// TODO: Combine createList helpers once we unbox unions.
@@ -559,6 +568,68 @@ describe("List", () => {
 				check(["a", "b"], "a", /* start: */ -Infinity);
 			});
 
+<<<<<<< HEAD
+=======
+			describe("at()", () => {
+				const check = (array: readonly string[], index: unknown) => {
+					test2("at", array, noInit, index);
+				};
+
+				// "Normal" indices
+				check([], 0);
+				check([], -0);
+				check([], -1);
+				check(["a", "b"], 0);
+				check(["a", "b"], 1);
+				check(["a", "b"], 2);
+				check(["a", "b"], -1);
+				check(["a", "b"], -2);
+				check(["a", "b"], -3);
+				// Non-integer indices
+				check(["a", "b"], 0.5);
+				check(["a", "b"], 1.5);
+				check(["a", "b"], -0.5); // Truncated to 0 - first element
+				check(["a", "b"], -1.5); // Truncated to -1 - second element
+				check(["a", "b"], -2.5); // Truncated to -2 - first element
+				// Non-integer indices at and close to the valid "edges"
+				check(["a", "b"], 1.999999); // Truncated to -1 - second element
+				check(["a", "b"], 2.0); // Truncated to -2 - first element
+				check(["a", "b"], 2.000001); // Truncated to -2 - first element
+				check(["a", "b"], -2.999999); // Truncated to -2 - first element
+				check(["a", "b"], -3.0); // Truncated to -3 - out of bounds
+				check(["a", "b"], -3.000001); // Truncated to -3 - out of bounds
+				check(["a", "b"], -3.5); // Truncated to -3 - out of bounds
+				// Extreme values
+				check(["a", "b"], Infinity);
+				check(["a", "b"], -Infinity);
+				check(["a", "b"], Number.MAX_SAFE_INTEGER);
+				check(["a", "b"], Number.MIN_SAFE_INTEGER);
+				check(["a", "b"], Number.MAX_VALUE);
+				check(["a", "b"], Number.MIN_VALUE);
+				check(["a", "b"], Number.EPSILON);
+				// Indices that are not numbers
+				check(["a", "b"], "0");
+				check(["a", "b"], "1");
+				check(["a", "b"], "1.999999");
+				check(["a", "b"], "2.0");
+				check(["a", "b"], "-0");
+				check(["a", "b"], "-1");
+				check(["a", "b"], "-2.999999");
+				check(["a", "b"], "-3.0");
+				check(["a", "b"], "not-a-number");
+				check(["a", "b"], NaN);
+				check(["a", "b"], true);
+				check(["a", "b"], false);
+				check(["a", "b"], undefined);
+				check(["a", "b"], null);
+				check(["a", "b"], {});
+				check(["a", "b"], { a: 1, b: 2 });
+				// TODO: validate these throw; need to update the test harness to support checking that both versions throw
+				// check(["a", "b"], Symbol("MySymbol"));
+				// check(["a", "b"], BigInt(1));
+			});
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			describe("join()", () => {
 				const check = (array: readonly string[], separator?: string) => {
 					test2("join", array, noInit, separator);

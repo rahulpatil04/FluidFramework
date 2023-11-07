@@ -51,6 +51,10 @@ import {
 	MockDependent,
 	applyTestDelta,
 	expectEqualFieldPaths,
+<<<<<<< HEAD
+=======
+	expectEqualPaths,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	jsonSequenceRootSchema,
 } from "./utils";
 import { testGeneralPurposeTreeCursor, testTreeSchema } from "./cursorTestSuite";
@@ -260,6 +264,37 @@ export function testForest(config: ForestTestConfiguration): void {
 				TreeNavigationResult.Ok,
 			);
 			expectEqualFieldPaths(cursor.getFieldPath(), childPath);
+		});
+
+		describe("moveCursorToPath", () => {
+			it("moves cursor to specified path.", () => {
+				const forest = factory(new InMemoryStoredSchemaRepository(jsonDocumentSchema));
+				initializeForest(forest, [singleJsonCursor([1, 2])]);
+
+				const cursor = forest.allocateCursor();
+				const path: UpPath = {
+					parent: undefined,
+					parentField: rootFieldKey,
+					parentIndex: 0,
+				};
+
+				forest.moveCursorToPath(path, cursor);
+				expectEqualPaths(path, cursor.getPath());
+			});
+		});
+
+		it("getCursorAboveDetachedFields", () => {
+			const forest = factory(new InMemoryStoredSchemaRepository(jsonDocumentSchema));
+			initializeForest(forest, [singleJsonCursor([1, 2])]);
+
+			const forestCursor = forest.allocateCursor();
+			moveToDetachedField(forest, forestCursor);
+			const expected = mapCursorField(forestCursor, jsonableTreeFromCursor);
+
+			const cursor = forest.getCursorAboveDetachedFields();
+			cursor.enterField(rootFieldKey);
+			const actual = mapCursorField(cursor, jsonableTreeFromCursor);
+			assert.deepEqual(actual, expected);
 		});
 
 		it("anchors creation and use", () => {

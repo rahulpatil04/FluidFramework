@@ -98,6 +98,10 @@ export {
 	emptyFieldChanges,
 	isEmptyFieldChanges,
 	makeDetachedNodeId,
+<<<<<<< HEAD
+=======
+	offsetDetachId,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	emptyDelta,
 } from "./deltaUtil";
 

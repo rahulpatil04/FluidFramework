@@ -376,11 +376,15 @@ describe("ApiItem to Documentation transformation tests", () => {
 		// The model-level doc in this case isn't particularly interesting, so we will skip evaluating it.
 
 		const expectedPackageDocument = new DocumentNode({
+<<<<<<< HEAD
 			documentItemMetadata: {
 				apiItemName: "test-package",
 				apiItemKind: ApiItemKind.Package,
 				packageName: "test-package",
 			},
+=======
+			apiItem: model.packages[0],
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			documentPath: "test-package",
 			children: [
 				new SectionNode(
@@ -418,11 +422,15 @@ describe("ApiItem to Documentation transformation tests", () => {
 		expect(documents[1]).to.deep.equal(expectedPackageDocument);
 
 		const expectedEntryPointADocument = new DocumentNode({
+<<<<<<< HEAD
 			documentItemMetadata: {
 				apiItemName: "entry-point-a",
 				apiItemKind: ApiItemKind.EntryPoint,
 				packageName: "test-package",
 			},
+=======
+			apiItem: model.packages[0].entryPoints[0],
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			documentPath: "test-package/entry-point-a-entrypoint",
 			children: [
 				new SectionNode(
@@ -506,11 +514,15 @@ describe("ApiItem to Documentation transformation tests", () => {
 		expect(documents[2]).to.deep.equal(expectedEntryPointADocument);
 
 		const expectedEntryPointBDocument = new DocumentNode({
+<<<<<<< HEAD
 			documentItemMetadata: {
 				apiItemName: "entry-point-b",
 				apiItemKind: ApiItemKind.EntryPoint,
 				packageName: "test-package",
 			},
+=======
+			apiItem: model.packages[0].entryPoints[1],
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			documentPath: "test-package/entry-point-b-entrypoint",
 			children: [
 				new SectionNode(

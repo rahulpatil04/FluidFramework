@@ -13,10 +13,18 @@ import {
 	areInputCellsEmpty,
 	areOutputCellsEmpty,
 	getEffectiveNodeChanges,
+<<<<<<< HEAD
 	isInsert,
 	isNewAttach,
 	markIsTransient,
+=======
+	getEndpoint,
+	getOutputCellId,
+	isNewAttach,
+	isTransientEffect,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 } from "./utils";
+import { isMoveDestination, isMoveSource } from "./moveEffectTable";
 
 export type ToDelta<TNodeChange> = (child: TNodeChange) => Delta.FieldMap;
 
@@ -45,6 +53,7 @@ export function sequenceFieldToDelta<TNodeChange>(
 		} else if (areInputCellsEmpty(mark) && areOutputCellsEmpty(mark)) {
 			// The cell starting and ending empty means the cell content has not changed,
 			// unless transient content was inserted/attached.
+<<<<<<< HEAD
 			if (markIsTransient(mark)) {
 				const oldId = nodeIdFromChangeAtom(mark.cellId);
 				if (!areEqualChangeAtomIds(mark.cellId, mark.transientDetach)) {
@@ -54,12 +63,36 @@ export function sequenceFieldToDelta<TNodeChange>(
 						build.push({
 							id: oldId,
 							trees: mark.content.map(singleTextCursor),
+=======
+			if (isTransientEffect(mark)) {
+				if (isMoveDestination(mark.attach) && isMoveSource(mark.detach)) {
+					assert(mark.changes === undefined, "Transient moves should not have changes");
+					continue;
+				}
+
+				const outputId = getOutputCellId(mark, revision, undefined);
+				assert(outputId !== undefined, "Transient mark should have defined output cell ID");
+				const oldId = nodeIdFromChangeAtom(
+					isMoveDestination(mark.attach)
+						? getEndpoint(mark.attach, revision)
+						: mark.cellId,
+				);
+				if (!areEqualChangeAtomIds(mark.cellId, outputId)) {
+					if (mark.attach.type === "Insert" && mark.attach.content !== undefined) {
+						build.push({
+							id: oldId,
+							trees: mark.attach.content.map(singleTextCursor),
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 						});
 					}
 					rename.push({
 						count: mark.count,
 						oldId,
+<<<<<<< HEAD
 						newId: nodeIdFromChangeAtom(mark.transientDetach),
+=======
+						newId: nodeIdFromChangeAtom(outputId),
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 					});
 				}
 				if (deltaMark.fields) {
@@ -75,14 +108,27 @@ export function sequenceFieldToDelta<TNodeChange>(
 			switch (type) {
 				case "MoveIn": {
 					local.push({
+<<<<<<< HEAD
 						attach: makeDetachedNodeId(mark.revision ?? revision, mark.id),
+=======
+						attach: nodeIdFromChangeAtom(getEndpoint(mark, revision)),
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 						count: mark.count,
 					});
 					break;
 				}
 				case "Delete": {
 					if (mark.cellId === undefined) {
+<<<<<<< HEAD
 						deltaMark.detach = makeDetachedNodeId(mark.revision ?? revision, mark.id);
+=======
+						deltaMark.detach = nodeIdFromChangeAtom(
+							mark.detachIdOverride ?? {
+								revision: mark.revision ?? revision,
+								localId: mark.id,
+							},
+						);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 						local.push(deltaMark);
 					} else {
 						// Removal of already removed content is a no-op.
@@ -93,6 +139,10 @@ export function sequenceFieldToDelta<TNodeChange>(
 				}
 				case "MoveOut":
 				case "ReturnFrom": {
+<<<<<<< HEAD
+=======
+					// The move destination will look for the detach ID of the source, so we can ignore `finalEndpoint`.
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 					const detachId = makeDetachedNodeId(mark.revision ?? revision, mark.id);
 					if (mark.cellId === undefined) {
 						deltaMark.detach = detachId;
@@ -103,6 +153,7 @@ export function sequenceFieldToDelta<TNodeChange>(
 					break;
 				}
 				case "Insert": {
+<<<<<<< HEAD
 					assert(
 						mark.transientDetach === undefined,
 						0x7da /* Unexpected transient insert */,
@@ -111,6 +162,9 @@ export function sequenceFieldToDelta<TNodeChange>(
 						mark.cellId !== undefined,
 						0x7db /* Active insert mark must have CellId */,
 					);
+=======
+					assert(mark.cellId !== undefined, "Active insert mark must have CellId");
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 					const buildId = nodeIdFromChangeAtom(mark.cellId);
 					deltaMark.attach = buildId;
 					if (deltaMark.fields) {
@@ -132,7 +186,12 @@ export function sequenceFieldToDelta<TNodeChange>(
 					break;
 				}
 				case NoopMarkType:
+<<<<<<< HEAD
 					fail("Unexpected NoopMarkType where cell is supposed to be affected");
+=======
+				case "Transient":
+					fail("Unexpected mark type where cell is supposed to be affected");
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 				case "Placeholder":
 					fail("Should not have placeholders in a changeset being converted to delta");
 				default:

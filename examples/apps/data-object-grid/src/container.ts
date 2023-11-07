@@ -3,11 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import { ModelContainerRuntimeFactory } from "@fluid-example/example-utils";
+import { ModelContainerRuntimeFactory, getDataStoreEntryPoint } from "@fluid-example/example-utils";
 import { IContainer } from "@fluidframework/container-definitions";
 import { IContainerRuntime } from "@fluidframework/container-runtime-definitions";
+<<<<<<< HEAD
 // eslint-disable-next-line import/no-deprecated
 import { requestFluidObject } from "@fluidframework/runtime-utils";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 import { DataObjectGrid, IDataObjectGrid } from "./dataObjectGrid";
 
@@ -49,11 +52,15 @@ export class DataObjectGridContainerRuntimeFactory extends ModelContainerRuntime
 	 * {@inheritDoc ModelContainerRuntimeFactory.createModel}
 	 */
 	protected async createModel(runtime: IContainerRuntime, container: IContainer) {
+<<<<<<< HEAD
 		// eslint-disable-next-line import/no-deprecated
 		const dataObjectGrid = await requestFluidObject<IDataObjectGrid>(
 			await runtime.getRootDataStore(dataObjectGridId),
 			"",
+=======
+		return new DataObjectGridAppModel(
+			await getDataStoreEntryPoint<IDataObjectGrid>(runtime, dataObjectGridId),
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		);
-		return new DataObjectGridAppModel(dataObjectGrid);
 	}
 }

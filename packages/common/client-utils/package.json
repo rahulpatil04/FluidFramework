@@ -40,7 +40,11 @@
 		"test": "npm run test:mocha && npm run test:jest",
 		"test:coverage": "c8 npm test",
 		"test:jest": "jest",
+<<<<<<< HEAD
 		"test:mocha": "mocha  --recursive dist/test/mocha/**/*.spec.js --exit --project test/tsconfig.json",
+=======
+		"test:mocha": "mocha  --recursive \"dist/test/mocha/**/*.spec.js\" --exit --project test/tsconfig.json",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"tsc": "tsc",
 		"typetests:gen": "fluid-type-test-generator",
 		"typetests:prepare": "flub typetests --dir . --reset --previous --normalize"
@@ -79,7 +83,11 @@
 		"@fluid-tools/build-cli": "^0.26.1",
 		"@fluidframework/build-common": "^2.0.3",
 		"@fluidframework/build-tools": "^0.26.1",
+<<<<<<< HEAD
 		"@fluidframework/eslint-config-fluid": "^3.0.0",
+=======
+		"@fluidframework/eslint-config-fluid": "^3.1.0",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"@fluidframework/mocha-test-setup": "workspace:~",
 		"@microsoft/api-extractor": "^7.37.0",
 		"@types/base64-js": "^1.3.0",

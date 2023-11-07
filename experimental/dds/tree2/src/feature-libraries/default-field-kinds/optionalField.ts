@@ -31,7 +31,12 @@ import {
 	getIntention,
 	NodeExistenceState,
 	FieldChangeHandler,
+	RemovedTreesFromChild,
 } from "../modular-schema";
+<<<<<<< HEAD
+=======
+import { nodeIdFromChangeAtom } from "../deltaUtils";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { OptionalChangeset, OptionalFieldChange } from "./defaultFieldChangeTypes";
 import { makeOptionalFieldCodecFamily } from "./defaultFieldChangeCodecs";
 
@@ -563,11 +568,15 @@ export function optionalFieldIntoDelta(
 			delta.build = [{ id: buildId, trees: content }];
 		} else {
 			const changeId = (update as { revert: ChangeAtomId }).revert;
+<<<<<<< HEAD
 			const restoreId = {
 				major: changeId.revision,
 				minor: changeId.localId,
 			};
 			mark.attach = restoreId;
+=======
+			mark.attach = makeDetachedNodeId(changeId.revision, changeId.localId);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		}
 		if (update.changes !== undefined) {
 			const fields = deltaFromChild(update.changes);
@@ -583,6 +592,11 @@ export const optionalChangeHandler: FieldChangeHandler<OptionalChangeset, Option
 	editor: optionalFieldEditor,
 
 	intoDelta: optionalFieldIntoDelta,
+<<<<<<< HEAD
+=======
+	relevantRemovedTrees,
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	isEmpty: (change: OptionalChangeset) =>
 		change.childChanges === undefined && change.fieldChange === undefined,
 };
@@ -594,3 +608,47 @@ function areEqualChangeIds(a: ChangeId, b: ChangeId): boolean {
 
 	return areEqualChangeAtomIds(a, b);
 }
+<<<<<<< HEAD
+=======
+
+function* relevantRemovedTrees(
+	change: OptionalChangeset,
+	removedTreesFromChild: RemovedTreesFromChild,
+): Iterable<Delta.DetachedNodeId> {
+	let removedNode: ChangeAtomId | undefined;
+	let restoredNode: ChangeAtomId | undefined;
+	const fieldChange = change.fieldChange;
+	if (fieldChange !== undefined) {
+		removedNode = { revision: fieldChange.revision, localId: fieldChange.id };
+		const newContent = fieldChange.newContent;
+		if (newContent !== undefined) {
+			if (Object.prototype.hasOwnProperty.call(newContent, "revert")) {
+				// This tree is being restored by this change, so it is a relevant removed tree.
+				restoredNode = (newContent as { revert: ChangeAtomId }).revert;
+				yield nodeIdFromChangeAtom(restoredNode);
+			}
+			if (newContent.changes !== undefined) {
+				yield* removedTreesFromChild(newContent.changes);
+			}
+		}
+	}
+	if (change.childChanges !== undefined) {
+		for (const [deletedBy, child] of change.childChanges) {
+			if (
+				deletedBy === "self" ||
+				(removedNode !== undefined && areEqualChangeIds(deletedBy, removedNode))
+			) {
+				// This node is in the document at the time this change applies, so it isn't a relevant removed tree.
+			} else {
+				if (restoredNode !== undefined && areEqualChangeIds(deletedBy, restoredNode)) {
+					// This tree is a relevant removed tree, but it is already included in the list
+				} else {
+					// This tree is being edited by this change, so it is a relevant removed tree.
+					yield nodeIdFromChangeAtom(deletedBy);
+				}
+			}
+			yield* removedTreesFromChild(child);
+		}
+	}
+}
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df

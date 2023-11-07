@@ -56,6 +56,10 @@ import {
 	TreeStatus,
 	RequiredField,
 	OptionalField,
+<<<<<<< HEAD
+=======
+	FlexibleFieldContent,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 } from "./editableTreeTypes";
 import { LazyNodeKeyField, makeField } from "./lazyField";
 import {
@@ -408,6 +412,7 @@ export class LazyMap<TSchema extends MapSchema>
 		) as TypedField<TSchema["mapFields"]>;
 	}
 
+<<<<<<< HEAD
 	// TODO: when appropriate add setter that delegates to field kind specific setter.
 	// public set(key: FieldKey, content: FlexibleFieldContent<TSchema["mapFields"]>): void {
 	// 	const field = this.get(key);
@@ -422,6 +427,32 @@ export class LazyMap<TSchema extends MapSchema>
 	// 		field.replaceRange(0, field.length, content as Iterable<ContextuallyTypedNodeData>);
 	// 	}
 	// }
+=======
+	public set(
+		key: FieldKey,
+		content: FlexibleFieldContent<TSchema["mapFields"]> | undefined,
+	): void {
+		const field = this.getBoxed(key);
+		const fieldSchema = this.schema.mapFields;
+
+		if (fieldSchema.kind === FieldKinds.optional) {
+			const optionalField = field as OptionalField<AllowedTypes>;
+			optionalField.content = content;
+		} else {
+			assert(fieldSchema.kind === FieldKinds.sequence, "Unexpected map field kind");
+
+			// TODO: implement setting of sequence fields once we have defined clear merged semantics for doing so.
+			// For now, we will throw an error, since the public API does not currently expose a way to do this anyways.
+			throw new Error("Setting of sequence values in maps is not yet supported.");
+		}
+	}
+
+	public delete(key: FieldKey): void {
+		// Since all keys implicitly exist under a Map node, and we represent "no value" with `undefined`,
+		// "deleting" a key/value pair is the same as setting the value to `undefined`.
+		this.set(key, undefined);
+	}
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 	public override [boxedIterator](): IterableIterator<TypedField<TSchema["mapFields"]>> {
 		return super[boxedIterator]() as IterableIterator<TypedField<TSchema["mapFields"]>>;

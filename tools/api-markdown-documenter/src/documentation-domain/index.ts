@@ -16,11 +16,15 @@
 
 export { BlockQuoteNode } from "./BlockQuoteNode";
 export { CodeSpanNode } from "./CodeSpanNode";
+<<<<<<< HEAD
 export {
 	DocumentNode,
 	DocumentNodeProperties as DocumentNodeProps,
 	DocumentItemMetadata,
 } from "./DocumentNode";
+=======
+export { DocumentNode, DocumentNodeProperties as DocumentNodeProps } from "./DocumentNode";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 export {
 	DocumentationNode,
 	DocumentationLiteralNode,

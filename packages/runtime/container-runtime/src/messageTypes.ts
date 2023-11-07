@@ -8,7 +8,10 @@ import {
 	IEnvelope,
 	InboundAttachMessage,
 	IAttachMessage,
+<<<<<<< HEAD
 	IdCreationRangeWithStashedState,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	IdCreationRange,
 } from "@fluidframework/runtime-definitions";
 import { IDataStoreAliasMessage } from "./dataStore";
@@ -116,6 +119,7 @@ export type ContainerRuntimeAliasMessage = TypedContainerRuntimeMessage<
 	ContainerMessageType.Alias,
 	IDataStoreAliasMessage
 >;
+<<<<<<< HEAD
 export type LocalContainerRuntimeIdAllocationMessage = TypedContainerRuntimeMessage<
 	ContainerMessageType.IdAllocation,
 	IdCreationRangeWithStashedState
@@ -123,6 +127,11 @@ export type LocalContainerRuntimeIdAllocationMessage = TypedContainerRuntimeMess
 export type ContainerRuntimeIdAllocationMessage = TypedContainerRuntimeMessage<
 	ContainerMessageType.IdAllocation,
 	IdCreationRange & { stashedState?: never }
+=======
+export type ContainerRuntimeIdAllocationMessage = TypedContainerRuntimeMessage<
+	ContainerMessageType.IdAllocation,
+	IdCreationRange
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 >;
 
 /**
@@ -163,7 +172,11 @@ export type LocalContainerRuntimeMessage =
 	| ContainerRuntimeBlobAttachMessage
 	| ContainerRuntimeRejoinMessage
 	| ContainerRuntimeAliasMessage
+<<<<<<< HEAD
 	| LocalContainerRuntimeIdAllocationMessage
+=======
+	| ContainerRuntimeIdAllocationMessage
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	// In rare cases (e.g. related to stashed ops) we could have a local message of an unknown type
 	| UnknownContainerRuntimeMessage;
 

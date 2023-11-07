@@ -22,9 +22,13 @@
 	"scripts": {
 		"build": "fluid-build . --task build",
 		"build:compile": "fluid-build . --task compile",
-		"build:copy-resources": "copyfiles -u 2 \"dist/assets/**/*\" \"lib/assets\"",
+		"build:copy-resources": "copyfiles -u 2 \"dist/assets/**/*\" lib/assets",
 		"build:esnext": "tsc --project ./tsconfig.esnext.json",
+<<<<<<< HEAD
 		"build:webpack": "webpack --config webpack.svgs.js && copyfiles -u 2 \"dist/assets/**/*\" \"lib/assets\"",
+=======
+		"build:webpack": "webpack --config webpack.svgs.js && copyfiles -u 2 \"dist/assets/**/*\" lib/assets",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"clean": "rimraf --glob dist lib \"*.tsbuildinfo\" \"*.build.log\" nyc",
 		"eslint": "eslint --format stylish src",
 		"eslint:fix": "eslint --format stylish src --fix --fix-type problem,suggestion,layout",

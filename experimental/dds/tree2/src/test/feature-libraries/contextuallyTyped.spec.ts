@@ -4,7 +4,11 @@
  */
 
 import { strict as assert } from "assert";
+<<<<<<< HEAD
 import { MockHandle, validateAssertionError } from "@fluidframework/test-runtime-utils";
+=======
+import { MockHandle } from "@fluidframework/test-runtime-utils";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { EmptyKey, MapTree, ValueSchema } from "../../core";
 
 import {
@@ -41,17 +45,26 @@ describe("ContextuallyTyped", () => {
 		assert(!isFluidHandle(undefined));
 		assert(!isFluidHandle(null));
 		assert(!isFluidHandle([]));
+<<<<<<< HEAD
+=======
+		assert(!isFluidHandle({ get: () => {} }));
+		assert(!isFluidHandle({ IFluidHandle: 5, get: () => {} }));
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		assert(isFluidHandle(new MockHandle(5)));
 		assert(!isFluidHandle({ IFluidHandle: 5 }));
 		assert(!isFluidHandle({ IFluidHandle: {} }));
 		const loopy = { IFluidHandle: {} };
 		loopy.IFluidHandle = loopy;
 		// isFluidHandle has extra logic to check the handle is valid if it passed the detection via cyclic ref.
+<<<<<<< HEAD
 		// Thus this case asserts:
 		assert.throws(
 			() => isFluidHandle(loopy),
 			(e: Error) => validateAssertionError(e, /IFluidHandle/),
 		);
+=======
+		assert(!isFluidHandle(loopy));
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	});
 
 	it("allowsValue", () => {

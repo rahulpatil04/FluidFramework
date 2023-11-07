@@ -39,10 +39,17 @@
 		"test:coverage": "c8 npm test",
 		"test:memory": "mocha --config src/test/memory/.mocharc.js",
 		"test:memory-profiling:report": "mocha --config src/test/memory/.mocharc.js",
+<<<<<<< HEAD
 		"test:mocha": "mocha --ignore 'dist/test/memory/**/*' --recursive 'dist/test/**/*.spec.js' -r node_modules/@fluidframework/mocha-test-setup",
 		"test:mocha:verbose": "cross-env FLUID_TEST_VERBOSE=1 npm run test:mocha",
 		"test:newsnapfiles": "node dist/test/createSnapshotFiles.js",
 		"test:stress": "cross-env FUZZ_TEST_COUNT=100 FUZZ_STRESS_RUN=true mocha --ignore 'dist/test/memory/**/*' --recursive 'dist/test/**/*.fuzz.spec.js' -r @fluidframework/mocha-test-setup",
+=======
+		"test:mocha": "mocha --ignore \"dist/test/memory/**/*\" --recursive \"dist/test/**/*.spec.js\" -r node_modules/@fluidframework/mocha-test-setup",
+		"test:mocha:verbose": "cross-env FLUID_TEST_VERBOSE=1 npm run test:mocha",
+		"test:newsnapfiles": "node dist/test/createSnapshotFiles.js",
+		"test:stress": "cross-env FUZZ_TEST_COUNT=100 FUZZ_STRESS_RUN=true mocha --ignore \"dist/test/memory/**/*\" --recursive \"dist/test/**/*.fuzz.spec.js\" -r @fluidframework/mocha-test-setup",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"testfarm": "node dist/test/testFarm.js",
 		"tsc": "tsc",
 		"typetests:gen": "fluid-type-test-generator",
@@ -88,9 +95,15 @@
 		"@fluid-tools/build-cli": "^0.26.1",
 		"@fluidframework/build-common": "^2.0.3",
 		"@fluidframework/build-tools": "^0.26.1",
+<<<<<<< HEAD
 		"@fluidframework/eslint-config-fluid": "^3.0.0",
 		"@fluidframework/mocha-test-setup": "workspace:~",
 		"@fluidframework/sequence-previous": "npm:@fluidframework/sequence@2.0.0-internal.7.1.0",
+=======
+		"@fluidframework/eslint-config-fluid": "^3.1.0",
+		"@fluidframework/mocha-test-setup": "workspace:~",
+		"@fluidframework/sequence-previous": "npm:@fluidframework/sequence@2.0.0-internal.7.2.0",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"@fluidframework/test-runtime-utils": "workspace:~",
 		"@microsoft/api-extractor": "^7.37.0",
 		"@types/diff": "^3.5.1",

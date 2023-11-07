@@ -3,11 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import { ModelContainerRuntimeFactory } from "@fluid-example/example-utils";
+import { ModelContainerRuntimeFactory, getDataStoreEntryPoint } from "@fluid-example/example-utils";
 import { IContainerRuntime } from "@fluidframework/container-runtime-definitions";
 import { IContainer } from "@fluidframework/container-definitions";
+<<<<<<< HEAD
 // eslint-disable-next-line import/no-deprecated
 import { requestFluidObject } from "@fluidframework/runtime-utils";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { Signaler } from "@fluid-experimental/data-objects";
 import { FocusTracker } from "./FocusTracker";
 import { MouseTracker } from "./MouseTracker";
@@ -43,11 +46,15 @@ export class TrackerContainerRuntimeFactory extends ModelContainerRuntimeFactory
 	}
 
 	protected async createModel(runtime: IContainerRuntime, container: IContainer) {
+<<<<<<< HEAD
 		// eslint-disable-next-line import/no-deprecated
 		const signaler = await requestFluidObject<Signaler>(
 			await runtime.getRootDataStore(signalerId),
 			"",
 		);
+=======
+		const signaler = await getDataStoreEntryPoint<Signaler>(runtime, signalerId);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 		const audience = new MockAudience(container);
 

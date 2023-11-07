@@ -39,7 +39,11 @@
 		"prettier": "prettier --check . --ignore-path ../../../../.prettierignore",
 		"prettier:fix": "prettier --write . --ignore-path ../../../../.prettierignore",
 		"test": "npm run test:jest",
+<<<<<<< HEAD
 		"pretest:coverage": "rimraf --glob \"coverage/\"",
+=======
+		"pretest:coverage": "rimraf --glob coverage/",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"test:coverage": "c8 npm test",
 		"test:jest": "jest",
 		"tsc": "tsc"

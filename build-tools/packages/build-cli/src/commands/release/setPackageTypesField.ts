@@ -9,7 +9,10 @@ import { ExtractorConfig } from "@microsoft/api-extractor";
 import { CommandLogger } from "../../logging";
 import path from "node:path";
 import { strict as assert } from "node:assert";
+<<<<<<< HEAD
 import * as fs from "node:fs";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 /**
  * Represents a list of package categorized into two arrays
@@ -97,7 +100,11 @@ export default class SetReleaseTagPublishingCommand extends PackageCommand<
 			 */
 			const extractorConfig = ExtractorConfig.prepare({
 				...configOptions,
+<<<<<<< HEAD
 				ignoreMissingEntryPoint: this.flags.checkFileExists,
+=======
+				ignoreMissingEntryPoint: !this.flags.checkFileExists,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			});
 			assert(this.flags.types !== undefined, "--types flag must be provided.");
 
@@ -105,7 +112,10 @@ export default class SetReleaseTagPublishingCommand extends PackageCommand<
 				pkg.directory,
 				extractorConfig,
 				this.flags.types,
+<<<<<<< HEAD
 				this.flags.checkFileExists,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 				json,
 				this.logger,
 			);
@@ -134,12 +144,18 @@ export default class SetReleaseTagPublishingCommand extends PackageCommand<
  * Updates the types/typing field in package.json.
  * @returns true if the update was successful, false otherwise.
  */
+<<<<<<< HEAD
 // eslint-disable-next-line max-params
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 function updatePackageJsonTypes(
 	directory: string,
 	extractorConfig: ExtractorConfig,
 	dTsType: DtsKind,
+<<<<<<< HEAD
 	checkFileExists: boolean,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	json: PackageJson,
 	log: CommandLogger,
 ): boolean {
@@ -171,9 +187,12 @@ function updatePackageJsonTypes(
 			}
 
 			if (filePath) {
+<<<<<<< HEAD
 				if (checkFileExists && !fs.existsSync(filePath)) {
 					throw new Error(`${filePath} path does not exists`);
 				}
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 				delete json.typings;
 				json.types = path.relative(directory, filePath);
 				return true;

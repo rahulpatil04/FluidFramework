@@ -13,11 +13,20 @@ import {
 	TreeSchema,
 	createMockNodeKeyManager,
 	nodeKeyFieldKey,
+<<<<<<< HEAD
 } from "../../../feature-libraries";
 // eslint-disable-next-line import/no-internal-modules
 import { Context, getTreeContext } from "../../../feature-libraries/editable-tree-2/context";
 import { AllowedUpdateType, IEditableForest } from "../../../core";
 import { ISharedTree, ISharedTreeView, TreeContent } from "../../../shared-tree";
+=======
+	SchemaAware,
+} from "../../../feature-libraries";
+// eslint-disable-next-line import/no-internal-modules
+import { Context, getTreeContext } from "../../../feature-libraries/editable-tree-2/context";
+import { AllowedUpdateType, IEditableForest, ITreeCursorSynchronous } from "../../../core";
+import { ISharedTree, ISharedTreeView2, TreeContent } from "../../../shared-tree";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { TestTreeProviderLite, forestWithContent } from "../../utils";
 import { brand } from "../../../util";
 import { SchemaBuilder } from "../../../domains";
@@ -50,11 +59,22 @@ export function createTree(): ISharedTree {
 	return tree;
 }
 
+<<<<<<< HEAD
 export function createTreeView<TRoot extends TreeFieldSchema>(
 	schema: TreeSchema<TRoot>,
 	initialTree: any,
 ): ISharedTreeView {
 	return createTree().schematizeView({
+=======
+export function createTreeView2<TRoot extends TreeFieldSchema>(
+	schema: TreeSchema<TRoot>,
+	initialTree:
+		| ITreeCursorSynchronous
+		| readonly ITreeCursorSynchronous[]
+		| SchemaAware.TypedField<TRoot, SchemaAware.ApiMode.Flexible>,
+): ISharedTreeView2<TRoot> {
+	return createTree().schematize({
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		allowedSchemaModifications: AllowedUpdateType.None,
 		initialTree,
 		schema,
@@ -79,8 +99,16 @@ export function itWithRoot<TRoot extends TreeFieldSchema>(
 	fn: (root: ProxyField<(typeof schema)["rootFieldSchema"]>) => void,
 ): void {
 	it(title, () => {
+<<<<<<< HEAD
 		const view = createTreeView(schema, initialTree);
 		const root = view.root2(schema);
+=======
+		const view = createTreeView2(
+			schema,
+			initialTree as SchemaAware.TypedField<TRoot, SchemaAware.ApiMode.Flexible>,
+		);
+		const root = view.root;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		fn(root);
 	});
 }
@@ -89,5 +117,18 @@ export function itWithRoot<TRoot extends TreeFieldSchema>(
  * Similar to JSON stringify, but preserves `undefined` and numbers numbers as-is at the root.
  */
 export function pretty(arg: unknown): number | undefined | string {
+<<<<<<< HEAD
 	return arg === undefined ? "undefined" : typeof arg === "number" ? arg : JSON.stringify(arg);
+=======
+	if (arg === undefined) {
+		return "undefined";
+	}
+	if (typeof arg === "number") {
+		return arg;
+	}
+	if (typeof arg === "string") {
+		return `"${arg}"`;
+	}
+	return JSON.stringify(arg);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 }

@@ -834,10 +834,16 @@ export function mixinClientSelection<
 			// 2. Make it available to the subsequent reducer logic we're going to inject
 			// (so that we can recover the channel from serialized data)
 			const client = state.random.pick(state.clients);
+<<<<<<< HEAD
 			const baseOp = await baseGenerator({
 				...state,
 				client,
 			});
+=======
+			const baseOp = await runInStateWithClient(state, client, async () =>
+				baseGenerator(state),
+			);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			return baseOp === done
 				? done
 				: {
@@ -851,7 +857,13 @@ export function mixinClientSelection<
 		assert(isClientSpec(operation), "operation should have been given a client");
 		const client = state.clients.find((c) => c.channel.id === operation.clientId);
 		assert(client !== undefined);
+<<<<<<< HEAD
 		return model.reducer({ ...state, client }, operation as TOperation);
+=======
+		await runInStateWithClient(state, client, async () =>
+			model.reducer(state, operation as TOperation),
+		);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	};
 	return {
 		...model,
@@ -860,6 +872,31 @@ export function mixinClientSelection<
 	};
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * This modifies the value of "client" while callback is running, then restores it.
+ * This is does instead of copying the state since the state object is mutable, and running callback might make changes to state (like add new members) which are lost if state is just copied.
+ *
+ * Since the callback is async, this modification to the state could be an issue if multiple runs of this function are done concurrently.
+ */
+async function runInStateWithClient<TState extends DDSFuzzTestState<IChannelFactory>, Result>(
+	state: TState,
+	client: TState["client"],
+	callback: (state: TState) => Promise<Result>,
+): Promise<Result> {
+	const oldClient = state.client;
+	state.client = client;
+	try {
+		return await callback(state);
+	} finally {
+		// This code is explicitly trying to "update" to the old value.
+		// eslint-disable-next-line require-atomic-updates
+		state.client = oldClient;
+	}
+}
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 function makeUnreachableCodePathProxy<T extends object>(name: string): T {
 	// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 	return new Proxy({} as T, {

@@ -147,7 +147,11 @@ The dependencies between layers are enforced by the layer-check command._
 
 | Packages | Layer Dependencies |
 | --- | --- |
+<<<<<<< HEAD
 | - [tinylicious](/server/tinylicious)</br>&nbsp;</br>&nbsp;</br>&nbsp;</br>&nbsp;</br>&nbsp; | - [Common-Definitions](#Common-Definitions)</br>- [Protocol-Definitions](#Protocol-Definitions)</br>- [Common-Utils](#Common-Utils)</br>- [Protocol-Utils](#Protocol-Utils)</br>- [Server-Shared-Utils](#Server-Shared-Utils)</br>- [Server-Libs](#Server-Libs) |
+=======
+| - [tinylicious](/server/routerlicious/packages/tinylicious)</br>&nbsp;</br>&nbsp;</br>&nbsp;</br>&nbsp;</br>&nbsp; | - [Common-Definitions](#Common-Definitions)</br>- [Protocol-Definitions](#Protocol-Definitions)</br>- [Common-Utils](#Common-Utils)</br>- [Protocol-Utils](#Protocol-Utils)</br>- [Server-Shared-Utils](#Server-Shared-Utils)</br>- [Server-Libs](#Server-Libs) |
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 ### Azure-Service
 

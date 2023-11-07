@@ -43,8 +43,13 @@
                             "fieldKind": "Sequence",
                             "change": [
                               {
+<<<<<<< HEAD
                                 "type": "Delete",
                                 "count": 1,
+=======
+                                "count": 1,
+                                "type": "Delete",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
                                 "id": 0,
                                 "cellId": {
                                   "revision": "beefbeef-beef-4000-8000-000000000007",
@@ -73,8 +78,13 @@
                             "fieldKind": "Sequence",
                             "change": [
                               {
+<<<<<<< HEAD
                                 "type": "Delete",
                                 "count": 1,
+=======
+                                "count": 1,
+                                "type": "Delete",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
                                 "id": 0,
                                 "cellId": {
                                   "revision": "beefbeef-beef-4000-8000-000000000007",
@@ -110,8 +120,13 @@
                                   "fieldKind": "Sequence",
                                   "change": [
                                     {
+<<<<<<< HEAD
                                       "type": "Delete",
                                       "count": 1,
+=======
+                                      "count": 1,
+                                      "type": "Delete",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
                                       "id": 0
                                     }
                                   ]
@@ -137,8 +152,13 @@
                                   "fieldKind": "Sequence",
                                   "change": [
                                     {
+<<<<<<< HEAD
                                       "type": "Delete",
                                       "count": 1,
+=======
+                                      "count": 1,
+                                      "type": "Delete",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
                                       "id": 0
                                     }
                                   ]
@@ -294,6 +314,10 @@
               "DetachedFieldIndexBlob": {
                 "type": "blob",
                 "content": {
+<<<<<<< HEAD
+=======
+                  "version": 1,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
                   "data": [
                     [
                       "beefbeef-beef-4000-8000-000000000007",
@@ -301,7 +325,11 @@
                       4
                     ]
                   ],
+<<<<<<< HEAD
                   "id": 4
+=======
+                  "maxId": 4
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
                 },
                 "encoding": "utf-8"
               }

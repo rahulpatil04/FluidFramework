@@ -16,8 +16,13 @@ module.exports = {
 		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended-type-checked",
 		"plugin:@typescript-eslint/stylistic-type-checked",
+<<<<<<< HEAD
 		"plugin:import/errors",
 		"plugin:import/warnings",
+=======
+		// import/recommended is the combination of import/errors and import/warnings
+		"plugin:import/recommended",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"plugin:import/typescript",
 	],
 	globals: {
@@ -33,7 +38,7 @@ module.exports = {
 		sourceType: "module",
 		project: "./tsconfig.json",
 	},
-	plugins: ["unicorn"],
+	plugins: ["import", "unicorn"],
 	reportUnusedDisableDirectives: true,
 	rules: {
 		// Please keep entries alphabetized within a group
@@ -334,7 +339,7 @@ module.exports = {
 			"@typescript-eslint/parser": [".ts", ".tsx", ".d.ts"],
 		},
 		"import/resolver": {
-			node: {
+			typescript: {
 				extensions: [".ts", ".tsx", ".d.ts", ".js", ".jsx"],
 			},
 		},

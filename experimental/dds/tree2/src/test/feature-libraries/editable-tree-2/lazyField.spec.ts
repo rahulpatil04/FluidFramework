@@ -239,8 +239,13 @@ describe("LazyOptionalField", () => {
 		const { context, cursor } = initializeTreeWithContent({ schema, initialTree: 42 });
 		const field = new LazyOptionalField(context, rootSchema, cursor, rootFieldAnchor);
 
+<<<<<<< HEAD
 		it("at", () => {
 			assert.equal(field.at(0), 42);
+=======
+		it("atIndex", () => {
+			assert.equal(field.atIndex(0), 42);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		});
 
 		it("boxedAt", () => {
@@ -274,9 +279,15 @@ describe("LazyOptionalField", () => {
 		});
 		const field = new LazyOptionalField(context, rootSchema, cursor, rootFieldAnchor);
 
+<<<<<<< HEAD
 		it("at", () => {
 			// Invalid to request the value if there isn't one.
 			assert.throws(() => field.at(0));
+=======
+		it("atIndex", () => {
+			// Invalid to request the value if there isn't one.
+			assert.throws(() => field.atIndex(0));
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		});
 
 		it("boxedAt", () => {
@@ -315,8 +326,13 @@ describe("LazyValueField", () => {
 
 	const field = new LazyValueField(context, rootSchema, cursor, rootFieldAnchor);
 
+<<<<<<< HEAD
 	it("at", () => {
 		assert.equal(field.at(0), initialTree);
+=======
+	it("atIndex", () => {
+		assert.equal(field.atIndex(0), initialTree);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	});
 
 	it("boxedAt", () => {
@@ -355,11 +371,28 @@ describe("LazySequence", () => {
 
 	const sequence = new LazySequence(context, rootSchema, cursor, rootFieldAnchor);
 
+<<<<<<< HEAD
+=======
+	it("atIndex", () => {
+		assert.equal(sequence.length, 2);
+		assert.equal(sequence.atIndex(0), 37);
+		assert.equal(sequence.atIndex(1), 42);
+		assert.throws(() => sequence.atIndex(2));
+	});
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	it("at", () => {
 		assert.equal(sequence.length, 2);
 		assert.equal(sequence.at(0), 37);
 		assert.equal(sequence.at(1), 42);
+<<<<<<< HEAD
 		assert.throws(() => sequence.at(2));
+=======
+		assert.equal(sequence.at(-1), 42); // Negative index > -sequence.length
+		assert.equal(sequence.at(-2), 37); // Negative index > -sequence.length
+		assert.equal(sequence.at(2), undefined); // Positive index >= sequence.length
+		assert.equal(sequence.at(-3), undefined); // Negative index < -sequence.length
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	});
 
 	it("boxedAt", () => {

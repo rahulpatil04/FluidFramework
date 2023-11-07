@@ -7,7 +7,10 @@ import { DocDeclarationReference } from "@microsoft/tsdoc";
 
 import { DocumentNode, SectionNode } from "../documentation-domain";
 import { Link } from "../Link";
+<<<<<<< HEAD
 import { getUnscopedPackageName } from "../utilities";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { getDocumentPathForApiItem, getLinkForApiItem } from "./ApiItemTransformUtilities";
 import { TsdocNodeTransformOptions } from "./TsdocNodeTransforms";
 import { ApiItemTransformationConfiguration } from "./configuration";
@@ -27,6 +30,7 @@ export function createDocument(
 	sections: SectionNode[],
 	config: Required<ApiItemTransformationConfiguration>,
 ): DocumentNode {
+<<<<<<< HEAD
 	const associatedPackage = documentItem.getAssociatedPackage();
 	const packageName =
 		associatedPackage === undefined ? undefined : getUnscopedPackageName(associatedPackage);
@@ -44,6 +48,17 @@ export function createDocument(
 			apiItemKind: documentItem.kind,
 			packageName,
 		},
+=======
+	// Wrap sections in a root section if top-level heading is requested.
+	const contents = config.includeTopLevelDocumentHeading
+		? [wrapInSection(sections, { title: config.getHeadingTextForItem(documentItem) })]
+		: sections;
+
+	const frontMatter = generateFrontMatter(documentItem, config);
+
+	return new DocumentNode({
+		apiItem: documentItem,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		children: contents,
 		documentPath: getDocumentPathForApiItem(documentItem, config),
 		frontMatter,

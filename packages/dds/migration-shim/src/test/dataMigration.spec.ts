@@ -32,7 +32,11 @@ import {
 	SchemaBuilder,
 	SharedTreeFactory,
 	type Typed,
+<<<<<<< HEAD
 	type ISharedTreeView,
+=======
+	type ISharedTreeView2,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 } from "@fluid-experimental/tree2";
 import { LoaderHeader } from "@fluidframework/container-definitions";
 import { type IFluidHandle } from "@fluidframework/core-interfaces";
@@ -108,8 +112,13 @@ const inventorySchema = builder.object("abcInventory", {
 const inventoryFieldSchema = SchemaBuilder.required(inventorySchema);
 const schema = builder.intoSchema(inventoryFieldSchema);
 
+<<<<<<< HEAD
 function getNewTreeView(tree: ISharedTree): ISharedTreeView {
 	return tree.schematizeView({
+=======
+function getNewTreeView(tree: ISharedTree): ISharedTreeView2<typeof inventoryFieldSchema> {
+	return tree.schematize({
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		initialTree: {
 			quantity: 0,
 		},
@@ -160,7 +169,11 @@ describeNoCompat("HotSwap", (getTestObjectProvider) => {
 			const legacyNode = legacyTree.currentView.getViewNode(nodeId);
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			const quantity = legacyNode.payload.quantity as number;
+<<<<<<< HEAD
 			newTree.schematizeView({
+=======
+			newTree.schematize({
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 				initialTree: {
 					quantity,
 				},
@@ -270,8 +283,13 @@ describeNoCompat("HotSwap", (getTestObjectProvider) => {
 
 		const view1 = getNewTreeView(tree1);
 		const view2 = getNewTreeView(tree2);
+<<<<<<< HEAD
 		const treeNode1 = view1.root as unknown as Typed<typeof inventorySchema>;
 		const treeNode2 = view2.root as unknown as Typed<typeof inventorySchema>;
+=======
+		const treeNode1: Typed<typeof inventorySchema> = view1.editableTree.content;
+		const treeNode2: Typed<typeof inventorySchema> = view2.editableTree.content;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 		// Validate migrated values of the old tree match the new tree
 		const migratedValue1 = treeNode1.quantity;

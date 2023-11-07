@@ -11,7 +11,7 @@ const tscDependsOn = ["^tsc", "build:genver"];
 module.exports = {
 	tasks: {
 		"ci:build": {
-			dependsOn: ["compile", "eslint", "ci:build:docs"],
+			dependsOn: ["compile", "eslint", "ci:build:docs", "build:manifest", "build:readme"],
 			script: false,
 		},
 		"full": {
@@ -19,11 +19,15 @@ module.exports = {
 			script: false,
 		},
 		"build": {
-			dependsOn: ["compile", "lint", "build:docs"],
+			dependsOn: ["compile", "lint", "build:docs", "build:manifest", "build:readme"],
 			script: false,
 		},
 		"compile": {
+<<<<<<< HEAD
 			dependsOn: ["commonjs", "build:esnext", "build:copy", "build:test", "build:artifacts"],
+=======
+			dependsOn: ["commonjs", "build:esnext", "build:test", "build:copy"],
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			script: false,
 		},
 		"commonjs": {
@@ -40,10 +44,13 @@ module.exports = {
 		},
 		"checks:fix": {
 			dependsOn: ["^checks:fix"],
+<<<<<<< HEAD
 			script: false,
 		},
 		"build:artifacts": {
 			dependsOn: ["build:manifest", "build:readme", "build:copy"],
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			script: false,
 		},
 		"build:copy": [],
@@ -58,7 +65,14 @@ module.exports = {
 			dependsOn: ["build:manifest"],
 			script: true,
 		},
+<<<<<<< HEAD
 		"build:manifest": ["tsc"],
+=======
+		"build:manifest": {
+			dependsOn: ["tsc"],
+			script: true,
+		},
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"depcruise": [],
 		"eslint": [...tscDependsOn, "commonjs"],
 		"good-fences": [],
@@ -94,7 +108,7 @@ module.exports = {
 		},
 		"build-tools": {
 			directory: "build-tools",
-			defaultInterdependencyRange: "workspace:*",
+			defaultInterdependencyRange: "workspace:~",
 		},
 		"server": {
 			directory: "server/routerlicious",
@@ -122,7 +136,6 @@ module.exports = {
 			"tools/changelog-generator-wrapper",
 			"tools/getkeys",
 			"tools/test-tools",
-			"server/tinylicious",
 		],
 	},
 
@@ -156,6 +169,16 @@ module.exports = {
 			"package-lockfiles-npm-version": [
 				"tools/telemetry-generator/package-lock.json", // Workaround to allow version 2 while we move it to pnpm
 			],
+<<<<<<< HEAD
+=======
+			"npm-package-json-scripts-args": [
+				// server/routerlicious and server/routerlicious/packages/routerlicious use
+				// linux only scripts that would require extra logic to validate properly.
+				// Ideally no packages would use OS specific scripts.
+				"^server/routerlicious/package.json",
+				"^server/routerlicious/packages/routerlicious/package.json",
+			],
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			"npm-package-json-script-clean": [
 				// eslint-config-fluid's build step generate printed configs that are checked in. No need to clean
 				"common/build/eslint-config-fluid/package.json",
@@ -220,6 +243,10 @@ module.exports = {
 				"server/historian/package.json",
 				"package.json",
 			],
+<<<<<<< HEAD
+=======
+			"npm-package-json-script-dep": ["^build-tools/"],
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		},
 		packageNames: {
 			// The allowed package scopes for the repo.
@@ -236,12 +263,16 @@ module.exports = {
 
 			mustPublish: {
 				// These packages will always be published to npm. This is called the "public" feed.
+<<<<<<< HEAD
 				npm: [
 					"@fluidframework",
 					"fluid-framework",
 					"tinylicious",
 					"@fluid-internal/client-utils",
 				],
+=======
+				npm: ["@fluidframework", "fluid-framework", "@fluid-internal/client-utils"],
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 				// A list of packages published to our internal-build feed. Note that packages published
 				// to npm will also be published to this feed. This should be a minimal set required for legacy compat of
 				// internal partners or internal CI requirements.
@@ -298,7 +329,6 @@ module.exports = {
 			"@fluidframework/protocol-definitions",
 			"@fluidframework/test-tools",
 			"fluidframework-docs",
-			"tinylicious",
 		],
 		fluidBuildTasks: {
 			tsc: {

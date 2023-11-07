@@ -23,7 +23,11 @@
 		"lint:fix": "npm run prettier:fix && npm run eslint:fix",
 		"prettier": "prettier --check . --ignore-path ../../.prettierignore",
 		"prettier:fix": "prettier --write . --ignore-path ../../.prettierignore",
+<<<<<<< HEAD
 		"test": "mocha --recursive 'dist/test/**/*.spec.js'",
+=======
+		"test": "mocha --recursive \"dist/test/**/*.spec.js\"",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"test:coverage": "c8 npm test -- --reporter xunit --reporter-option output=nyc/junit-report.xml",
 		"tsc": "tsc",
 		"typetests:gen": "fluid-type-test-generator",

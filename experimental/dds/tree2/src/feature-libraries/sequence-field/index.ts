@@ -22,11 +22,12 @@ export {
 	ReturnFrom,
 	NoopMark,
 	LineageEvent,
-	HasReattachFields,
 	CellId,
 	HasMarkFields,
 	HasLineage,
 	IdRange,
+	CellMark,
+	TransientEffect,
 } from "./format";
 export {
 	SequenceFieldChangeHandler,
@@ -44,12 +45,17 @@ export {
 	areComposable,
 	areRebasable,
 	getInputLength,
+<<<<<<< HEAD
 	isDetachMark,
+=======
+	isDetach,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	DetachedNodeTracker,
 	newCrossFieldTable,
 	newMoveEffectTable,
 	CrossFieldTable,
 	cloneMark,
+	extractMarkEffect,
 } from "./utils";
 export {
 	isMoveMark,
@@ -58,3 +64,5 @@ export {
 	MoveEffect,
 	PairedMarkUpdate,
 } from "./moveEffectTable";
+
+export { relevantRemovedTrees } from "./relevantRemovedTrees";

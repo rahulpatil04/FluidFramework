@@ -4,18 +4,6 @@
  */
 
 export {
-	EditableField,
-	EditableTree,
-	EditableTreeContext,
-	EditableTreeOrPrimitive,
-	getEditableTreeContext,
-	isEditableField,
-	isPrimitive,
-	isEditableTree,
-	proxyTargetSymbol,
-	UnwrappedEditableField,
-	UnwrappedEditableTree,
-	localNodeKeySymbol,
 	createDataBinderBuffering,
 	createDataBinderDirect,
 	createDataBinderInvalidating,
@@ -52,9 +40,13 @@ export {
 	toDownPath,
 	comparePipeline,
 	compileSyntaxTree,
+<<<<<<< HEAD
 	setField,
 } from "./editable-tree";
 
+=======
+} from "./editableTreeBinder";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 export {
 	typeNameSymbol,
 	valueSymbol,
@@ -138,6 +130,10 @@ export {
 	NodeExistsConstraint,
 	NodeExistenceState,
 	FieldKindWithEditor,
+<<<<<<< HEAD
+=======
+	RemovedTreesFromChild,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 } from "./modular-schema";
 
 export {
@@ -221,7 +217,10 @@ export {
 	defaultSchemaPolicy,
 } from "./default-field-kinds";
 
+export { TreeEvent, EditableTreeEvents } from "./untypedTree";
+
 export {
+<<<<<<< HEAD
 	TreeEvent,
 	UntypedField,
 	UntypedTree,
@@ -238,6 +237,53 @@ export {
 	contextSymbol,
 	treeStatus,
 } from "./untypedTree";
+=======
+	AssignableFieldKinds,
+	FieldNode,
+	FlexibleFieldContent,
+	FlexibleNodeContent,
+	InternalEditableTreeTypes,
+	Leaf,
+	MapNode,
+	OptionalField,
+	RequiredField,
+	Sequence,
+	Skip,
+	ObjectNode,
+	ObjectNodeTyped,
+	TreeContext,
+	TypedField,
+	TypedNode,
+	TypedNodeUnion,
+	TreeEntity,
+	TreeField,
+	TreeNode,
+	getTreeContext,
+	boxedIterator,
+	CheckTypesOverlap,
+	TreeStatus,
+	getProxyForField,
+	ObjectFields,
+	ProxyField,
+	ProxyFieldInner,
+	ProxyNode,
+	ProxyNodeUnion,
+	SharedTreeList,
+	SharedTreeMap,
+	SharedTreeObject,
+	ProxyRoot,
+	Tree,
+	TreeApi,
+	SharedTreeNode,
+	Typed,
+	SharedTreeObjectFactory,
+	FactoryTreeSchema,
+	addFactory,
+	Context,
+} from "./editable-tree-2";
+
+export { treeSchemaFromStoredSchema } from "./storedToViewSchema";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 export {
 	AssignableFieldKinds,

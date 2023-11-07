@@ -5,7 +5,10 @@
 
 import { expect } from "chai";
 
+<<<<<<< HEAD
 import { ApiItemKind } from "@microsoft/api-extractor-model";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import {
 	DocumentNode,
 	HeadingNode,
@@ -19,11 +22,14 @@ import { renderDocument } from "../Render";
 describe("Document HTML rendering tests", () => {
 	it("Renders a simple document", () => {
 		const document = new DocumentNode({
+<<<<<<< HEAD
 			documentItemMetadata: {
 				apiItemName: "Foo-package",
 				apiItemKind: ApiItemKind.Package,
 				packageName: "Foo-package",
 			},
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			children: [
 				new SectionNode(
 					[

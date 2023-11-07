@@ -150,7 +150,11 @@ describe("editableTreeTypes", () => {
 			mixed.boxedOptionalLeaf.boxedContent;
 		const sequence: Sequence<readonly [typeof leaf.number]> = mixed.sequence;
 
+<<<<<<< HEAD
 		const child: number = sequence.at(0);
+=======
+		const child: number | undefined = sequence.at(0);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		const childBoxed: TypedNode<typeof leaf.number> = sequence.boxedAt(0);
 	}
 

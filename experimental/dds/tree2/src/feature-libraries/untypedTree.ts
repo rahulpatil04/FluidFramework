@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 
+<<<<<<< HEAD
 import {
 	Value,
 	FieldKey,
@@ -18,6 +19,10 @@ import { ISubscribable } from "../events";
 import { Named } from "../util";
 import { PrimitiveValue, MarkedArrayLike, typeNameSymbol, valueSymbol } from "./contextuallyTyped";
 import { TreeNode, TreeStatus } from "./editable-tree-2";
+=======
+import { UpPath, PathVisitor } from "../core";
+import { TreeNode } from "./editable-tree-2";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 /**
  * This file provides an API for working with trees which is type safe even when schema is not known.
@@ -32,56 +37,15 @@ import { TreeNode, TreeStatus } from "./editable-tree-2";
  */
 
 /**
- * A symbol to get the type of {@link EditableTree} in contexts where string keys are already in use for fields.
- * @alpha
- */
-export const typeSymbol: unique symbol = Symbol("editable-tree:type");
-
-/**
- * A symbol to get the function, which returns the field of {@link EditableTree} without unwrapping,
- * in contexts where string keys are already in use for fields.
- * @alpha
- */
-export const getField: unique symbol = Symbol("editable-tree:getField()");
-
-/**
- * A symbol to get information about where an {@link EditableTree} is parented
- * in contexts where string keys are already in use for fields.
- * @alpha
- */
-export const parentField: unique symbol = Symbol("editable-tree:parentField()");
-
-/**
- * A symbol to get a common context of a "forest" of EditableTrees
- * in contexts where string keys are already in use for fields.
- * @alpha
- */
-export const contextSymbol: unique symbol = Symbol("editable-tree:context");
-
-/**
- * A symbol for subscribing to events.
- * @alpha
- */
-export const on: unique symbol = Symbol("editable-tree:on");
-
-/**
- * A symbol to get the function, which gets the {@link TreeStatus} of {@link EditableTree}
- * @alpha
- */
-export const treeStatus: unique symbol = Symbol("editable-tree:treeStatus()");
-
-/**
- * A tree of an unknown type.
- * This only includes operations that are safe to do without knowing the schema for the tree, so it does not include any editing.
- *
- * TODO: document how to downcast to more specific types for schema aware reading and editing APIs.
+ * An event raised on a {@link TreeNode}.
  *
  * @alpha
  */
-export interface UntypedTree<TContext = UntypedTreeContext> extends UntypedTreeCore<TContext> {
+export interface TreeEvent {
 	/**
-	 * The name of the node type.
+	 * The node of the tree where the listener receiving the event is attached.
 	 */
+<<<<<<< HEAD
 	// TODO: remove this favor of typeSymbol once its the view schema
 	readonly [typeNameSymbol]: TreeNodeSchemaIdentifier;
 
@@ -284,6 +248,13 @@ export interface TreeEvent {
 
 /**
  * A collection of events that can be raised by an {@link EditableTree}.
+=======
+	readonly target: TreeNode;
+}
+
+/**
+ * A collection of events that can be raised by a {@link Tree}.
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
  * These events are triggered while the internal data structures are being updated.
  * Thus these events must not trigger reading of the anchorSet or forest.
  *

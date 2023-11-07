@@ -256,7 +256,11 @@ export class CheckPolicy extends BaseCommand<typeof CheckPolicy> {
 					handler.handler(relPath, gitRoot),
 				);
 				if (result !== undefined && result !== "") {
+<<<<<<< HEAD
 					let output = `${newline}file failed policy check: ${relPath}${newline}${result}`;
+=======
+					let output = `${newline}file failed the "${handler.name}" policy: ${relPath}${newline}${result}`;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 					const { resolver } = handler;
 					if (this.flags.fix && resolver) {
 						output += `${newline}attempting to resolve: ${relPath}`;

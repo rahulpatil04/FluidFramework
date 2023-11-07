@@ -4,6 +4,7 @@
  */
 
 import { EventEmitter } from "events";
+<<<<<<< HEAD
 // eslint-disable-next-line import/no-deprecated
 import { defaultFluidObjectRequestHandler } from "@fluidframework/aqueduct";
 import { assert } from "@fluidframework/core-utils";
@@ -16,6 +17,11 @@ import {
 	IFluidRouter,
 } from "@fluidframework/core-interfaces";
 import { FluidObjectHandle, mixinRequestHandler } from "@fluidframework/datastore";
+=======
+import { assert } from "@fluidframework/core-utils";
+import { IFluidLoadable, IFluidHandle } from "@fluidframework/core-interfaces";
+import { FluidDataStoreRuntime, FluidObjectHandle } from "@fluidframework/datastore";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { ISharedMap, SharedMap } from "@fluidframework/map";
 import { ReferenceType, reservedTileLabelsKey } from "@fluidframework/merge-tree";
 import {
@@ -31,8 +37,12 @@ import "simplemde/dist/simplemde.min.css";
 /**
  * Data object storing the data to back a SimpleMDE editor.  Primarily just a SharedString.
  */
+<<<<<<< HEAD
 // eslint-disable-next-line import/no-deprecated
 export class SmdeDataObject extends EventEmitter implements IFluidLoadable, IFluidRouter {
+=======
+export class SmdeDataObject extends EventEmitter implements IFluidLoadable {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	public static async load(runtime: IFluidDataStoreRuntime, existing: boolean) {
 		const collection = new SmdeDataObject(runtime);
 		await collection.initialize(existing);
@@ -52,11 +62,14 @@ export class SmdeDataObject extends EventEmitter implements IFluidLoadable, IFlu
 		return this;
 	}
 
+<<<<<<< HEAD
 	// eslint-disable-next-line import/no-deprecated
 	public get IFluidRouter() {
 		return this;
 	}
 
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	private root: ISharedMap | undefined;
 	private _text: SharedString | undefined;
 
@@ -70,11 +83,14 @@ export class SmdeDataObject extends EventEmitter implements IFluidLoadable, IFlu
 		this.innerHandle = new FluidObjectHandle(this, "", this.runtime.objectsRoutingContext);
 	}
 
+<<<<<<< HEAD
 	public async request(request: IRequest): Promise<IResponse> {
 		// eslint-disable-next-line import/no-deprecated
 		return defaultFluidObjectRequestHandler(this, request);
 	}
 
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	private async initialize(existing: boolean) {
 		if (!existing) {
 			this.root = SharedMap.create(this.runtime, "root");
@@ -104,12 +120,7 @@ export class SmdeFactory implements IFluidDataStoreFactory {
 	}
 
 	public async instantiateDataStore(context: IFluidDataStoreContext, existing: boolean) {
-		const runtimeClass = mixinRequestHandler(async (request: IRequest) => {
-			const router = await routerP;
-			return router.request(request);
-		});
-
-		const runtime = new runtimeClass(
+		return new FluidDataStoreRuntime(
 			context,
 			new Map(
 				[SharedMap.getFactory(), SharedString.getFactory()].map((factory) => [
@@ -118,10 +129,11 @@ export class SmdeFactory implements IFluidDataStoreFactory {
 				]),
 			),
 			existing,
+<<<<<<< HEAD
 			async () => routerP,
+=======
+			async (runtime: IFluidDataStoreRuntime) => SmdeDataObject.load(runtime, existing),
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		);
-		const routerP = SmdeDataObject.load(runtime, existing);
-
-		return runtime;
 	}
 }

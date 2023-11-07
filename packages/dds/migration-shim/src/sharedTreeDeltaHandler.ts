@@ -4,9 +4,16 @@
  */
 
 import { assert } from "@fluidframework/core-utils";
+<<<<<<< HEAD
 import { type IDeltaHandler } from "@fluidframework/datastore-definitions";
 import { type ISequencedDocumentMessage } from "@fluidframework/protocol-definitions";
 import { type IShimDeltaHandler } from "./types.js";
+=======
+import { type IChannelAttributes, type IDeltaHandler } from "@fluidframework/datastore-definitions";
+import { type ISequencedDocumentMessage } from "@fluidframework/protocol-definitions";
+import { type IShimDeltaHandler } from "./types.js";
+import { messageStampMatchesAttributes } from "./utils.js";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 /**
  * Handles incoming and outgoing deltas/ops for the SharedTreeShim distributed data structure.
@@ -18,6 +25,11 @@ import { type IShimDeltaHandler } from "./types.js";
  * MigrationShimDeltaHandler and SharedTreeShimDeltaHandler.
  */
 export class SharedTreeShimDeltaHandler implements IShimDeltaHandler {
+<<<<<<< HEAD
+=======
+	public constructor(private readonly attributes: IChannelAttributes) {}
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	private _handler?: IDeltaHandler;
 	private get handler(): IDeltaHandler {
 		const handler = this._handler;
@@ -25,6 +37,18 @@ export class SharedTreeShimDeltaHandler implements IShimDeltaHandler {
 		return handler;
 	}
 
+<<<<<<< HEAD
+=======
+	private _attached = false;
+	public get attached(): boolean {
+		return this._attached;
+	}
+
+	public markAttached(): void {
+		this._attached = true;
+	}
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	public attachTreeDeltaHandler(handler: IDeltaHandler): void {
 		assert(this._handler === undefined, 0x7ec /* Should only be able to connect once! */);
 		this._handler = handler;
@@ -40,7 +64,14 @@ export class SharedTreeShimDeltaHandler implements IShimDeltaHandler {
 		localOpMetadata: unknown,
 	): void {
 		// This allows us to process the migrate op and prevent the shared object from processing the wrong ops
+<<<<<<< HEAD
 		// TODO: drop migrate ops and drop v1 ops
+=======
+		// Drop v1 ops
+		if (!messageStampMatchesAttributes(message, this.attributes)) {
+			return;
+		}
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		return this.handler.process(message, local, localOpMetadata);
 	}
 

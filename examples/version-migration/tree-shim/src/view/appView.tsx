@@ -19,6 +19,7 @@ export interface IInventoryListAppViewProps {
 export const InventoryListAppView: React.FC<IInventoryListAppViewProps> = ({
 	model,
 }: IInventoryListAppViewProps) => {
+<<<<<<< HEAD
 	return (
 		<>
 			<h1>Using legacy SharedTree</h1>
@@ -33,4 +34,7 @@ export const InventoryListAppView: React.FC<IInventoryListAppViewProps> = ({
 			/>
 		</>
 	);
+=======
+	return <InventoryListView migratingInventoryList={model.migratingInventoryList} />;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 };

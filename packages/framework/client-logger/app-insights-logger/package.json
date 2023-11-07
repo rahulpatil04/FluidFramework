@@ -33,7 +33,11 @@
 		"prettier": "prettier --check . --ignore-path ../../../../.prettierignore",
 		"prettier:fix": "prettier --write . --ignore-path ../../../../.prettierignore",
 		"test": "npm run test:mocha",
+<<<<<<< HEAD
 		"test:mocha": "mocha --recursive 'dist/test/**/*.spec.js' -r node_modules/@fluidframework/mocha-test-setup",
+=======
+		"test:mocha": "mocha --recursive \"dist/test/**/*.spec.js\" -r node_modules/@fluidframework/mocha-test-setup",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"test:mocha:verbose": "cross-env FLUID_TEST_VERBOSE=1 npm run test:mocha",
 		"tsc": "tsc"
 	},

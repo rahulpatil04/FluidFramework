@@ -4,7 +4,11 @@
  */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
+<<<<<<< HEAD
 import { SchemaAware, SchemaBuilder, leaf } from "@fluid-experimental/tree2";
+=======
+import { SchemaAware, SchemaBuilder, Typed, leaf } from "@fluid-experimental/tree2";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 const builder = new SchemaBuilder({ scope: "bubble-bench" });
 
@@ -26,12 +30,12 @@ export const rootAppStateSchema = SchemaBuilder.sequence(clientSchema);
 
 export const appSchemaData = builder.intoSchema(rootAppStateSchema);
 
-export type Bubble = SchemaAware.TypedNode<typeof bubbleSchema>;
-export type Client = SchemaAware.TypedNode<typeof clientSchema>;
+export type Bubble = Typed<typeof bubbleSchema>;
+export type Client = Typed<typeof clientSchema>;
 
 export type FlexBubble = SchemaAware.TypedNode<typeof bubbleSchema, SchemaAware.ApiMode.Simple>;
 export type FlexClient = SchemaAware.TypedNode<typeof clientSchema, SchemaAware.ApiMode.Simple>;
 
 // TODO: experiment with this interface pattern. Maybe it makes better intellisense and errors?
 // TODO: Intellisense is pretty bad here if not using interface.
-export interface ClientsField extends SchemaAware.TypedField<typeof rootAppStateSchema> {}
+export interface ClientsField extends Typed<typeof rootAppStateSchema> {}

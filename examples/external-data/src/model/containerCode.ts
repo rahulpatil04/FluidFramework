@@ -3,11 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import { ModelContainerRuntimeFactory } from "@fluid-example/example-utils";
+import { ModelContainerRuntimeFactory, getDataStoreEntryPoint } from "@fluid-example/example-utils";
 import type { IContainer } from "@fluidframework/container-definitions";
 import type { IContainerRuntime } from "@fluidframework/container-runtime-definitions";
+<<<<<<< HEAD
 // eslint-disable-next-line import/no-deprecated
 import { requestFluidObject } from "@fluidframework/runtime-utils";
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 import type { IAppModel, IBaseDocument } from "../model-interface";
 import { AppModel } from "./appModel";
@@ -62,10 +65,16 @@ export class BaseDocumentContainerRuntimeFactory extends ModelContainerRuntimeFa
 		runtime: IContainerRuntime,
 		container: IContainer,
 	): Promise<AppModel> {
+<<<<<<< HEAD
 		// eslint-disable-next-line import/no-deprecated
 		const taskListCollection = await requestFluidObject<IBaseDocument>(
 			await runtime.getRootDataStore(taskListCollectionId),
 			"",
+=======
+		const taskListCollection = await getDataStoreEntryPoint<IBaseDocument>(
+			runtime,
+			taskListCollectionId,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		);
 		// Register listener only once the model is fully loaded and ready
 		runtime.on("signal", (message) => {

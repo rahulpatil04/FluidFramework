@@ -23,6 +23,10 @@ import {
 	Named,
 	requireAssignableTo,
 	compareSets,
+<<<<<<< HEAD
+=======
+	oneFromSet,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 } from "../../util";
 import { FieldKinds } from "../default-field-kinds";
 import { FieldKind, FullSchemaPolicy } from "../modular-schema";
@@ -362,7 +366,15 @@ export class TreeFieldSchema<
 	/**
 	 * This is computed lazily since types can be recursive, which makes evaluating this have to happen after all the schema are defined.
 	 */
+<<<<<<< HEAD
 	private readonly lazyTypes: Lazy<{ names: TreeTypeSet; schema: AllowedTypeSet }>;
+=======
+	private readonly lazyTypes: Lazy<{
+		names: TreeTypeSet;
+		schema: AllowedTypeSet;
+		monomorphicChildType?: TreeNodeSchema;
+	}>;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 	/**
 	 * @param kind - The {@link https://en.wikipedia.org/wiki/Kind_(type_theory) | kind} of this field.
@@ -385,10 +397,22 @@ export class TreeFieldSchema<
 				);
 			}
 		}
+<<<<<<< HEAD
 		this.lazyTypes = new Lazy(() => ({
 			names: allowedTypesToTypeSet(this.allowedTypes as unknown as AllowedTypes),
 			schema: allowedTypesSchemaSet(this.allowedTypes as unknown as AllowedTypes),
 		}));
+=======
+		this.lazyTypes = new Lazy(() => {
+			const input = this.allowedTypes as unknown as AllowedTypes;
+			const schema = allowedTypesSchemaSet(input);
+			return {
+				names: allowedTypesToTypeSet(input),
+				schema,
+				monomorphicChildType: schema !== Any ? oneFromSet(schema) : undefined,
+			};
+		});
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 
 	/**
@@ -413,6 +437,19 @@ export class TreeFieldSchema<
 	}
 
 	/**
+<<<<<<< HEAD
+=======
+	 * If exactly one type of child is allowed in this field, it is provided here.
+	 * @remarks
+	 * Some code paths (like unboxing and compressed tree encoding) special case schema with exactly one allowed type.
+	 * This field allows for simple and optimized handling of this case.
+	 */
+	public get monomorphicChildType(): TreeNodeSchema | undefined {
+		return this.lazyTypes.value.monomorphicChildType;
+	}
+
+	/**
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	 * Compare this schema to another.
 	 *
 	 * @returns true iff the schema are identical.

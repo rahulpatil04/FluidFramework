@@ -5,7 +5,11 @@
 
 import { strict as assert } from "assert";
 import { SchemaBuilder } from "../../../domains";
+<<<<<<< HEAD
 import { ProxyNode, ProxyRoot, node, typeNameSymbol } from "../../../feature-libraries";
+=======
+import { ProxyNode, ProxyRoot, Tree, typeNameSymbol } from "../../../feature-libraries";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { itWithRoot, pretty } from "./utils";
 
 describe("SharedTree proxies", () => {
@@ -18,7 +22,11 @@ describe("SharedTree proxies", () => {
 	});
 
 	const parentSchema = sb.object("parent", {
+<<<<<<< HEAD
 		struct: childSchema,
+=======
+		object: childSchema,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		list: sb.fieldNode("list", sb.sequence(sb.number)),
 		map: sb.map("map", sb.optional(sb.string)),
 	});
@@ -26,7 +34,11 @@ describe("SharedTree proxies", () => {
 	const schema = sb.intoSchema(parentSchema);
 
 	const initialTree = {
+<<<<<<< HEAD
 		struct: { content: 42 },
+=======
+		object: { content: 42 },
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		list: [42, 42, 42],
 		map: new Map([
 			["foo", "Hello"],
@@ -34,10 +46,17 @@ describe("SharedTree proxies", () => {
 		]),
 	};
 
+<<<<<<< HEAD
 	itWithRoot("cache and reuse structs", schema, initialTree, (root) => {
 		const structProxy = root.struct;
 		const structProxyAgain = root.struct;
 		assert.equal(structProxyAgain, structProxy);
+=======
+	itWithRoot("cache and reuse objects", schema, initialTree, (root) => {
+		const objectProxy = root.object;
+		const objectProxyAgain = root.object;
+		assert.equal(objectProxyAgain, objectProxy);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	});
 
 	itWithRoot("cache and reuse lists", schema, initialTree, (root) => {
@@ -123,7 +142,11 @@ describe("SharedTreeObject", () => {
 	});
 
 	itWithRoot("can narrow polymorphic struct fields", schema, initialTree, (root) => {
+<<<<<<< HEAD
 		if (node.is(root.polyChild, numberChild)) {
+=======
+		if (Tree.is(root.polyChild, numberChild)) {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			assert.equal(root.polyChild.content, 42);
 		} else {
 			assert.equal(root.polyChild.content, "42");
@@ -135,7 +158,11 @@ describe("SharedTreeObject", () => {
 		schema,
 		initialTree,
 		(root) => {
+<<<<<<< HEAD
 			if (node.is(root.polyValueChild, numberChild)) {
+=======
+			if (Tree.is(root.polyValueChild, numberChild)) {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 				assert.equal(root.polyValueChild.content, 42);
 			} else {
 				assert.equal(root.polyValueChild, 42);
@@ -178,6 +205,102 @@ describe("SharedTreeList", () => {
 		});
 	});
 
+<<<<<<< HEAD
+=======
+	describe("inserting primitive", () => {
+		const _ = new SchemaBuilder({ scope: "test" });
+		const obj = _.object("Obj", {
+			numbers: _.list(_.number),
+			strings: _.list(_.string),
+			booleans: _.list(_.boolean),
+			poly: _.list([_.number, _.string, _.boolean]),
+		});
+		const schema = _.intoSchema(obj);
+		const initialTree = { numbers: [], strings: [], booleans: [], poly: [] };
+		itWithRoot("numbers", schema, initialTree, (root) => {
+			root.numbers.insertAtStart([0]);
+			root.numbers.insertAt(1, [1]);
+			root.numbers.insertAtEnd([2]);
+			assert.deepEqual(root.numbers, [0, 1, 2]);
+		});
+
+		itWithRoot("strings", schema, initialTree, (root) => {
+			// This test catches a usability regression in which strings can be passed directly as content to insert,
+			// because strings are also iterables of strings. Passing a string directly as an iterable is very likely not what the user intends.
+			root.strings.insertAtStart(["a"]);
+			root.strings.insertAt(1, ["b"]);
+			root.strings.insertAtEnd(["c"]);
+
+			const string: string = "hello";
+			const stringLiteral: "hello" = "hello" as const;
+			assert.throws(() => {
+				root.strings.insertAtStart(string);
+			});
+			assert.throws(() => {
+				root.strings.insertAtStart(stringLiteral);
+			});
+			assert.throws(() => {
+				root.strings.insertAt(0, string);
+			});
+			assert.throws(() => {
+				root.strings.insertAt(0, stringLiteral);
+			});
+			assert.throws(() => {
+				root.strings.insertAtEnd(string);
+			});
+			assert.throws(() => {
+				root.strings.insertAtEnd(stringLiteral);
+			});
+
+			const iterableOrString: Iterable<string> | string = "hello";
+			const iterableOrLiteral: Iterable<string> | "hello" = "hello";
+			assert.throws(() => {
+				root.strings.insertAtStart(iterableOrString);
+			});
+			assert.throws(() => {
+				root.strings.insertAtStart(iterableOrLiteral);
+			});
+			assert.throws(() => {
+				root.strings.insertAt(0, iterableOrString);
+			});
+			assert.throws(() => {
+				root.strings.insertAt(0, iterableOrLiteral);
+			});
+			assert.throws(() => {
+				root.strings.insertAtEnd(iterableOrString);
+			});
+			assert.throws(() => {
+				root.strings.insertAtEnd(iterableOrLiteral);
+			});
+
+			const de: Iterable<string> = "de"[Symbol.iterator]();
+			root.strings.insertAtStart(de);
+			const fg: Iterable<string> = "fg"[Symbol.iterator]();
+			root.strings.insertAt(3, fg);
+			const hi: Iterable<string> = "hi"[Symbol.iterator]();
+			root.strings.insertAtEnd(hi);
+			assert.deepEqual(root.strings, ["d", "e", "a", "f", "g", "b", "c", "h", "i"]);
+		});
+
+		itWithRoot("booleans", schema, initialTree, (root) => {
+			root.booleans.insertAtStart([true]);
+			root.booleans.insertAt(1, [false]);
+			root.booleans.insertAtEnd([true]);
+			assert.deepEqual(root.booleans, [true, false, true]);
+		});
+
+		itWithRoot("of multiple possible types", schema, initialTree, (root) => {
+			const allowsStrings: typeof root.numbers | typeof root.poly = root.poly;
+			allowsStrings.insertAtStart([42]);
+			const allowsStsrings: typeof root.strings | typeof root.poly = root.poly;
+			allowsStsrings.insertAt(1, ["s"]);
+			const allowsBooleans: typeof root.booleans | typeof root.poly = root.poly;
+			allowsBooleans.insertAtEnd([true]);
+			assert.deepEqual(root.poly, [42, "s", true]);
+		});
+	});
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	describe("removing items", () => {
 		const _ = new SchemaBuilder({ scope: "test" });
 		const schema = _.intoSchema(_.list(_.number));
@@ -508,4 +631,37 @@ describe("SharedTreeMap", () => {
 		assert.equal(root.map.has("bar"), true);
 		assert.equal(root.map.has("baz"), false);
 	});
+<<<<<<< HEAD
+=======
+
+	itWithRoot("set", schema, initialTree, (root) => {
+		// Insert new value
+		root.map.set("baz", "42");
+		assert.equal(root.map.size, 3);
+		assert(root.map.has("baz"));
+		assert.equal(root.map.get("baz"), "42");
+
+		// Override existing value
+		root.map.set("baz", "37");
+		assert.equal(root.map.size, 3);
+		assert(root.map.has("baz"));
+		assert.equal(root.map.get("baz"), "37");
+
+		// "Un-set" existing value
+		root.map.set("baz", undefined);
+		assert.equal(root.map.size, 2);
+		assert(!root.map.has("baz"));
+	});
+
+	itWithRoot("delete", schema, initialTree, (root) => {
+		// Delete existing value
+		root.map.delete("bar");
+		assert.equal(root.map.size, 1);
+		assert(!root.map.has("bar"));
+
+		// Delete non-present value
+		root.map.delete("baz");
+		assert.equal(root.map.size, 1);
+	});
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 });

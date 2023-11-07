@@ -17,7 +17,10 @@ import {
 	Delta,
 	FieldKey,
 	IEditableForest,
+<<<<<<< HEAD
 	ITreeSubscriptionCursor,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	JsonableTree,
 	makeDetachedFieldIndex,
 	mapCursorField,
@@ -37,12 +40,7 @@ const treeBlobKey = "ForestTree";
  */
 export class ForestSummarizer implements Summarizable {
 	public readonly key = "Forest";
-
-	private readonly cursor: ITreeSubscriptionCursor;
-
-	public constructor(private readonly forest: IEditableForest) {
-		this.cursor = this.forest.allocateCursor();
-	}
+	public constructor(private readonly forest: IEditableForest) {}
 
 	/**
 	 * Synchronous monolithic summarization of tree content.
@@ -52,12 +50,20 @@ export class ForestSummarizer implements Summarizable {
 	 * @returns a snapshot of the forest's tree as a string.
 	 */
 	private getTreeString(stringify: SummaryElementStringifier): string {
+<<<<<<< HEAD
 		this.forest.moveCursorToPath(undefined, this.cursor);
 		const fields = mapCursorFields(this.cursor, (cursor) => [
 			this.cursor.getFieldKey(),
 			mapCursorField(cursor, jsonableTreeFromCursor),
 		]);
 		this.cursor.clear();
+=======
+		const rootCursor = this.forest.getCursorAboveDetachedFields();
+		const fields = mapCursorFields(rootCursor, (cursor) => [
+			rootCursor.getFieldKey(),
+			mapCursorField(cursor, jsonableTreeFromCursor),
+		]);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		return stringify(fields);
 	}
 

@@ -13,12 +13,16 @@ import { SharedCounter } from "@fluidframework/counter";
 import { type IDirectory, SharedDirectory, SharedMap } from "@fluidframework/map";
 import { SharedMatrix } from "@fluidframework/matrix";
 import { SharedString } from "@fluidframework/sequence";
+<<<<<<< HEAD
 import {
 	SharedTreeFactory,
 	type ISharedTree,
 	type UntypedTree,
 	type UntypedField,
 } from "@fluid-experimental/tree2";
+=======
+import { SharedTreeFactory, type ISharedTree, encodeTreeSchema } from "@fluid-experimental/tree2";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { type ISharedObject } from "@fluidframework/shared-object-base";
 import { EditType } from "../CommonInterfaces";
 import { type VisualizeChildData, type VisualizeSharedObject } from "./DataVisualization";
@@ -247,6 +251,7 @@ export const visualizeSharedTree: VisualizeSharedObject = async (
 	visualizeChildData: VisualizeChildData,
 ): Promise<FluidObjectTreeNode> => {
 	const sharedTree = sharedObject as ISharedTree;
+<<<<<<< HEAD
 
 	const contextRoot = sharedTree.view.context.root;
 	const children: Record<string, VisualChildNode> = {};
@@ -266,10 +271,16 @@ export const visualizeSharedTree: VisualizeSharedObject = async (
 	};
 
 	await iterateNodes(contextRoot);
+=======
+	const content = sharedTree.contentSnapshot();
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 	return {
 		fluidObjectId: sharedTree.id,
-		children,
+		children: {
+			tree: await visualizeChildData(content.tree),
+			schema: await visualizeChildData(encodeTreeSchema(content.schema)),
+		},
 		typeMetadata: "SharedTree",
 		nodeKind: VisualNodeKind.FluidTreeNode,
 	};

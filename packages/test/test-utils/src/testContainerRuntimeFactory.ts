@@ -61,22 +61,29 @@ export const createTestContainerRuntimeFactory = (
 			context: IContainerContext,
 			existing: boolean,
 		): Promise<IRuntime & IContainerRuntime> {
-			const runtime: ContainerRuntime = await containerRuntimeCtor.load(
+			const runtime: ContainerRuntime = await containerRuntimeCtor.loadRuntime({
 				context,
-				[
+				registryEntries: [
 					["default", Promise.resolve(this.dataStoreFactory)],
 					[this.type, Promise.resolve(this.dataStoreFactory)],
 				],
 				// eslint-disable-next-line import/no-deprecated
+<<<<<<< HEAD
 				buildRuntimeRequestHandler(
+=======
+				requestHandler: buildRuntimeRequestHandler(
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 					// eslint-disable-next-line import/no-deprecated
 					defaultRouteRequestHandler("default"),
 					...this.requestHandlers,
 				),
-				this.runtimeOptions,
-				context.scope,
+				provideEntryPoint: () => {
+					throw new Error("TODO: AB#4993");
+				},
+				runtimeOptions: this.runtimeOptions,
+				containerScope: context.scope,
 				existing,
-			);
+			});
 
 			return runtime;
 		}

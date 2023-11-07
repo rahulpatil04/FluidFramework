@@ -23,8 +23,13 @@
                             "fieldKind": "Sequence",
                             "change": [
                               {
+<<<<<<< HEAD
                                 "type": "Delete",
                                 "count": 1,
+=======
+                                "count": 1,
+                                "type": "Delete",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
                                 "id": 1
                               }
                             ]
@@ -170,6 +175,10 @@
               "DetachedFieldIndexBlob": {
                 "type": "blob",
                 "content": {
+<<<<<<< HEAD
+=======
+                  "version": 1,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
                   "data": [
                     [
                       "beefbeef-beef-4000-8000-000000000004",
@@ -177,7 +186,11 @@
                       1
                     ]
                   ],
+<<<<<<< HEAD
                   "id": 1
+=======
+                  "maxId": 1
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
                 },
                 "encoding": "utf-8"
               }

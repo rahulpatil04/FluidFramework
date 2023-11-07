@@ -106,11 +106,19 @@ describe("Fuzz - composed vs individual changes", () => {
 		};
 		const emitter = new TypedEventEmitter<DDSFuzzHarnessEvents>();
 		emitter.on("testStart", (initialState: BranchedTreeFuzzTestState) => {
+<<<<<<< HEAD
 			initialState.main = initialState.clients[0].channel.schematizeView({
 				initialTree: undefined,
 				schema: fuzzSchema,
 				allowedSchemaModifications: AllowedUpdateType.None,
 			});
+=======
+			initialState.main = initialState.clients[0].channel.schematize({
+				initialTree: undefined,
+				schema: fuzzSchema,
+				allowedSchemaModifications: AllowedUpdateType.None,
+			}).branch;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			initialState.branch = initialState.main.fork();
 			initialState.branch.transaction.start();
 		});

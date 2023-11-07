@@ -12,6 +12,7 @@ module.exports = {
 		"@typescript-eslint/prefer-nullish-coalescing": "off", // requires strictNullChecks
 		"@typescript-eslint/strict-boolean-expressions": "off",
 		"import/no-deprecated": "off", // This package as a whole is deprecated so it uses deprecated APIs
+<<<<<<< HEAD
 	},
 	settings: {
 		"import/resolver": {
@@ -21,5 +22,7 @@ module.exports = {
 				extensions: [".ts", ".tsx", ".d.ts", ".js", ".jsx"],
 			},
 		},
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	},
 };

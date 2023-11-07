@@ -24,7 +24,11 @@ interface jsonOutput {
 describe("flub release fromTag", () => {
 	const expected = {
 		version: "0.26.1",
+<<<<<<< HEAD
 		date: "2023-10-26T19:35:13.000Z",
+=======
+		date: "2023-10-27T20:16:48.000Z",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		packageOrReleaseGroup: "build-tools",
 		previousTag: "build-tools_v0.26.0",
 		previousVersion: "0.26.0",

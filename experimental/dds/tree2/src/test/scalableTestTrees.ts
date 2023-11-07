@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 import { strict as assert } from "assert";
+<<<<<<< HEAD
 import {
 	FieldKinds,
 	TreeFieldSchema,
@@ -15,6 +16,12 @@ import {
 import { leaf, jsonSchema, SchemaBuilder } from "../domains";
 import { brand, requireAssignableTo } from "../util";
 import { ISharedTreeView, TreeContent } from "../shared-tree";
+=======
+import { FieldKinds, TreeFieldSchema, SchemaAware, typeNameSymbol } from "../feature-libraries";
+import { leaf, jsonSchema, SchemaBuilder } from "../domains";
+import { brand, requireAssignableTo } from "../util";
+import { ISharedTreeView2, TreeContent } from "../shared-tree";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { FieldKey, moveToDetachedField, rootFieldKey, UpPath } from "../core";
 
 /**
@@ -166,11 +173,22 @@ export function readWideTreeAsJSObject(tree: JSWideTree): { nodesCount: number; 
 	return { nodesCount: nodes.length, sum };
 }
 
+<<<<<<< HEAD
 export function readWideCursorTree(tree: ISharedTreeView): { nodesCount: number; sum: number } {
 	let nodesCount = 0;
 	let sum = 0;
 	const readCursor = tree.forest.allocateCursor();
 	moveToDetachedField(tree.forest, readCursor);
+=======
+export function readWideCursorTree(tree: ISharedTreeView2<typeof wideSchema.rootFieldSchema>): {
+	nodesCount: number;
+	sum: number;
+} {
+	let nodesCount = 0;
+	let sum = 0;
+	const readCursor = tree.branch.forest.allocateCursor();
+	moveToDetachedField(tree.branch.forest, readCursor);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	assert(readCursor.firstNode());
 	readCursor.firstField();
 	for (let inNode = readCursor.firstNode(); inNode; inNode = readCursor.nextNode()) {
@@ -181,11 +199,22 @@ export function readWideCursorTree(tree: ISharedTreeView): { nodesCount: number;
 	return { nodesCount, sum };
 }
 
+<<<<<<< HEAD
 export function readDeepCursorTree(tree: ISharedTreeView): { depth: number; value: number } {
 	let depth = 0;
 	let value = 0;
 	const readCursor = tree.forest.allocateCursor();
 	moveToDetachedField(tree.forest, readCursor);
+=======
+export function readDeepCursorTree(tree: ISharedTreeView2<typeof deepSchema.rootFieldSchema>): {
+	depth: number;
+	value: number;
+} {
+	let depth = 0;
+	let value = 0;
+	const readCursor = tree.branch.forest.allocateCursor();
+	moveToDetachedField(tree.branch.forest, readCursor);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	assert(readCursor.firstNode());
 	while (readCursor.firstField()) {
 		readCursor.firstNode();
@@ -235,6 +264,7 @@ export function wideLeafPath(index: number): UpPath {
 	return path;
 }
 
+<<<<<<< HEAD
 export function readWideEditableTree(tree: ISharedTreeView): { nodesCount: number; sum: number } {
 	let sum = 0;
 	let nodesCount = 0;
@@ -245,11 +275,25 @@ export function readWideEditableTree(tree: ISharedTreeView): { nodesCount: numbe
 	assert(field.length !== 0);
 	for (const currentNode of field) {
 		sum += currentNode as number;
+=======
+export function readWideEditableTree(tree: ISharedTreeView2<typeof wideSchema.rootFieldSchema>): {
+	nodesCount: number;
+	sum: number;
+} {
+	let sum = 0;
+	let nodesCount = 0;
+	const root = tree.editableTree;
+	const field = root.content.foo;
+	assert(field.length !== 0);
+	for (const currentNode of field) {
+		sum += currentNode;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		nodesCount += 1;
 	}
 	return { nodesCount, sum };
 }
 
+<<<<<<< HEAD
 export function readDeepEditableTree(tree: ISharedTreeView): { depth: number; value: number } {
 	let depth = 0;
 	let currentNode: UnwrappedEditableField = tree.root;
@@ -259,4 +303,18 @@ export function readDeepEditableTree(tree: ISharedTreeView): { depth: number; va
 	}
 	assert(typeof currentNode === "number");
 	return { depth, value: currentNode };
+=======
+export function readDeepEditableTree(tree: ISharedTreeView2<typeof deepSchema.rootFieldSchema>): {
+	depth: number;
+	value: number;
+} {
+	let depth = 0;
+	let currentNode = tree.editableTree.content;
+	while (currentNode.is(linkedListSchema)) {
+		currentNode = currentNode.foo;
+		depth++;
+	}
+	assert(currentNode.is(leaf.number));
+	return { depth, value: currentNode.value };
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 }

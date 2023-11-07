@@ -4,7 +4,11 @@
  */
 import type { Parent as UnistParent } from "unist";
 
+<<<<<<< HEAD
 import { ApiItemKind } from "@microsoft/api-extractor-model";
+=======
+import { ApiItem } from "..";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { DocumentationNodeType } from "./DocumentationNodeType";
 import { SectionNode } from "./SectionNode";
 
@@ -15,9 +19,15 @@ import { SectionNode } from "./SectionNode";
  */
 export interface DocumentNodeProperties {
 	/**
+<<<<<<< HEAD
 	 * Metadata for the document
 	 */
 	readonly documentItemMetadata: DocumentItemMetadata;
+=======
+	 * The ApiItem the document node was created for, if it was created for an ApiItem.
+	 */
+	readonly apiItem?: ApiItem;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 	/**
 	 * Child nodes.
@@ -82,9 +92,15 @@ export class DocumentNode implements UnistParent<SectionNode>, DocumentNodePrope
 	public readonly type = DocumentationNodeType.Document;
 
 	/**
+<<<<<<< HEAD
 	 * {@inheritDoc DocumentNodeProps.documentItemMetadata}
 	 */
 	public readonly documentItemMetadata: DocumentItemMetadata;
+=======
+	 * {@inheritDoc DocumentNodeProps.apiItem}
+	 */
+	public readonly apiItem?: ApiItem;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 	/**
 	 * {@inheritDoc DocumentNodeProps.children}
@@ -102,7 +118,11 @@ export class DocumentNode implements UnistParent<SectionNode>, DocumentNodePrope
 	public readonly frontMatter?: string;
 
 	public constructor(properties: DocumentNodeProperties) {
+<<<<<<< HEAD
 		this.documentItemMetadata = properties.documentItemMetadata;
+=======
+		this.apiItem = properties.apiItem;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		this.children = properties.children;
 		this.documentPath = properties.documentPath;
 		this.frontMatter = properties.frontMatter;

@@ -23,7 +23,11 @@ import { areSafelyAssignable, isAny, requireFalse, requireTrue } from "../../uti
 // eslint-disable-next-line import/no-internal-modules
 import { structuralName } from "../../domains/schemaBuilder";
 // eslint-disable-next-line import/no-internal-modules
+<<<<<<< HEAD
 import { extractFactoryContent } from "../../feature-libraries/editable-tree-2/proxies/objectFactory";
+=======
+import { extractFactoryContent } from "../../feature-libraries/editable-tree-2/proxies/proxies";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 describe("domains - SchemaBuilder", () => {
 	describe("list", () => {
@@ -248,10 +252,17 @@ describe("domains - SchemaBuilder", () => {
 			const z: number | undefined = x.recursive?.recursive?.number;
 		}
 
+<<<<<<< HEAD
 		const inner = recursiveObject.create({ recursive: undefined, number: 5 });
 		const testOptional = recursiveObject.create({ number: 5 });
 
 		const outer1 = recursiveObject.create({ recursive: inner, number: 1 });
+=======
+		const innerContents = { recursive: undefined, number: 5 };
+		const inner = recursiveObject.create(innerContents);
+		const testOptional = recursiveObject.create({ number: 5 });
+		const outer1 = recursiveObject.create({ recursive: innerContents, number: 1 });
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		const outer2 = recursiveObject.create({ recursive: { number: 5 }, number: 1 });
 
 		checkCreated(inner, { number: 5, recursive: undefined });

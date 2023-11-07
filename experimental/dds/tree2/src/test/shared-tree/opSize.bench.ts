@@ -57,11 +57,15 @@ function initializeTestTree(
 	state: JsonableTree = initialTestJsonTree,
 ): ISharedTreeView {
 	const writeCursor = singleTextCursor(state);
+<<<<<<< HEAD
 	return tree.schematizeView({
+=======
+	return tree.schematize({
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		allowedSchemaModifications: AllowedUpdateType.SchemaCompatible,
 		initialTree: [writeCursor],
 		schema: fullSchemaData,
-	});
+	}).branch;
 }
 
 function utf8Length(data: JsonCompatibleReadOnly): number {

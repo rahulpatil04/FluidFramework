@@ -13,7 +13,6 @@ import {
 	TreeNodeSchemaIdentifier,
 	TreeFieldSchema,
 	getPrimaryField,
-	isPrimitive,
 	FieldKey,
 	leaf,
 	EmptyKey,
@@ -66,7 +65,11 @@ describe("schema converter", () => {
 						fail("missing schema");
 					assert(innerTypes !== Any);
 					const innerSchema = oneFromSet(innerTypes) ?? fail("unexpected polymorphism");
+<<<<<<< HEAD
 					assert(isPrimitive(innerSchema));
+=======
+					assert(innerSchema.leafValue !== undefined);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 				}
 				assert(
 					fullSchemaData.nodeSchema.get(brand(`converted.map<${typeName}>`)) !==

@@ -8,7 +8,17 @@ import { FieldKey } from "../schema-stored";
 import * as Delta from "./delta";
 import { NodeIndex, PlaceIndex, Range } from "./pathTree";
 import { ForestRootId, DetachedFieldIndex } from "./detachedFieldIndex";
+<<<<<<< HEAD
 import { areDetachedNodeIdsEqual, isAttachMark, isDetachMark, isReplaceMark } from "./deltaUtil";
+=======
+import {
+	areDetachedNodeIdsEqual,
+	isAttachMark,
+	isDetachMark,
+	isReplaceMark,
+	offsetDetachId,
+} from "./deltaUtil";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 /**
  * Implementation notes:
@@ -330,6 +340,7 @@ function visitNode(
 	}
 }
 
+<<<<<<< HEAD
 function offsetDetachId(detachId: Delta.DetachedNodeId, offset: number): Delta.DetachedNodeId;
 function offsetDetachId(
 	detachId: Delta.DetachedNodeId | undefined,
@@ -348,6 +359,8 @@ function offsetDetachId(
 	};
 }
 
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 /**
  * Performs the following:
  * - Performs all root creations

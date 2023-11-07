@@ -19,6 +19,10 @@ import {
 	ITreeCursorSynchronous,
 	TreeStoredSchema,
 	TreeValue,
+<<<<<<< HEAD
+=======
+	isCursor,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 } from "../core";
 // TODO:
 // This module currently is assuming use of default-field-kinds.
@@ -32,7 +36,6 @@ import {
 	allowedTypesToTypeSet,
 } from "./typed-schema";
 import { singleMapTreeCursor } from "./mapTreeCursor";
-import { areCursors, isPrimitive } from "./editable-tree";
 import { AllowedTypesToTypedTrees, ApiMode, TypedField, TypedNode } from "./schema-aware";
 
 /**
@@ -46,6 +49,44 @@ import { AllowedTypesToTypedTrees, ApiMode, TypedField, TypedNode } from "./sche
  * For example guarantee which fields and nodes should be inlined, and that types will be required everywhere.
  * See {@link EditableTree} for an example of this.
  */
+
+/**
+ * Check if NewFieldContent is made of {@link ITreeCursor}s.
+ *
+ * Useful when APIs want to take in tree data in multiple formats, including cursors.
+ */
+export function areCursors(
+	data: NewFieldContent,
+): data is ITreeCursorSynchronous | readonly ITreeCursorSynchronous[] {
+	if (isCursor(data)) {
+		return true;
+	}
+
+	if (Array.isArray(data) && data.length >= 0 && isCursor(data[0])) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * @returns true iff `schema` trees should default to being viewed as just their value when possible.
+ *
+ * @remarks
+ * TODO:
+ * This (like most things in this file) works with stored schema doing things that should be done with view schema.
+ * This just replicates the old editable-tree policy: this entire file should get replaced with the new factory based approach which has access to view schema to align this with how LeafSchema work.
+ * @alpha
+ */
+export function isPrimitive(schema: TreeNodeStoredSchema): boolean {
+	// TODO: use a separate `ITreeSchema` type, with metadata that determines if the type is primitive.
+	// Since the above is not done yet, use use a heuristic:
+	return (
+		schema.leafValue !== undefined &&
+		schema.objectNodeFields.size === 0 &&
+		schema.mapFields === undefined
+	);
+}
 
 /**
  * String which identifies this code.
@@ -132,10 +173,18 @@ export type FluidSerializableReadOnly =
 	| { readonly [P in string]?: FluidSerializableReadOnly };
 
 // TODO: replace test in FluidSerializer.encodeValue with this.
+<<<<<<< HEAD
 export function isFluidHandle(value: undefined | FluidSerializableReadOnly): value is IFluidHandle {
 	if (typeof value !== "object" || value === null) {
 		return false;
 	}
+=======
+export function isFluidHandle(value: unknown): value is IFluidHandle {
+	if (typeof value !== "object" || value === null || !("IFluidHandle" in value)) {
+		return false;
+	}
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	const handle = (value as Partial<IFluidHandle>).IFluidHandle;
 	// Regular Json compatible data can have fields named "IFluidHandle" (especially if field names come from user data).
 	// Separate this case from actual Fluid handles by checking for a circular reference: Json data can't have this circular reference so it is a safe way to detect IFluidHandles.
@@ -144,10 +193,17 @@ export function isFluidHandle(value: undefined | FluidSerializableReadOnly): val
 	// do an extra test.
 	// Since json compatible data shouldn't have methods, and IFluidHandle requires one, use that as a redundant check:
 	const getMember = (value as Partial<IFluidHandle>).get;
+<<<<<<< HEAD
 	assert(
 		(typeof getMember === "function") === isHandle,
 		0x76e /* Fluid handle detection via get method should match detection via IFluidHandle field */,
 	);
+=======
+	if (typeof getMember !== "function") {
+		return false;
+	}
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	return isHandle;
 }
 
@@ -395,7 +451,11 @@ function shallowCompatibilityTest(
 	);
 	const schema =
 		schemaData.nodeSchema.get(type) ?? fail("requested type does not exist in schema");
+<<<<<<< HEAD
 	if (isPrimitiveValue(data) || data === null) {
+=======
+	if (isPrimitiveValue(data) || data === null || isFluidHandle(data)) {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		return allowsValue(schema.leafValue, data);
 	}
 	// TODO: once this is using view schema, replace with schemaIsLeaf
@@ -534,7 +594,11 @@ export function applyTypesFromContext(
 	const schema =
 		context.schema.nodeSchema.get(type) ?? fail("requested type does not exist in schema");
 
+<<<<<<< HEAD
 	if (isPrimitiveValue(data) || data === null) {
+=======
+	if (isPrimitiveValue(data) || data === null || isFluidHandle(data)) {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		assert(
 			allowsValue(schema.leafValue, data),
 			0x4d3 /* unsupported schema for provided primitive */,

@@ -8,6 +8,10 @@ import { BaseContainerRuntimeFactory } from '@fluidframework/aqueduct';
 import { DataObject } from '@fluidframework/aqueduct';
 import { DataObjectFactory } from '@fluidframework/aqueduct';
 import { DataObjectTypes } from '@fluidframework/aqueduct';
+<<<<<<< HEAD
+=======
+import { FluidObject } from '@fluidframework/core-interfaces';
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { ICodeDetailsLoader } from '@fluidframework/container-definitions';
 import { IContainer } from '@fluidframework/container-definitions';
 import { IContainerContext } from '@fluidframework/container-definitions';
@@ -18,6 +22,10 @@ import type { IEventProvider } from '@fluidframework/core-interfaces';
 import { IFluidCodeDetails } from '@fluidframework/container-definitions';
 import { IFluidDataStoreFactory } from '@fluidframework/runtime-definitions';
 import { IFluidModuleWithDetails } from '@fluidframework/container-definitions';
+<<<<<<< HEAD
+=======
+import { IFluidMountableView } from '@fluidframework/view-interfaces';
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { ILoaderProps } from '@fluidframework/container-loader';
 import type { IRequest } from '@fluidframework/core-interfaces';
 import type { IResponse } from '@fluidframework/core-interfaces';
@@ -36,6 +44,12 @@ export class ContainerViewRuntimeFactory<T> extends BaseContainerRuntimeFactory 
 // @public
 export type DataTransformationCallback = (exportedData: unknown, modelVersion: string) => Promise<unknown>;
 
+<<<<<<< HEAD
+=======
+// @public (undocumented)
+export function getDataStoreEntryPoint<T>(containerRuntime: IContainerRuntime, alias: string): Promise<T>;
+
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 // @public
 export interface IDetachedModel<ModelType> {
     attach: () => Promise<string>;
@@ -43,6 +57,17 @@ export interface IDetachedModel<ModelType> {
 }
 
 // @public (undocumented)
+<<<<<<< HEAD
+=======
+export interface IFluidMountableViewEntryPoint {
+    // (undocumented)
+    getDefaultDataObject(): Promise<FluidObject>;
+    // (undocumented)
+    getMountableDefaultView(path?: string): Promise<IFluidMountableView>;
+}
+
+// @public (undocumented)
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 export interface IImportExportModel<ImportType, ExportType> {
     exportData: () => Promise<ExportType>;
     importData: (initialData: ImportType) => Promise<void>;
@@ -97,6 +122,15 @@ export interface IMigratorEvents extends IEvent {
 }
 
 // @public (undocumented)
+<<<<<<< HEAD
+=======
+export interface IModelContainerRuntimeEntryPoint<T> {
+    // (undocumented)
+    getModel(container: IContainer): Promise<T>;
+}
+
+// @public (undocumented)
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 export interface IModelLoader<ModelType> {
     createDetached(version: string): Promise<IDetachedModel<ModelType>>;
     loadExisting(id: string): Promise<ModelType>;

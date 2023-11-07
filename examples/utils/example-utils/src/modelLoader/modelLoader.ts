@@ -11,9 +11,14 @@ import {
 import { ILoaderProps, Loader } from "@fluidframework/container-loader";
 import type { IContainerRuntime } from "@fluidframework/container-runtime-definitions";
 import type { IRequest, IResponse } from "@fluidframework/core-interfaces";
+<<<<<<< HEAD
 // eslint-disable-next-line import/no-deprecated
 import { create404Response, requestFluidObject } from "@fluidframework/runtime-utils";
+=======
+import { create404Response } from "@fluidframework/runtime-utils";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import type { IDetachedModel, IModelLoader, ModelMakerCallback } from "./interfaces";
+import { IModelContainerRuntimeEntryPoint } from "./modelContainerRuntimeFactory";
 
 // This ModelLoader works on a convention, that the container it will load a model for must respond to a specific
 // request format with the model object.  Here we export a helper function for those container authors to align to
@@ -97,12 +102,18 @@ export class ModelLoader<ModelType> implements IModelLoader<ModelType> {
 	 * loader that separately fetches model code and wraps the container from the outside.
 	 */
 	private async getModelFromContainer(container: IContainer) {
+<<<<<<< HEAD
 		const request: IModelRequest = {
 			url: modelUrl,
 			headers: { containerRef: container },
 		};
 		// eslint-disable-next-line import/no-deprecated
 		return requestFluidObject<ModelType>(container, request);
+=======
+		const entryPoint =
+			(await container.getEntryPoint()) as IModelContainerRuntimeEntryPoint<ModelType>;
+		return entryPoint.getModel(container);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 
 	// It would be preferable for attaching to look more like service.attach(model) rather than returning an attach

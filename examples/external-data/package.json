@@ -84,7 +84,11 @@
 	"devDependencies": {
 		"@fluidframework/build-common": "^2.0.3",
 		"@fluidframework/build-tools": "^0.26.1",
+<<<<<<< HEAD
 		"@fluidframework/eslint-config-fluid": "^3.0.0",
+=======
+		"@fluidframework/eslint-config-fluid": "^3.1.0",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"@fluidframework/test-tools": "^1.0.195075",
 		"@types/cors": "^2.8.4",
 		"@types/expect-puppeteer": "2.2.1",

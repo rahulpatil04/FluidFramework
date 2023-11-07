@@ -7,6 +7,10 @@ import { type ISharedTree } from "@fluid-experimental/tree2";
 import { type SharedTree as LegacySharedTree } from "@fluid-experimental/tree";
 import {
 	type IChannel,
+<<<<<<< HEAD
+=======
+	type IChannelAttributes,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	type IChannelServices,
 	type IDeltaHandler,
 } from "@fluidframework/datastore-definitions";
@@ -26,6 +30,20 @@ export interface IShimDeltaHandler extends IDeltaHandler {
 	 * Otherwise the IShimDeltaHandler will not be able to process ops.
 	 */
 	hasTreeDeltaHandler(): boolean;
+<<<<<<< HEAD
+=======
+
+	attached: boolean;
+
+	markAttached(): void;
+}
+
+/**
+ * An interface for interrogating ops to see if they are stamped or not so that we can choose to drop them.
+ */
+export interface IStampedContents {
+	fluidMigrationStamp?: IChannelAttributes;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 }
 
 /**

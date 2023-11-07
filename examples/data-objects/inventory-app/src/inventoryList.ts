@@ -7,7 +7,11 @@ import { DataObject, DataObjectFactory } from "@fluidframework/aqueduct";
 import {
 	ForestType,
 	ISharedTree,
+<<<<<<< HEAD
 	ISharedTreeView,
+=======
+	ISharedTreeView2,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	SharedTreeFactory,
 	typeboxValidator,
 } from "@fluid-experimental/tree2";
@@ -23,12 +27,20 @@ const factory = new SharedTreeFactory({
 
 export class InventoryList extends DataObject {
 	#tree?: ISharedTree;
+<<<<<<< HEAD
 	#view?: ISharedTreeView;
+=======
+	#view?: ISharedTreeView2<typeof treeConfiguration.schema.rootFieldSchema>;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 	public get inventory(): Inventory {
 		if (this.#view === undefined)
 			throw new Error("view should be initialized by hasInitialized");
+<<<<<<< HEAD
 		return this.#view.root2(treeConfiguration.schema);
+=======
+		return this.#view.root;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 
 	protected async initializingFirstTime() {
@@ -46,7 +58,11 @@ export class InventoryList extends DataObject {
 	protected async hasInitialized() {
 		if (this.#tree === undefined)
 			throw new Error("tree should be initialized by initializing* methods");
+<<<<<<< HEAD
 		this.#view = this.#tree.schematizeView(treeConfiguration);
+=======
+		this.#view = this.#tree.schematize(treeConfiguration);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	}
 }
 

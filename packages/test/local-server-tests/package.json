@@ -71,7 +71,11 @@
 		"@fluidframework/driver-base": "workspace:~",
 		"@fluidframework/driver-definitions": "workspace:~",
 		"@fluidframework/driver-utils": "workspace:~",
+<<<<<<< HEAD
 		"@fluidframework/eslint-config-fluid": "^3.0.0",
+=======
+		"@fluidframework/eslint-config-fluid": "^3.1.0",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"@fluidframework/ink": "workspace:~",
 		"@fluidframework/local-driver": "workspace:~",
 		"@fluidframework/map": "workspace:~",

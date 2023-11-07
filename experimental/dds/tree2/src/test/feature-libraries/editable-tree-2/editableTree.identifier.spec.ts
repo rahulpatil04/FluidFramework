@@ -77,6 +77,12 @@ describe("editable-tree: node keys", () => {
 		const parentNode = view.content;
 		const childA = parentNode.children.at(0);
 		const childB = parentNode.children.at(1);
+<<<<<<< HEAD
+=======
+		// We know how the test tree looks so these should not be undefined.
+		assert(childA !== undefined, "Tried to access node that doesn't exist (index 0)");
+		assert(childB !== undefined, "Tried to access node that doesn't exist (index 1)");
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		assert.equal(parentNode.localNodeKey, parentKey);
 		assert.equal(childA.localNodeKey, childAKey);
 		assert.equal(childB.localNodeKey, childBKey);
@@ -87,6 +93,12 @@ describe("editable-tree: node keys", () => {
 		const parentNode = view.content;
 		const childA = parentNode.children.at(0);
 		const childB = parentNode.children.at(1);
+<<<<<<< HEAD
+=======
+		// We know how the test tree looks so these should not be undefined.
+		assert(childA !== undefined, "Tried to access node that doesn't exist (index 0)");
+		assert(childB !== undefined, "Tried to access node that doesn't exist (index 1)");
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		assert.equal(
 			parentNode[nodeKeyFieldKey].stableNodeKey,
 			view.context.nodeKeys.stabilize(parentKey),

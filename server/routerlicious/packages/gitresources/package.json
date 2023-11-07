@@ -15,7 +15,11 @@
 	"scripts": {
 		"build": "concurrently npm:build:compile npm:lint && npm run build:docs",
 		"build:compile": "npm run tsc && npm run typetests:gen",
+<<<<<<< HEAD
 		"build:docs": "api-extractor run --local && copyfiles -u 1 ./_api-extractor-temp/doc-models/* ../../_api-extractor-temp/",
+=======
+		"build:docs": "api-extractor run --local && copyfiles -u 1 \"./_api-extractor-temp/doc-models/*\" ../../_api-extractor-temp/",
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		"clean": "rimraf --glob dist \"*.tsbuildinfo\" \"*.build.log\" _api-extractor-temp",
 		"eslint": "eslint --format stylish src",
 		"eslint:fix": "eslint --format stylish src --fix --fix-type problem,suggestion,layout",

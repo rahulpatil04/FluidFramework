@@ -5,14 +5,24 @@
 
 import { assert } from "@fluidframework/core-utils";
 import {
+<<<<<<< HEAD
 	IEditableForest,
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	moveToDetachedField,
 	ForestEvents,
 	TreeFieldStoredSchema,
 	FieldKey,
+<<<<<<< HEAD
 } from "../../core";
 import { ISubscribable } from "../../events";
 import { DefaultEditBuilder } from "../default-field-kinds";
+=======
+	IForestSubscription,
+} from "../../core";
+import { ISubscribable } from "../../events";
+import { IDefaultEditBuilder } from "../default-field-kinds";
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 import { NodeKeyIndex, NodeKeyManager } from "../node-key";
 import { FieldGenerator } from "../contextuallyTyped";
 import { TreeSchema } from "../typed-schema";
@@ -66,8 +76,13 @@ export class Context implements TreeContext, IDisposable {
 	 */
 	public constructor(
 		public readonly schema: TreeSchema,
+<<<<<<< HEAD
 		public readonly forest: IEditableForest,
 		public readonly editor: DefaultEditBuilder,
+=======
+		public readonly forest: IForestSubscription,
+		public readonly editor: IDefaultEditBuilder,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		public readonly nodeKeys: NodeKeys,
 		public readonly nodeKeyFieldKey: FieldKey,
 	) {
@@ -142,8 +157,13 @@ export class Context implements TreeContext, IDisposable {
  */
 export function getTreeContext(
 	schema: TreeSchema,
+<<<<<<< HEAD
 	forest: IEditableForest,
 	editor: DefaultEditBuilder,
+=======
+	forest: IForestSubscription,
+	editor: IDefaultEditBuilder,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	nodeKeyManager: NodeKeyManager,
 	nodeKeyFieldKey: FieldKey,
 ): Context {

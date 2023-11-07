@@ -45,7 +45,11 @@ describe("Summary benchmarks", () => {
 			const { summary } = tree.getAttachSummary(true);
 			const summaryString = JSON.stringify(summary);
 			const summarySize = IsoBuffer.from(summaryString).byteLength;
+<<<<<<< HEAD
 			assert(summarySize < 500);
+=======
+			assert(summarySize < 600);
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		});
 		for (const [numberOfNodes, minLength, maxLength] of nodesCountWide) {
 			it(`a wide tree with ${numberOfNodes} nodes.`, async () => {

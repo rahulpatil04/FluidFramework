@@ -16,14 +16,14 @@ export const pointSchema = builder.object("point", {
 export const appSchemaData = builder.intoSchema(builder.sequence(pointSchema));
 
 // Schema aware types
+<<<<<<< HEAD
 export type Number = SchemaAware.TypedNode<typeof leaf.number>;
 
 export type Point = SchemaAware.TypedNode<typeof pointSchema>;
+=======
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 // Example Use
-function dotProduct(a: Point, b: Point): number {
-	return a.x * b.x + a.y * b.y;
-}
 
 // More Schema aware APIs
 {

@@ -7,7 +7,11 @@ import {
 	AllowedUpdateType,
 	ForestType,
 	ISharedTree,
+<<<<<<< HEAD
 	node,
+=======
+	Tree,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	ProxyNode,
 	SchemaBuilder,
 	SharedTreeFactory,
@@ -79,8 +83,13 @@ class NewTreeInventoryItem extends TypedEmitter<IInventoryItemEvents> implements
 		super();
 		// Note that this is not a normal Node EventEmitter and functions differently.  There is no "off" method,
 		// but instead "on" returns a callback to unregister the event.  AB#5973
+<<<<<<< HEAD
 		// node.on() is the way to register events on the inventory item (the first argument).  AB#6051
 		this._unregisterChangingEvent = node.on(this._inventoryItemNode, "changing", () => {
+=======
+		// Tree.on() is the way to register events on the inventory item (the first argument).  AB#6051
+		this._unregisterChangingEvent = Tree.on(this._inventoryItemNode, "changing", () => {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			this.emit("quantityChanged");
 		});
 	}
@@ -154,6 +163,7 @@ export class NewTreeInventoryList extends DataObject implements IInventoryList {
 		// 3. On all loads, gets an (untyped) view of the data (the contents can't be accessed directly from the sharedTree).
 		// Then the root2() call applies a typing to the untyped view based on our schema.  After that we can actually
 		// reach in and grab the inventoryItems list.
+<<<<<<< HEAD
 		this._inventoryItemList = this.sharedTree
 			.schematizeView({
 				initialTree: {
@@ -177,13 +187,41 @@ export class NewTreeInventoryList extends DataObject implements IInventoryList {
 				schema,
 			})
 			.root2(schema).inventoryItemList;
+=======
+		this._inventoryItemList = this.sharedTree.schematize({
+			initialTree: {
+				inventoryItemList: {
+					// TODO: The list type unfortunately needs this "" key for now, but it's supposed to go away soon.
+					"": [
+						{
+							id: uuid(),
+							name: "nut",
+							quantity: 0,
+						},
+						{
+							id: uuid(),
+							name: "bolt",
+							quantity: 0,
+						},
+					],
+				},
+			},
+			allowedSchemaModifications: AllowedUpdateType.None,
+			schema,
+		}).root.inventoryItemList;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		// afterChange will fire for any change of any type anywhere in the subtree.  In this application we expect
 		// three types of tree changes that will trigger this handler - add items, delete items, change item quantities.
 		// Since "afterChange" doesn't provide event args, we need to scan the tree and compare it to our InventoryItems
 		// to find what changed.  We'll intentionally ignore the quantity changes here, which are instead handled by
 		// "changing" listeners on each individual item node.
+<<<<<<< HEAD
 		// node.on() is the way to register events on the list (the first argument).  AB#6051
 		node.on(this.inventoryItemList, "afterChange", () => {
+=======
+		// Tree.on() is the way to register events on the list (the first argument).  AB#6051
+		Tree.on(this.inventoryItemList, "afterChange", () => {
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 			for (const inventoryItemNode of this.inventoryItemList) {
 				// If we're not currently tracking some item in the tree, then it must have been
 				// added in this change.

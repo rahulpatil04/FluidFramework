@@ -22,7 +22,11 @@ import {
 	type ISharedTree,
 	SchemaBuilder,
 	SharedTreeFactory,
+<<<<<<< HEAD
 	type ISharedTreeView,
+=======
+	type ISharedTreeView2,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 	type ProxyNode,
 } from "@fluid-experimental/tree2";
 import { type IFluidHandle } from "@fluidframework/core-interfaces";
@@ -55,8 +59,13 @@ const rootType = builder.object("abc", {
 });
 const schema = builder.intoSchema(rootType);
 
+<<<<<<< HEAD
 function getNewTreeView(tree: ISharedTree): ISharedTreeView {
 	return tree.schematizeView({
+=======
+function getNewTreeView(tree: ISharedTree): ISharedTreeView2<typeof schema.rootFieldSchema> {
+	return tree.schematize({
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 		initialTree: {
 			quantity: 0,
 		},
@@ -127,8 +136,13 @@ describeNoCompat("SharedTreeShim", (getTestObjectProvider) => {
 		await provider.ensureSynchronized();
 
 		// This does some typing and gives us the root node.
+<<<<<<< HEAD
 		const rootNode1: ProxyNode<typeof rootType> = view1.root2(schema);
 		const rootNode2: ProxyNode<typeof rootType> = view2.root2(schema);
+=======
+		const rootNode1: ProxyNode<typeof rootType> = view1.root;
+		const rootNode2: ProxyNode<typeof rootType> = view2.root;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 		// Test that we can modify/send ops with the new Shared Tree
 		rootNode1.quantity = testValue;
@@ -154,7 +168,11 @@ describeNoCompat("SharedTreeShim", (getTestObjectProvider) => {
 		const shim3 = await testObj3.getTree();
 		const tree3 = shim3.currentTree;
 		const view3 = getNewTreeView(tree3);
+<<<<<<< HEAD
 		const rootNode3: ProxyNode<typeof rootType> = view3.root2(schema);
+=======
+		const rootNode3: ProxyNode<typeof rootType> = view3.root;
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 
 		// Verify that it matches the previous node
 		await provider.ensureSynchronized();

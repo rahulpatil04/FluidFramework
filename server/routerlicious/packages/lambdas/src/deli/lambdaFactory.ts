@@ -250,7 +250,14 @@ export class DeliLambdaFactory
 							3 /* maxRetries */,
 							1000 /* retryAfterMs */,
 							getLumberBaseProperties(documentId, tenantId),
+<<<<<<< HEAD
 							(error) => error.code === 11000 /* shouldIgnoreError */,
+=======
+							(error) =>
+								error.code === 11000 ||
+								error.message?.toString()?.indexOf("E11000 duplicate key") >=
+									0 /* shouldIgnoreError */,
+>>>>>>> 0bf5c00ade67744f59337227c17c5aa11c19c2df
 							(error) => true /* shouldRetry */,
 						);
 
