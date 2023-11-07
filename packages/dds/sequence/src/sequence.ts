@@ -2,7 +2,11 @@
  * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
  * Licensed under the MIT License.
  */
-import { Deferred, bufferToString, assert } from "@fluidframework/common-utils";
+
+/* eslint-disable import/no-deprecated */
+
+import { assert, Deferred } from "@fluidframework/core-utils";
+import { bufferToString } from "@fluid-internal/client-utils";
 import { LoggingError, createChildLogger } from "@fluidframework/telemetry-utils";
 import { ISequencedDocumentMessage, MessageType } from "@fluidframework/protocol-definitions";
 import {
@@ -94,6 +98,7 @@ const contentPath = "content";
  * - `event` - Various information on the segments that were modified.
  *
  * - `target` - The sequence itself.
+ * @public
  */
 export interface ISharedSegmentSequenceEvents extends ISharedObjectEvents {
 	(
@@ -110,6 +115,9 @@ export interface ISharedSegmentSequenceEvents extends ISharedObjectEvents {
 	);
 }
 
+/**
+ * @public
+ */
 export abstract class SharedSegmentSequence<T extends ISegment>
 	extends SharedObject<ISharedSegmentSequenceEvents>
 	implements ISharedIntervalCollection<SequenceInterval>, MergeTreeRevertibleDriver
@@ -264,7 +272,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 	}
 
 	/**
-	 * @deprecated - The ability to create group ops will be removed in an upcoming release, as group ops are redundant with the native batching capabilities of the runtime
+	 * @deprecated The ability to create group ops will be removed in an upcoming release, as group ops are redundant with the native batching capabilities of the runtime
 	 */
 	public groupOperation(groupOp: IMergeTreeGroupMsg) {
 		this.guardReentrancy(() => this.client.localTransaction(groupOp));
@@ -338,6 +346,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 		refType: ReferenceType,
 		properties: PropertySet | undefined,
 		slidingPreference?: SlidingPreference,
+		canSlideToEndpoint?: boolean,
 	): LocalReferencePosition {
 		return this.client.createLocalReferencePosition(
 			segment,
@@ -345,6 +354,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 			refType,
 			properties,
 			slidingPreference,
+			canSlideToEndpoint,
 		);
 	}
 
@@ -389,7 +399,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 	}
 
 	/**
-	 * @deprecated - This method will no longer be public in an upcoming release as it is not safe to use outside of this class
+	 * @deprecated This method will no longer be public in an upcoming release as it is not safe to use outside of this class
 	 */
 	public submitSequenceMessage(message: IMergeTreeOp) {
 		if (!this.isAttached()) {
@@ -443,14 +453,14 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 	}
 
 	/**
-	 * @deprecated - this functionality is no longer supported and will be removed
+	 * @deprecated this functionality is no longer supported and will be removed
 	 */
 	public getStackContext(startPos: number, rangeLabels: string[]): RangeStackMap {
 		return this.client.getStackContext(startPos, rangeLabels);
 	}
 
 	/**
-	 * @returns - The most recent sequence number which has been acked by the server and processed by this
+	 * @returns The most recent sequence number which has been acked by the server and processed by this
 	 * SharedSegmentSequence.
 	 */
 	public getCurrentSeq() {
@@ -487,6 +497,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 	 * @returns An iterable object that enumerates the IntervalCollection labels.
 	 *
 	 * @example
+	 *
 	 * ```typescript
 	 * const iter = this.getIntervalCollectionKeys();
 	 * for (key of iter)
@@ -614,7 +625,8 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 							m.minimumSequenceNumber < collabWindow.minSeq ||
 							m.referenceSequenceNumber < collabWindow.minSeq ||
 							m.sequenceNumber <= collabWindow.minSeq ||
-							m.sequenceNumber <= collabWindow.currentSeq
+							// sequenceNumber could be the same if messages are part of a grouped batch
+							m.sequenceNumber < collabWindow.currentSeq
 						) {
 							throw new Error(
 								`Invalid catchup operations in snapshot: ${JSON.stringify({
@@ -702,7 +714,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 	 * {@inheritDoc @fluidframework/shared-object-base#SharedObjectCore.applyStashedOp}
 	 */
 	protected applyStashedOp(content: any): unknown {
-		return this.client.applyStashedOp(content);
+		return this.client.applyStashedOp(parseHandles(content, this.serializer));
 	}
 
 	private summarizeMergeTree(serializer: IFluidSerializer): ISummaryTreeWithStats {

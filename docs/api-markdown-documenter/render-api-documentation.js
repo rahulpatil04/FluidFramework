@@ -4,19 +4,21 @@
  */
 
 const {
+	ApiItemKind,
 	DocumentationNodeType,
 	getApiItemTransformationConfigurationWithDefaults,
 	loadModel,
-	renderDocumentAsMarkdown,
+	MarkdownRenderer,
 	transformApiModel,
 } = require("@fluid-tools/api-markdown-documenter");
-const { ApiItemKind } = require("@microsoft/api-extractor-model");
 const { PackageName } = require("@rushstack/node-core-library");
 const fs = require("fs-extra");
 const path = require("path");
 
-const { createHugoFrontMatter } = require("./front-matter");
+const { alertNodeType } = require("./alert-node");
+const { layoutContent } = require("./api-documentation-layout");
 const { renderAlertNode, renderBlockQuoteNode, renderTableNode } = require("./custom-renderers");
+const { createHugoFrontMatter } = require("./front-matter");
 
 const apiReportsDirectoryPath = path.resolve(__dirname, "..", "_api-extractor-temp", "_build");
 const apiDocsDirectoryPath = path.resolve(__dirname, "..", "content", "docs", "apis");
@@ -34,9 +36,9 @@ async function renderApiDocumentation() {
 
 	// Custom renderers that utilize Hugo syntax for certain kinds of documentation elements.
 	const customRenderers = {
-		[DocumentationNodeType.Alert]: renderAlertNode,
 		[DocumentationNodeType.BlockQuote]: renderBlockQuoteNode,
 		[DocumentationNodeType.Table]: renderTableNode,
+		[alertNodeType]: renderAlertNode,
 	};
 
 	console.groupEnd();
@@ -46,6 +48,7 @@ async function renderApiDocumentation() {
 		newlineKind: "lf",
 		uriRoot: "/docs/apis",
 		includeTopLevelDocumentHeading: false, // This will be added automatically by Hugo
+		createDefaultLayout: layoutContent,
 		packageFilterPolicy: (apiPackage) => {
 			// Skip `@fluid-internal` packages
 			const packageName = apiPackage.displayName;
@@ -55,7 +58,6 @@ async function renderApiDocumentation() {
 
 			return ["@fluid-internal"].includes(packageScope);
 		},
-
 		fileNamePolicy: (apiItem) => {
 			return apiItem.kind === ApiItemKind.Model
 				? "index"
@@ -84,16 +86,16 @@ async function renderApiDocumentation() {
 		documents.map(async (document) => {
 			let fileContents;
 			try {
-				fileContents = renderDocumentAsMarkdown(document, {
+				fileContents = MarkdownRenderer.renderDocument(document, {
 					startingHeadingLevel: 2, // Hugo will inject its document titles as 1st level headings, so start content heading levels at 2.
-					renderers: customRenderers,
+					customRenderers,
 				});
 			} catch (error) {
 				console.error("Encountered error while rendering Markdown:", error);
 				throw error;
 			}
 
-			let filePath = path.join(apiDocsDirectoryPath, document.filePath);
+			let filePath = path.join(apiDocsDirectoryPath, `${document.documentPath}.md`);
 
 			try {
 				// Hugo uses a special file-naming syntax to represent documents with "child" documents in the same directory.

@@ -3,9 +3,10 @@
  * Licensed under the MIT License.
  */
 
+/* eslint-disable import/no-deprecated */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { assert } from "@fluidframework/common-utils";
+import { assert } from "@fluidframework/core-utils";
 import { UnassignedSequenceNumber, UniversalSequenceNumber } from "./constants";
 import { ICombiningOp, IMergeTreeAnnotateMsg } from "./ops";
 import { combine, createMap, MapLike, PropertySet } from "./properties";
@@ -160,10 +161,8 @@ export class PropertiesManager {
 		newManager: PropertiesManager,
 	): PropertySet | undefined {
 		if (oldProps) {
-			if (!newProps) {
-				// eslint-disable-next-line no-param-reassign
-				newProps = createMap<any>();
-			}
+			// eslint-disable-next-line no-param-reassign
+			newProps ??= createMap<any>();
 			if (!newManager) {
 				throw new Error("Must provide new PropertyManager");
 			}

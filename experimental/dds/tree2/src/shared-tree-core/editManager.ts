@@ -4,23 +4,20 @@
  */
 
 import BTree from "sorted-btree";
-import { assert } from "@fluidframework/common-utils";
+import { assert } from "@fluidframework/core-utils";
 import { brand, fail, getOrCreate, mapIterable, Mutable, RecursiveReadonly } from "../util";
 import {
-	AnchorSet,
 	assertIsRevisionTag,
 	ChangeFamily,
 	ChangeFamilyEditor,
 	findAncestor,
 	findCommonAncestor,
 	GraphCommit,
-	IRepairDataStoreProvider,
 	mintCommit,
 	rebaseChange,
 	RevisionTag,
 	SessionId,
 	SimpleDependee,
-	UndoRedoManager,
 } from "../core";
 import { createEmitter, ISubscribable } from "../events";
 import { getChangeReplaceType, onForkTransitive, SharedTreeBranch } from "./branch";
@@ -81,9 +78,6 @@ export class EditManager<
 		sequenceIdComparator,
 	);
 
-	/** The {@link UndoRedoManager} associated with the trunk */
-	private readonly trunkUndoRedoManager: UndoRedoManager<TChangeset, TEditor>;
-
 	/**
 	 * Branches are maintained to represent the local change list that the issuing client had
 	 * at the time of submitting the latest known edit on the branch.
@@ -97,9 +91,6 @@ export class EditManager<
 	 * This branch holds the changes made by this client which have not yet been confirmed as sequenced changes.
 	 */
 	public readonly localBranch: SharedTreeBranch<TEditor, TChangeset>;
-
-	/** The {@link UndoRedoManager} associated with the local branch. */
-	private readonly localBranchUndoRedoManager: UndoRedoManager<TChangeset, TEditor>;
 
 	/**
 	 * Tracks where on the trunk all registered branches are based. Each key is the sequence id of a commit on
@@ -138,15 +129,11 @@ export class EditManager<
 	/**
 	 * @param changeFamily - the change family of changes on the trunk and local branch
 	 * @param localSessionId - the id of the local session that will be used for local commits
-	 * @param repairDataStoreProvider - used for undoing/redoing the local branch
-	 * @param anchors - an optional set of anchors to be rebased by the local branch when it changes
 	 */
 	public constructor(
 		public readonly changeFamily: TChangeFamily,
 		// TODO: Change this type to be the Session ID type provided by the IdCompressor when available.
 		public readonly localSessionId: SessionId,
-		repairDataStoreProvider: IRepairDataStoreProvider<TChangeset>,
-		anchors?: AnchorSet,
 	) {
 		super("EditManager");
 		this.trunkBase = {
@@ -154,21 +141,8 @@ export class EditManager<
 			change: changeFamily.rebaser.compose([]),
 		};
 		this.sequenceMap.set(minimumPossibleSequenceId, this.trunkBase);
-		this.localBranchUndoRedoManager = UndoRedoManager.create(changeFamily);
-		this.trunkUndoRedoManager = this.localBranchUndoRedoManager.clone();
-		this.trunk = new SharedTreeBranch(
-			this.trunkBase,
-			changeFamily,
-			repairDataStoreProvider.clone(),
-			this.trunkUndoRedoManager,
-		);
-		this.localBranch = new SharedTreeBranch(
-			this.trunk.getHead(),
-			changeFamily,
-			repairDataStoreProvider,
-			this.localBranchUndoRedoManager,
-			anchors,
-		);
+		this.trunk = new SharedTreeBranch(this.trunkBase, changeFamily);
+		this.localBranch = new SharedTreeBranch(this.trunk.getHead(), changeFamily);
 
 		// Track all forks of the local branch for purposes of trunk eviction. Unlike the local branch, they have
 		// an unknown lifetime and rebase frequency, so we can not make any assumptions about which trunk commits
@@ -303,7 +277,6 @@ export class EditManager<
 				(s, { revision }) => {
 					// Cleanup look-aside data for each evicted commit
 					this.trunkMetadata.delete(revision);
-					this.localBranchUndoRedoManager.untrackCommitType(revision);
 					// Delete all evicted commits from `sequenceMap` except for the latest one, which is the new `trunkBase`
 					if (equalSequenceIds(s, sequenceId)) {
 						assert(
@@ -319,11 +292,11 @@ export class EditManager<
 			const trunkSize = getPathFromBase(this.trunk.getHead(), this.trunkBase).length;
 			assert(
 				this.sequenceMap.size === trunkSize + 1,
-				"The size of the sequenceMap must have one element more than the trunk",
+				0x744 /* The size of the sequenceMap must have one element more than the trunk */,
 			);
 			assert(
 				this.trunkMetadata.size === trunkSize,
-				"The size of the trunkMetadata must be the same as the trunk",
+				0x745 /* The size of the trunkMetadata must be the same as the trunk */,
 			);
 		}
 	}
@@ -471,19 +444,6 @@ export class EditManager<
 		return Math.max(max, localPath.length);
 	}
 
-	/**
-	 * Needs to be called after a summary is loaded.
-	 * @remarks This is necessary to keep the trunk's repairDataStoreProvider up to date with the
-	 * local's after a summary load.
-	 */
-	public afterSummaryLoad(): void {
-		assert(
-			this.localBranch.repairDataStoreProvider !== undefined,
-			0x6cb /* Local branch must maintain repair data */,
-		);
-		this.trunk.repairDataStoreProvider = this.localBranch.repairDataStoreProvider.clone();
-	}
-
 	public addSequencedChange(
 		newCommit: Commit<TChangeset>,
 		sequenceNumber: SeqNumber,
@@ -572,16 +532,10 @@ export class EditManager<
 	}
 
 	private pushToTrunk(sequenceId: SequenceId, commit: Commit<TChangeset>, local = false): void {
-		this.trunk.setHead(mintCommit(this.trunk.getHead(), commit));
+		const mintedCommit = mintCommit(this.trunk.getHead(), commit);
+		this.trunk.setHead(mintedCommit);
+		this.localBranch.updateRevertibleCommit(mintedCommit);
 		const trunkHead = this.trunk.getHead();
-		if (local) {
-			const type =
-				this.localBranchUndoRedoManager.getCommitType(trunkHead.revision) ??
-				fail("Local commit types must be tracked until they are sequenced.");
-
-			this.trunkUndoRedoManager.trackCommit(trunkHead, type);
-		}
-		this.trunk.repairDataStoreProvider?.applyChange(commit.change);
 		this.sequenceMap.set(sequenceId, trunkHead);
 		this.trunkMetadata.set(trunkHead.revision, { sequenceId, sessionId: commit.sessionId });
 		this.events.emit("newTrunkHead", trunkHead);
@@ -610,7 +564,7 @@ export class EditManager<
 				: searchBy;
 
 		const commit = this.sequenceMap.getPairOrNextLower(sequenceId);
-		assert(commit !== undefined, "sequence id has been evicted");
+		assert(commit !== undefined, 0x746 /* sequence id has been evicted */);
 		return commit;
 	}
 

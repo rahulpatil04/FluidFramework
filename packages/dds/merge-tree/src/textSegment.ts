@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { assert } from "@fluidframework/common-utils";
+import { assert } from "@fluidframework/core-utils";
 import { BaseSegment, ISegment } from "./mergeTreeNodes";
 import { IJSONSegment } from "./ops";
 import { PropertySet } from "./properties";
@@ -114,6 +114,9 @@ export class TextSegment extends BaseSegment {
 	}
 }
 
+/**
+ * @deprecated This functionality was not meant to be exported and will be removed in a future release
+ */
 export interface IMergeTreeTextHelper {
 	getText(
 		refSeq: number,

@@ -27,8 +27,10 @@ export {
 	FlushableBinderOptions,
 	FlushableDataBinder,
 	MatchPolicy,
+	SubtreePolicy,
 	BindSyntaxTree,
 	indexSymbol,
+	BindPolicy,
 	BindTree,
 	BindTreeDefault,
 	DownPath,
@@ -51,7 +53,6 @@ export {
 	comparePipeline,
 	compileSyntaxTree,
 	setField,
-	TreeStatus,
 } from "./editable-tree";
 
 export {
@@ -77,12 +78,14 @@ export {
 	TreeDataContext,
 	normalizeNewFieldContent,
 	NewFieldContent,
+	assertAllowedValue,
 } from "./contextuallyTyped";
 
 export { ForestSummarizer } from "./forestSummarizer";
 export { singleMapTreeCursor, mapTreeFromCursor } from "./mapTreeCursor";
+export { MemoizedIdRangeAllocator, IdRange } from "./memoizedIdRangeAllocator";
 export { buildForest } from "./object-forest";
-export { SchemaSummarizer, SchemaEditor } from "./schemaSummarizer";
+export { SchemaSummarizer, SchemaEditor, encodeTreeSchema } from "./schemaSummarizer";
 // This is exported because its useful for doing comparisons of schema in tests.
 export { makeSchemaCodec } from "./schemaIndexFormat";
 export {
@@ -92,14 +95,18 @@ export {
 	prefixFieldPath,
 	CursorWithNode,
 } from "./treeCursorUtils";
-export { singleTextCursor, jsonableTreeFromCursor } from "./treeTextCursor";
+export {
+	singleTextCursor,
+	jsonableTreeFromCursor,
+	jsonableTreeFromFieldCursor,
+	jsonableTreeFromForest,
+} from "./treeTextCursor";
 
 // Split this up into separate import and export for compatibility with API-Extractor.
 import * as SequenceField from "./sequence-field";
 export { SequenceField };
 
 export {
-	idAllocatorFromMaxId,
 	isNeverField,
 	ModularEditBuilder,
 	EditDescription,
@@ -112,7 +119,6 @@ export {
 	FieldChangeset,
 	ToDelta,
 	ModularChangeset,
-	IdAllocator,
 	NodeChangeComposer,
 	NodeChangeInverter,
 	NodeChangeRebaser,
@@ -124,7 +130,6 @@ export {
 	allowsRepoSuperset,
 	GenericChangeset,
 	genericFieldKind,
-	NodeReviver,
 	RevisionIndexer,
 	RevisionMetadataSource,
 	RevisionInfo,
@@ -132,30 +137,60 @@ export {
 	revisionMetadataSourceFromInfo,
 	NodeExistsConstraint,
 	NodeExistenceState,
-	BrandedFieldKind,
+	FieldKindWithEditor,
 } from "./modular-schema";
 
 export {
-	SchemaBuilder,
-	TreeSchema,
+	TreeNodeSchema,
 	AllowedTypes,
-	FieldSchema,
-	TypedSchemaCollection,
+	TreeFieldSchema,
+	TreeSchema,
 	Any,
-	SchemaLibrary,
 	SchemaLibraryData,
-	LazyTreeSchema,
+	LazyTreeNodeSchema,
 	InternalTypedSchemaTypes,
 	ViewSchema,
 	SchemaLintConfiguration,
+	FieldNodeSchema,
+	LeafSchema,
+	MapSchema,
+	ObjectNodeSchema,
+	schemaIsFieldNode,
+	schemaIsLeaf,
+	schemaIsMap,
+	schemaIsObjectNode,
+	bannedFieldNames,
+	fieldApiPrefixes,
+	validateObjectNodeFieldName,
+	Unenforced,
+	AllowedTypeSet,
+	markEager,
+	MapFieldSchema,
+	SchemaCollection,
 } from "./typed-schema";
 
-export { mapFieldMarks, mapMark, mapMarkList, populateChildModifications } from "./deltaUtils";
+export {
+	SchemaBuilderBase,
+	SchemaLibrary,
+	ImplicitFieldSchema,
+	NormalizeField,
+	ImplicitAllowedTypes,
+	NormalizeAllowedTypes,
+	SchemaBuilderOptions,
+	normalizeAllowedTypes,
+	normalizeField,
+} from "./schemaBuilderBase";
+export { SchemaBuilderInternal } from "./schemaBuilder";
 
-export { ForestRepairDataStore, ForestRepairDataStoreProvider } from "./forestRepairDataStore";
-export { dummyRepairDataStore } from "./fakeRepairDataStore";
+export { mapFieldChanges, mapFieldsChanges, mapMark, mapMarkList } from "./deltaUtils";
 
-export { TreeChunk, chunkTree, buildChunkedForest, defaultChunkPolicy } from "./chunked-forest";
+export {
+	TreeChunk,
+	chunkTree,
+	buildChunkedForest,
+	defaultChunkPolicy,
+	makeTreeChunker,
+} from "./chunked-forest";
 
 export {
 	compareLocalNodeKeys,
@@ -171,12 +206,11 @@ export {
 
 export {
 	FieldKinds,
-	ValueFieldKind,
+	Required,
 	Optional,
-	Sequence,
+	Sequence as SequenceFieldKind,
 	NodeKeyFieldKind,
 	Forbidden,
-	FieldKindTypes,
 	DefaultChangeset,
 	DefaultChangeFamily,
 	DefaultEditBuilder,
@@ -188,6 +222,7 @@ export {
 } from "./default-field-kinds";
 
 export {
+	TreeEvent,
 	UntypedField,
 	UntypedTree,
 	UntypedTreeContext,
@@ -204,6 +239,54 @@ export {
 	treeStatus,
 } from "./untypedTree";
 
+export {
+	AssignableFieldKinds,
+	FieldNode,
+	FlexibleFieldContent,
+	FlexibleNodeContent,
+	InternalEditableTreeTypes,
+	Leaf,
+	MapNode,
+	OptionalField,
+	RequiredField,
+	Sequence,
+	Skip,
+	ObjectNode,
+	ObjectNodeTyped,
+	TreeContext,
+	TypedField,
+	TypedNode,
+	TypedNodeUnion,
+	Tree,
+	TreeField,
+	TreeNode,
+	getTreeContext,
+	boxedIterator,
+	CheckTypesOverlap,
+	TreeStatus,
+	getProxyForField,
+	ObjectFields,
+	ProxyField,
+	ProxyFieldInner,
+	ProxyNode,
+	ProxyNodeUnion,
+	SharedTreeList,
+	SharedTreeMap,
+	SharedTreeObject,
+	ProxyRoot,
+	node,
+	NodeApi,
+	SharedTreeNode,
+	Typed,
+	SharedTreeObjectFactory,
+	FactoryTreeSchema,
+	addFactory,
+} from "./editable-tree-2";
+
+export { treeSchemaFromStoredSchema } from "./storedToViewSchema";
+
 // Split into separate import and export for compatibility with API-Extractor.
 import * as SchemaAware from "./schema-aware";
 export { SchemaAware };
+
+export { DetachedFieldIndexSummarizer } from "./detachedFieldIndexSummarizer";

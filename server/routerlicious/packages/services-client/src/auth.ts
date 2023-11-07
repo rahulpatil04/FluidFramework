@@ -12,7 +12,7 @@ import { NetworkError } from "./error";
 /**
  * Validates a JWT token to authorize routerlicious.
  * Throws NetworkError if claims are invalid.
- * @returns - decoded claims.
+ * @returns The decoded claims.
  */
 export function validateTokenClaims(
 	token: string,
@@ -32,7 +32,7 @@ export function validateTokenClaims(
 		);
 	}
 
-	if (claims.scopes === undefined || claims.scopes.length === 0) {
+	if (claims.scopes === undefined || claims.scopes === null || claims.scopes.length === 0) {
 		throw new NetworkError(403, "Missing scopes in token claims");
 	}
 

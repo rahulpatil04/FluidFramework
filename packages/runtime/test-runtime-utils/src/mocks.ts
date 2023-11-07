@@ -4,7 +4,8 @@
  */
 
 import { EventEmitter } from "events";
-import { assert, stringToBuffer } from "@fluidframework/common-utils";
+import { stringToBuffer } from "@fluid-internal/client-utils";
+import { assert } from "@fluidframework/core-utils";
 import { ITelemetryLoggerExt, createChildLogger } from "@fluidframework/telemetry-utils";
 import {
 	FluidObject,
@@ -146,6 +147,9 @@ export class MockContainerRuntime {
 	public clientId: string;
 	protected clientSequenceNumber: number = 0;
 	private readonly deltaManager: MockDeltaManager;
+	/**
+	 * @deprecated use the associated datastore to create the delta connection
+	 */
 	protected readonly deltaConnections: MockDeltaConnection[] = [];
 	protected readonly pendingMessages: IMockContainerRuntimePendingMessage[] = [];
 	private readonly outbox: IInternalMockRuntimeMessage[] = [];
@@ -181,6 +185,9 @@ export class MockContainerRuntime {
 		);
 	}
 
+	/**
+	 * @deprecated use the associated datastore to create the delta connection
+	 */
 	public createDeltaConnection(): MockDeltaConnection {
 		const deltaConnection = this.dataStoreRuntime.createDeltaConnection();
 		this.deltaConnections.push(deltaConnection);
@@ -194,10 +201,10 @@ export class MockContainerRuntime {
 			localOpMetadata,
 		};
 
+		this.clientSequenceNumber++;
 		switch (this.runtimeOptions.flushMode) {
 			case FlushMode.Immediate: {
-				this.submitInternal(message);
-				this.clientSequenceNumber++;
+				this.submitInternal(message, clientSequenceNumber);
 				break;
 			}
 
@@ -224,9 +231,19 @@ export class MockContainerRuntime {
 			return;
 		}
 
+		let fakeClientSequenceNumber = 1;
 		while (this.outbox.length > 0) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			this.submitInternal(this.outbox.shift()!);
+			this.submitInternal(
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				this.outbox.shift()!,
+				// When grouped batching is used, the ops within the same grouped batch will have
+				// fake sequence numbers when they're ungrouped. The submit function will still
+				// return the clientSequenceNumber but this will ensure that the readers will always
+				// read the fake client sequence numbers.
+				this.runtimeOptions.enableGroupedBatching
+					? fakeClientSequenceNumber++
+					: this.clientSequenceNumber,
+			);
 		}
 	}
 
@@ -254,15 +271,15 @@ export class MockContainerRuntime {
 		);
 	}
 
-	private submitInternal(message: IInternalMockRuntimeMessage) {
+	private submitInternal(message: IInternalMockRuntimeMessage, clientSequenceNumber: number) {
 		this.factory.pushMessage({
 			clientId: this.clientId,
-			clientSequenceNumber: this.clientSequenceNumber,
+			clientSequenceNumber,
 			contents: message.content,
 			referenceSequenceNumber: this.referenceSequenceNumber,
 			type: MessageType.Operation,
 		});
-		this.addPendingMessage(message.content, message.localOpMetadata, this.clientSequenceNumber);
+		this.addPendingMessage(message.content, message.localOpMetadata, clientSequenceNumber);
 	}
 
 	public process(message: ISequencedDocumentMessage) {
@@ -271,13 +288,6 @@ export class MockContainerRuntime {
 		this.deltaManager.minimumSequenceNumber = message.minimumSequenceNumber;
 		const [local, localOpMetadata] = this.processInternal(message);
 		this.dataStoreRuntime.process(message, local, localOpMetadata);
-
-		if (this.runtimeOptions.enableGroupedBatching) {
-			// If the grouped batching scenario is enabled, we need to advance the
-			// client sequence number when we process a remote op. Sending ops will
-			// not increment this value.
-			this.clientSequenceNumber++;
-		}
 	}
 
 	protected addPendingMessage(
@@ -300,7 +310,7 @@ export class MockContainerRuntime {
 			const pendingMessage = this.pendingMessages.shift();
 			assert(
 				pendingMessage?.clientSequenceNumber === message.clientSequenceNumber,
-				"Unexpected client sequence number from message",
+				"Unexpected message",
 			);
 			localOpMetadata = pendingMessage.localOpMetadata;
 		}
@@ -360,7 +370,7 @@ export class MockContainerRuntimeFactory {
 		let minimumSequenceNumber: number | undefined;
 		for (const [client, clientSequenceNumber] of this.minSeq) {
 			// We have to make sure, a client is part of the quorum, when
-			// we compute the msn. We assume that the quoarum accurately
+			// we compute the msn. We assume that the quorum accurately
 			// represents the currently connected clients. In some tests
 			// for reconnects, we will remove clients from the quorum
 			// to indicate they are currently not connected. In that case,
@@ -580,7 +590,7 @@ export class MockFluidDataStoreRuntime
 		});
 	}
 
-	public readonly entryPoint?: IFluidHandle<FluidObject>;
+	public readonly entryPoint: IFluidHandle<FluidObject>;
 
 	public get IFluidHandleContext(): IFluidHandleContext {
 		return this;
@@ -596,7 +606,7 @@ export class MockFluidDataStoreRuntime
 	}
 
 	/**
-	 * @deprecated - Will be removed in future major release. Migrate all usage of IFluidRouter to the "entryPoint" pattern. Refer to Removing-IFluidRouter.md
+	 * @deprecated Will be removed in future major release. Migrate all usage of IFluidRouter to the "entryPoint" pattern. Refer to Removing-IFluidRouter.md
 	 */
 	public get IFluidRouter() {
 		return this;
@@ -751,6 +761,10 @@ export class MockFluidDataStoreRuntime
 	}
 
 	public setConnectionState(connected: boolean, clientId?: string) {
+		if (connected && clientId !== undefined) {
+			this.clientId = clientId;
+		}
+		this.deltaConnections.forEach((dc) => dc.setConnectionState(connected));
 		return;
 	}
 
@@ -759,7 +773,7 @@ export class MockFluidDataStoreRuntime
 	}
 
 	/**
-	 * @deprecated - Will be removed in future major release. Migrate all usage of IFluidRouter to the "entryPoint" pattern. Refer to Removing-IFluidRouter.md
+	 * @deprecated Will be removed in future major release. Migrate all usage of IFluidRouter to the "entryPoint" pattern. Refer to Removing-IFluidRouter.md
 	 */
 	public async request(request: IRequest): Promise<IResponse> {
 		return null as any as IResponse;
