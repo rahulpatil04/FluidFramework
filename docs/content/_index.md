@@ -214,7 +214,32 @@ summary: "An open-source client technology stack that enables real-time collabor
     {{</swimlane_container>}}
 
 {{<swimlane_container fullPage="yes">}}
-<h2><strong><center>See how it works:</center></strong></h2>
+    <h2><strong><center>See how it works:</center></strong></h2>
+        <div class="col-md-3 col-md-6">
+            <div class="value-prop" id="home-value-prop-open-source-link">
+                <div class="value-prop-icon open-source"></div>
+                    <b>Sample Code</b>
+                        <p>
+                        <pre>
+                            <code>
+                            import { SharedMap } from "fluid-framework";
+                            import { TinyliciousClient } from "@fluidframework/tinylicious-client";
+
+                            export const diceValueKey = "dice-value-key";
+
+                            const client = new TinyliciousClient();
+
+                            const containerSchema = {
+                                initialObjects: { diceMap: SharedMap }
+                            };
+
+                            const root = document.getElementById("content");
+                            </code>
+                        </pre>
+                        </p>
+                </div>
+            </div>
+        <div>    
 {{< fluid_bundle_loader idPrefix="dice-roller"
     bundleName="dice-roller.2021-09-24.js" >}}
 {{</swimlane_container>}}
