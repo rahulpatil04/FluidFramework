@@ -14,12 +14,8 @@ import {
 	MongoClientOptions,
 	OptionalUnlessRequiredId,
 } from "mongodb";
-import {
-	BaseTelemetryProperties,
-	Lumberjack,
-	LumberEventName,
-} from "@fluidframework/server-services-telemetry";
 import { InMemoryApiCounters } from "@fluidframework/server-services-utils";
+import { BaseTelemetryProperties, Lumberjack } from "@fluidframework/server-services-telemetry";
 import { MongoErrorRetryAnalyzer } from "./mongoExceptionRetryRules";
 
 const MaxFetchSize = 2000;
@@ -698,16 +694,16 @@ export class MongoDbFactory implements core.IDbFactory {
 		);
 		for (const monitoringEvent of this.dbMonitoringEventsList) {
 			connection.on(monitoringEvent, (event) => {
-				// Using an event here so that we can use geneva monitoring in the future if we want to build alerts.
-				const eventWithName = { ...event, MonitoringEventName: monitoringEvent };
-				const metric = Lumberjack.newLumberMetric(
-					LumberEventName.MongoMonitoring,
-					eventWithName,
-				);
-				metric.success(`Event recorded for ${monitoringEvent}`);
+				// 		// Using an event here so that we can use geneva monitoring in the future if we want to build alerts.
+				// 		const eventWithName = { ...event, MonitoringEventName: monitoringEvent };
+				// 		const metric = Lumberjack.newLumberMetric(
+				// 			LumberEventName.MongoMonitoring,
+				// 			eventWithName,
+				// 		);
+				// 		metric.success(`Event recorded for ${monitoringEvent}`);
 			});
 		}
-		Lumberjack.info("Added event listeners", this.dbMonitoringEventsList);
+		// Lumberjack.info("Added event listeners", this.dbMonitoringEventsList);
 
 		const retryAnalyzer = MongoErrorRetryAnalyzer.getInstance(
 			this.retryRuleOverride,
