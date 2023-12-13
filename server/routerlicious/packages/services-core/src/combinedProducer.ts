@@ -20,10 +20,7 @@ import { IProducer } from "./queue";
  * @internal
  */
 export class CombinedProducer<T = ITicketedMessage> implements IProducer<T> {
-	constructor(
-		private readonly producers: IProducer<T>[],
-		private readonly parallel: boolean,
-	) {}
+	constructor(private readonly producers: IProducer<T>[], private readonly parallel: boolean) {}
 
 	/**
 	 * Returns true if the producer is connected

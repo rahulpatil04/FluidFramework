@@ -15,10 +15,7 @@ import { TenantManager } from "./tenant";
  * @internal
  */
 export class DeltaManager implements IDeltaService {
-	constructor(
-		private readonly authEndpoint,
-		private readonly internalAlfredUrl: string,
-	) {}
+	constructor(private readonly authEndpoint, private readonly internalAlfredUrl: string) {}
 
 	public async getDeltas(
 		_collectionName: string,

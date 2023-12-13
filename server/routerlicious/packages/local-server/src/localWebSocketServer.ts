@@ -21,10 +21,7 @@ export class LocalWebSocket implements IWebSocket {
 		return this._connected;
 	}
 
-	constructor(
-		public readonly id: string,
-		private readonly server: LocalWebSocketServer,
-	) {
+	constructor(public readonly id: string, private readonly server: LocalWebSocketServer) {
 		this.subscriber = new WebSocketSubscriber(this);
 	}
 

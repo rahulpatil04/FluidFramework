@@ -24,10 +24,7 @@ export class TinyliciousTenant implements ITenant {
 	private readonly repository = "tinylicious";
 	private readonly manager: GitManager;
 
-	constructor(
-		private readonly url: string,
-		private readonly historianUrl: string,
-	) {
+	constructor(private readonly url: string, private readonly historianUrl: string) {
 		// Using an explicitly constructed rest wrapper so we can pass the Axios instance whose static defaults
 		// were modified by Tinylicious, and avoid issues if the module that contains BasicRestWrapper depends on a different
 		// version of Axios.

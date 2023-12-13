@@ -20,8 +20,5 @@ export class PendingBoxcar implements IPendingBoxcar {
 	public messages: any[] = [];
 	public partitionId?: number;
 
-	constructor(
-		public tenantId: string,
-		public documentId: string,
-	) {}
+	constructor(public tenantId: string, public documentId: string) {}
 }
