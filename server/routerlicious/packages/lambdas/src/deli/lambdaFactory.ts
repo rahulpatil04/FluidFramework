@@ -245,6 +245,7 @@ export class DeliLambdaFactory
 						// Delete the document metadata
 						await runWithRetry(
 							async () =>
+								// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 								this.documentRepository.deleteOne({
 									documentId,
 									tenantId,
