@@ -307,6 +307,7 @@ export function verifyStorageToken(
 			);
 			// Riddler is known to take too long sometimes. Check timeout before continuing.
 			getGlobalTimeoutContext().checkTimeout();
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return getGlobalTelemetryContext().bindPropertiesAsync(
 				{ tenantId, documentId },
 				async () => next(),

@@ -33,7 +33,7 @@ export class SocketIoRedisPublisher implements core.IPublisher {
 			? new Redis.Cluster([{ port: options.port, host: options.host }], {
 					redisOptions: options,
 					slotsRefreshTimeout: 5000,
-					dnsLookup: (address, callback) => callback(null, address),
+					dnsLookup: (add, callback) => callback(null, add),
 					scaleReads: "slave",
 			  })
 			: new Redis.default(options);

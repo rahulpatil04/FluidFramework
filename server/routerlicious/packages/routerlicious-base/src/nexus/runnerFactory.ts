@@ -213,7 +213,7 @@ export class NexusResourcesFactory implements core.IResourcesFactory<NexusResour
 			? new Redis.Cluster([{ port: redisConfig2.port, host: redisConfig2.host }], {
 					redisOptions: redisOptions2,
 					slotsRefreshTimeout: 5000,
-					dnsLookup: (address, callback) => callback(null, address),
+					dnsLookup: (add, callback) => callback(null, add),
 					scaleReads: "slave",
 			  })
 			: new Redis.default(redisOptions2);
@@ -224,7 +224,7 @@ export class NexusResourcesFactory implements core.IResourcesFactory<NexusResour
 			? new Redis.Cluster([{ port: redisConfig2.port, host: redisConfig2.host }], {
 					redisOptions: redisOptions2,
 					slotsRefreshTimeout: 5000,
-					dnsLookup: (address, callback) => callback(null, address),
+					dnsLookup: (add, callback) => callback(null, add),
 					scaleReads: "slave",
 			  })
 			: new Redis.default(redisOptions2);
@@ -337,7 +337,7 @@ export class NexusResourcesFactory implements core.IResourcesFactory<NexusResour
 						{
 							redisOptions: redisOptionsForThrottling,
 							slotsRefreshTimeout: 5000,
-							dnsLookup: (address, callback) => callback(null, address),
+							dnsLookup: (add, callback) => callback(null, add),
 							scaleReads: "slave",
 						},
 				  )
@@ -477,9 +477,9 @@ export class NexusResourcesFactory implements core.IResourcesFactory<NexusResour
 			const redisClientForLogging: Redis.default | Redis.Cluster =
 				redisConfig.enableClustering
 					? new Redis.Cluster([{ port: redisConfig.port, host: redisConfig.host }], {
-							redisOptions: redisOptions,
+							redisOptions,
 							slotsRefreshTimeout: 5000,
-							dnsLookup: (address, callback) => callback(null, address),
+							dnsLookup: (add, callback) => callback(null, add),
 							scaleReads: "slave",
 					  })
 					: new Redis.default(redisOptions);

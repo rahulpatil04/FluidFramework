@@ -53,6 +53,7 @@ export class AsyncLocalStorageTelemetryContext implements ITelemetryContext {
 	>();
 
 	public getProperties(): Partial<ITelemetryContextProperties> {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return this.contextProvider.getContext() ?? {};
 	}
 

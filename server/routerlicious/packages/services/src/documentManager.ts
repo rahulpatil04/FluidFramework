@@ -65,6 +65,7 @@ export class DocumentManager implements IDocumentManager {
 				getLumberBaseProperties(documentId, tenantId),
 			);
 			const document: IDocument = await this.readDocument(tenantId, documentId);
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return document as IDocumentStaticProperties | undefined;
 		}
 
@@ -79,6 +80,7 @@ export class DocumentManager implements IDocumentManager {
 				getLumberBaseProperties(documentId, tenantId),
 			);
 			const document: IDocument = await this.readDocument(tenantId, documentId);
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return DocumentManager.getStaticPropsFromDoc(document);
 		}
 
@@ -86,6 +88,7 @@ export class DocumentManager implements IDocumentManager {
 		const staticProps: IDocumentStaticProperties = JSON.parse(
 			staticPropsStr,
 		) as IDocumentStaticProperties;
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return staticProps;
 	}
 
