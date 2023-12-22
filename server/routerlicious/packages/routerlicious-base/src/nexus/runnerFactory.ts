@@ -210,29 +210,23 @@ export class NexusResourcesFactory implements core.IResourcesFactory<NexusResour
 		};
 
 		const redisClient: Redis.default | Redis.Cluster = redisConfig2.enableClustering
-			? new Redis.Cluster(
-					[{ port: redisConfig2.port, host: redisConfig2.host }],
-					{
-						redisOptions: redisOptions2,
-						slotsRefreshTimeout: 5000,
-						dnsLookup: (address, callback) => callback(null, address),
-						scaleReads: 'slave'
-					},
-			  )
+			? new Redis.Cluster([{ port: redisConfig2.port, host: redisConfig2.host }], {
+					redisOptions: redisOptions2,
+					slotsRefreshTimeout: 5000,
+					dnsLookup: (address, callback) => callback(null, address),
+					scaleReads: "slave",
+			  })
 			: new Redis.default(redisOptions2);
 
 		const clientManager = new services.ClientManager(redisClient, redisParams2);
 
 		const redisClientForJwtCache: Redis.default | Redis.Cluster = redisConfig2.enableClustering
-			? new Redis.Cluster(
-					[{ port: redisConfig2.port, host: redisConfig2.host }],
-					{
-						redisOptions: redisOptions2,
-						slotsRefreshTimeout: 5000,
-						dnsLookup: (address, callback) => callback(null, address),
-						scaleReads: 'slave'
-					},
-			  )
+			? new Redis.Cluster([{ port: redisConfig2.port, host: redisConfig2.host }], {
+					redisOptions: redisOptions2,
+					slotsRefreshTimeout: 5000,
+					dnsLookup: (address, callback) => callback(null, address),
+					scaleReads: "slave",
+			  })
 			: new Redis.default(redisOptions2);
 
 		const redisJwtCache = new services.RedisCache(redisClientForJwtCache);
@@ -344,7 +338,7 @@ export class NexusResourcesFactory implements core.IResourcesFactory<NexusResour
 							redisOptions: redisOptionsForThrottling,
 							slotsRefreshTimeout: 5000,
 							dnsLookup: (address, callback) => callback(null, address),
-							scaleReads: 'slave'
+							scaleReads: "slave",
 						},
 				  )
 				: new Redis.default(redisOptionsForThrottling);
@@ -482,15 +476,12 @@ export class NexusResourcesFactory implements core.IResourcesFactory<NexusResour
 
 			const redisClientForLogging: Redis.default | Redis.Cluster =
 				redisConfig.enableClustering
-					? new Redis.Cluster(
-							[{ port: redisConfig.port, host: redisConfig.host }],
-							{
-								redisOptions: redisOptions,
-								slotsRefreshTimeout: 5000,
-								dnsLookup: (address, callback) => callback(null, address),
-								scaleReads: 'slave'
-							},
-					  )
+					? new Redis.Cluster([{ port: redisConfig.port, host: redisConfig.host }], {
+							redisOptions: redisOptions,
+							slotsRefreshTimeout: 5000,
+							dnsLookup: (address, callback) => callback(null, address),
+							scaleReads: "slave",
+					  })
 					: new Redis.default(redisOptions);
 
 			redisCache = new services.RedisCache(redisClientForLogging);
