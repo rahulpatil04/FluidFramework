@@ -10,6 +10,80 @@ on:
       - test/ffv2-test
 
 jobs:
+  job: build_site
+      displayName: 'Build website'
+      dependsOn: upload_json
+      pool: Large
+      steps:
+        - checkout: self
+          submodules: false
+          clean: true
+
+        - task: DownloadPipelineArtifact@2
+          displayName: 'Copy api-extractor JSON to staging folder'
+          inputs:
+            source: current
+            artifact: api-extractor-combined
+            path: '$(Build.SourcesDirectory)/_api-extractor-temp/doc-models'
+
+        - template: templates/include-use-node-version.yml
+
+        - template: templates/include-install-pnpm.yml
+          parameters:
+            buildDirectory: $(Build.SourcesDirectory)/docs
+
+        - task: Bash@3
+          displayName: Install dependencies
+          inputs:
+            targetType: 'inline'
+            workingDirectory: $(Build.SourcesDirectory)/docs
+            script: |
+              pnpm i --frozen-lockfile
+
+        - task: Bash@3
+          displayName: Download and extract previous version API
+          inputs:
+            targetType: 'inline'
+            workingDirectory: $(Build.SourcesDirectory)
+            script: |
+              # Run helper script to read versions.json
+              output=$(node docs/readVersionData.js)
+              
+              # Pipe script output and loop through each value in the array
+              if [ -n "$output" ]; then
+                echo "$output" | while IFS= read -r version; do
+                  version=$(echo "$version" | sed 's/"//g')
+                  echo "Version: $version"
+
+                  echo "creating api-extractor-temp-$version folder"
+                  mkdir -p $(Build.SourcesDirectory)/_api-extractor-temp-$version/doc-models
+
+                  az storage blob download -f latest-$version.tar.gz -c 'api-extractor-json' -n latest-$version.tar.gz --account-name $(STORAGE_ACCOUNT) --account-key $(STORAGE_KEY) --overwrite --verbose
+                  
+                  tar -xzf latest-$version.tar.gz -C _api-extractor-temp-$version/doc-models
+
+                done
+              fi
+        - task: Npm@1
+          displayName: npm run build:multi-version
+          inputs:
+            command: 'custom'
+            workingDir: $(Build.SourcesDirectory)/docs
+            customCommand: 'run build:multi-version'
+
+        - task: AzureArtifacts.manifest-generator-task.manifest-generator-task.ManifestGeneratorTask@0
+          displayName: 'Generate SBOM'
+          inputs:
+            BuildDropPath: $(Build.SourcesDirectory)/docs/public
+            PackageName: 'fluidframework-docs'
+            PackageVersion: '$(Build.BuildId)'
+
+        - task: PublishPipelineArtifact@1
+          displayName: 'Publish site build artifact'
+          inputs:
+            targetPath: '$(Build.SourcesDirectory)/docs/public'
+            artifactName: 'fluidframework-docs'
+            publishLocation: 'pipeline'
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
@@ -31,7 +105,7 @@ jobs:
           app_location: "/docs" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "public" # Built app content directory - optional
-          app_build_command: "pnpm install && pnpm run ci:build"
+          skip_app_build: true # site was built in previous stage
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
