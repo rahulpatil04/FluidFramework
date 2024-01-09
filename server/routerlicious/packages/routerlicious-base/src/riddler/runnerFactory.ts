@@ -105,8 +105,9 @@ export class RiddlerResourcesFactory implements IResourcesFactory<RiddlerResourc
 				? new Redis.Cluster([{ port: redisConfig.port, host: redisConfig.host }], {
 						redisOptions,
 						slotsRefreshTimeout: 5000,
-						dnsLookup: (add, callback) => callback(null, add),
+						dnsLookup: (adr, callback) => callback(null, adr),
 						scaleReads: "slave",
+						showFriendlyErrorStack: true,
 				  })
 				: new Redis.default(redisOptions);
 

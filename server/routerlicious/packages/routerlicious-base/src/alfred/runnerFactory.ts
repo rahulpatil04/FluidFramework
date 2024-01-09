@@ -239,8 +239,9 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 			? new Redis.Cluster([{ port: redisConfig2.port, host: redisConfig2.host }], {
 					redisOptions: redisOptions2,
 					slotsRefreshTimeout: 5000,
-					dnsLookup: (add, callback) => callback(null, add),
+					dnsLookup: (adr, callback) => callback(null, adr),
 					scaleReads: "slave",
+					showFriendlyErrorStack: true,
 			  })
 			: new Redis.default(redisOptions2);
 		const clientManager = new services.ClientManager(redisClient, redisParams2);
@@ -249,8 +250,9 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 			? new Redis.Cluster([{ port: redisConfig2.port, host: redisConfig2.host }], {
 					redisOptions: redisOptions2,
 					slotsRefreshTimeout: 5000,
-					dnsLookup: (add, callback) => callback(null, add),
+					dnsLookup: (adr, callback) => callback(null, adr),
 					scaleReads: "slave",
+					showFriendlyErrorStack: true,
 			  })
 			: new Redis.default(redisOptions2);
 		const redisJwtCache = new services.RedisCache(redisClientForJwtCache);
@@ -360,8 +362,9 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 						{
 							redisOptions: redisOptionsForThrottling,
 							slotsRefreshTimeout: 5000,
-							dnsLookup: (add, callback) => callback(null, add),
+							dnsLookup: (adr, callback) => callback(null, adr),
 							scaleReads: "slave",
+							showFriendlyErrorStack: true,
 						},
 				  )
 				: new Redis.default(redisOptionsForThrottling);
@@ -559,8 +562,9 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 					? new Redis.Cluster([{ port: redisConfig.port, host: redisConfig.host }], {
 							redisOptions: redisOptions2,
 							slotsRefreshTimeout: 5000,
-							dnsLookup: (add, callback) => callback(null, add),
+							dnsLookup: (adr, callback) => callback(null, adr),
 							scaleReads: "slave",
+							showFriendlyErrorStack: true,
 					  })
 					: new Redis.default(redisOptions);
 
