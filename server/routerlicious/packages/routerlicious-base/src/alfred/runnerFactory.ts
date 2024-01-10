@@ -237,15 +237,21 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 
 		let redisOptionsCopy = { ...redisOptions2 };
 		redisOptionsCopy.password = "REDACTED";
-		Lumberjack.info("test123 Redis Client Params, redisOptions2, CE: "+redisConfig2.enableClustering, {
+		Lumberjack.info(
+			`test123 Redis Client Params, redisOptions2, CE: ${  redisConfig2.enableClustering}`,
+			{
+				redisOptionsCopy,
+				slotsRefreshTimeout: 5000,
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+				dnsLookup: (adr, callback) => callback(undefined, adr),
+				scaleReads: "slave",
+				showFriendlyErrorStack: true,
+			},
+		);
+		Lumberjack.info(
+			`test123 Redis Client Options, redisOptions2, CE: ${  redisConfig2.enableClustering}`,
 			redisOptionsCopy,
-			slotsRefreshTimeout: 5000,
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-			dnsLookup: (adr, callback) => callback(undefined, adr),
-			scaleReads: "slave",
-			showFriendlyErrorStack: true,
-		});
-		Lumberjack.info("test123 Redis Client Options, redisOptions2, CE: "+redisConfig2.enableClustering, redisOptionsCopy);
+		);
 
 		const redisClient: Redis.default | Redis.Cluster = redisConfig2.enableClustering
 			? new Redis.Cluster([{ port: redisConfig2.port, host: redisConfig2.host }], {
@@ -364,16 +370,21 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 
 		redisOptionsCopy = { ...redisOptionsForThrottling };
 		redisOptionsCopy.password = "REDACTED";
-		Lumberjack.info("test123 Redis Client Params, redisOptionsForThrottling, CE: "+redisConfigForThrottling.enableClustering, {
-			redisOptionsCopy,
-			slotsRefreshTimeout: 5000,
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-			dnsLookup: (adr, callback) => callback(undefined, adr),
-			scaleReads: "slave",
-			showFriendlyErrorStack: true,
-		});
 		Lumberjack.info(
-			"test123 Redis Client Options, redisOptionsForThrottling, CE: "+redisConfigForThrottling.enableClustering,
+			`test123 Redis Client Params, redisOptionsForThrottling, CE: ${ 
+				redisConfigForThrottling.enableClustering}`,
+			{
+				redisOptionsCopy,
+				slotsRefreshTimeout: 5000,
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+				dnsLookup: (adr, callback) => callback(undefined, adr),
+				scaleReads: "slave",
+				showFriendlyErrorStack: true,
+			},
+		);
+		Lumberjack.info(
+			`test123 Redis Client Options, redisOptionsForThrottling, CE: ${ 
+				redisConfigForThrottling.enableClustering}`,
 			redisOptionsCopy,
 		);
 
