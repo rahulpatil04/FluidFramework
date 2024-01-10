@@ -238,7 +238,7 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 		let redisOptionsCopy = { ...redisOptions2 };
 		redisOptionsCopy.password = "REDACTED";
 		Lumberjack.info(
-			`test123 Redis Client Params, redisOptions2, CE: ${  redisConfig2.enableClustering}`,
+			`test123 Redis Client Params, redisOptions2, CE: ${redisConfig2.enableClustering}`,
 			{
 				redisOptionsCopy,
 				slotsRefreshTimeout: 5000,
@@ -249,7 +249,7 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 			},
 		);
 		Lumberjack.info(
-			`test123 Redis Client Options, redisOptions2, CE: ${  redisConfig2.enableClustering}`,
+			`test123 Redis Client Options, redisOptions2, CE: ${redisConfig2.enableClustering}`,
 			redisOptionsCopy,
 		);
 
@@ -371,8 +371,7 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 		redisOptionsCopy = { ...redisOptionsForThrottling };
 		redisOptionsCopy.password = "REDACTED";
 		Lumberjack.info(
-			`test123 Redis Client Params, redisOptionsForThrottling, CE: ${ 
-				redisConfigForThrottling.enableClustering}`,
+			`test123 Redis Client Params, redisOptionsForThrottling, CE: ${redisConfigForThrottling.enableClustering}`,
 			{
 				redisOptionsCopy,
 				slotsRefreshTimeout: 5000,
@@ -383,8 +382,7 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 			},
 		);
 		Lumberjack.info(
-			`test123 Redis Client Options, redisOptionsForThrottling, CE: ${ 
-				redisConfigForThrottling.enableClustering}`,
+			`test123 Redis Client Options, redisOptionsForThrottling, CE: ${redisConfigForThrottling.enableClustering}`,
 			redisOptionsCopy,
 		);
 

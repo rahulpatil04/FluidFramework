@@ -104,7 +104,7 @@ export class RiddlerResourcesFactory implements IResourcesFactory<RiddlerResourc
 			const redisOptionsCopy = { ...redisOptions };
 			redisOptionsCopy.password = "REDACTED";
 			Lumberjack.info(
-				`test123 Redis Client Params, redisOptions, CE: ${  redisConfig.enableClustering}`,
+				`test123 Redis Client Params, redisOptions, CE: ${redisConfig.enableClustering}`,
 				{
 					redisOptionsCopy,
 					slotsRefreshTimeout: 5000,
@@ -115,7 +115,7 @@ export class RiddlerResourcesFactory implements IResourcesFactory<RiddlerResourc
 				},
 			);
 			Lumberjack.info(
-				`test123 Redis Client Options, redisOptions, CE: ${  redisConfig.enableClustering}`,
+				`test123 Redis Client Options, redisOptions, CE: ${redisConfig.enableClustering}`,
 				redisOptionsCopy,
 			);
 
