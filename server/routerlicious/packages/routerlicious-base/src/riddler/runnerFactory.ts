@@ -101,6 +101,18 @@ export class RiddlerResourcesFactory implements IResourcesFactory<RiddlerResourc
 				expireAfterSeconds: redisConfig.keyExpireAfterSeconds as number | undefined,
 			};
 
+			const redisOptionsCopy = { ...redisOptions };
+			redisOptionsCopy.password = "REDACTED";
+			Lumberjack.info("test123 Redis Client Params, redisOptions, CE: "+redisConfig.enableClustering, {
+				redisOptionsCopy,
+				slotsRefreshTimeout: 5000,
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+				dnsLookup: (adr, callback) => callback(undefined, adr),
+				scaleReads: "slave",
+				showFriendlyErrorStack: true,
+			});
+			Lumberjack.info("test123 Redis Client Options, redisOptions, CE: "+redisConfig.enableClustering, redisOptionsCopy);
+
 			const redisClient: Redis.default | Redis.Cluster = redisConfig.enableClustering
 				? new Redis.Cluster([{ port: redisConfig.port, host: redisConfig.host }], {
 						redisOptions,
