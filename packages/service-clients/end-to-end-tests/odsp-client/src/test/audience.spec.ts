@@ -81,7 +81,7 @@ describe("Fluid audience", () => {
 	 *
 	 * Note: This test is currently skipped because the web app examples indicate the audience is functioning properly. AB#6425
 	 */
-	it.skip("can find partner member", async () => {
+	it("can find partner member", async () => {
 		const { container, services } = await client.createContainer(schema);
 		const itemId = await container.attach();
 
@@ -135,7 +135,7 @@ describe("Fluid audience", () => {
 	 *
 	 * Note: This test is currently skipped because the web app examples indicate the audience is functioning properly. AB#6425
 	 */
-	it.skip("can observe member leaving", async () => {
+	it("can observe member leaving", async () => {
 		const { container } = await client.createContainer(schema);
 		const itemId = await container.attach();
 
