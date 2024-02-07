@@ -88,6 +88,7 @@ export function create(
 			hashedClientIP = shajs("sha256").update(`${XForwardedForHeaderValue}`).digest("hex");
 		}
 		Lumberjack.log(`Hashed client IP address: ${hashedClientIP}`, LogLevel.Info);
+		next();
 	});
 
 	// Running behind iisnode
