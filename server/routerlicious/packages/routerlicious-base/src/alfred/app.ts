@@ -21,6 +21,8 @@ import { json, urlencoded } from "body-parser";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import express from "express";
+import safeStringify from "json-stringify-safe";
+import shajs from "sha.js";
 import { Provider } from "nconf";
 import { DriverVersionHeaderName, IAlfredTenant } from "@fluidframework/server-services-client";
 import {
@@ -31,7 +33,12 @@ import {
 	jsonMorganLoggerMiddleware,
 } from "@fluidframework/server-services-utils";
 import { RestLessServer, IHttpServerConfig } from "@fluidframework/server-services";
-import { BaseTelemetryProperties, HttpProperties } from "@fluidframework/server-services-telemetry";
+import {
+	BaseTelemetryProperties,
+	HttpProperties,
+	LogLevel,
+	Lumberjack,
+} from "@fluidframework/server-services-telemetry";
 import { catch404, getIdFromRequest, getTenantIdFromRequest, handleError } from "../utils";
 import { IDocumentDeleteService } from "./services";
 import * as alfredRoutes from "./routes";
@@ -72,6 +79,16 @@ export function create(
 		};
 	};
 	app.use(restLessMiddleware());
+
+	app.use((req, res, next) => {
+		const XForwardedFor = "X-Forwarded-For";
+		let hashedClientIP = "";
+		if (req.headers[XForwardedFor]) {
+			const XForwardedForHeaderValue = safeStringify(req.headers[XForwardedFor]);
+			hashedClientIP = shajs("sha256").update(`${XForwardedForHeaderValue}`).digest("hex");
+		}
+		Lumberjack.log(`Hashed client IP address: ${hashedClientIP}`, LogLevel.Info);
+	});
 
 	// Running behind iisnode
 	app.set("trust proxy", 1);
