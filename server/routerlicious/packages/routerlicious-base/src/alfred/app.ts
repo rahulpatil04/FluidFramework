@@ -68,6 +68,8 @@ export function create(
 	// Express app configuration
 	const app: express.Express = express();
 
+	app.set("trust proxy", 1);
+
 	// initialize RestLess server translation
 	const restLessMiddleware: () => express.RequestHandler = () => {
 		const restLessServer = new RestLessServer({ requestSizeLimit: requestSize });
@@ -81,13 +83,18 @@ export function create(
 	app.use(restLessMiddleware());
 
 	app.use((req, res, next) => {
-		const XForwardedFor = "X-Forwarded-For";
+		const XForwardedFor = "x-forwarded-for";
+		const headers = safeStringify(req.headers);
 		let hashedClientIP = "";
 		if (req.headers[XForwardedFor]) {
 			const XForwardedForHeaderValue = safeStringify(req.headers[XForwardedFor]);
 			hashedClientIP = shajs("sha256").update(`${XForwardedForHeaderValue}`).digest("hex");
 		}
-		Lumberjack.log(`Hashed client IP address: ${hashedClientIP}`, LogLevel.Info);
+		Lumberjack.log(
+			`XForwardedFor: ${req.headers[XForwardedFor]}, Hashed XForwardedFor: ${hashedClientIP}, req.ip: ${req.ip}`,
+			LogLevel.Info,
+		);
+		Lumberjack.log(`Request headers: ${headers}`, LogLevel.Info);
 		next();
 	});
 
