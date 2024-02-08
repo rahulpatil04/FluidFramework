@@ -33,12 +33,7 @@ import {
 	jsonMorganLoggerMiddleware,
 } from "@fluidframework/server-services-utils";
 import { RestLessServer, IHttpServerConfig } from "@fluidframework/server-services";
-import {
-	BaseTelemetryProperties,
-	HttpProperties,
-	LogLevel,
-	Lumberjack,
-} from "@fluidframework/server-services-telemetry";
+import { BaseTelemetryProperties, HttpProperties } from "@fluidframework/server-services-telemetry";
 import { catch404, getIdFromRequest, getTenantIdFromRequest, handleError } from "../utils";
 import { IDocumentDeleteService } from "./services";
 import * as alfredRoutes from "./routes";
@@ -68,8 +63,6 @@ export function create(
 	// Express app configuration
 	const app: express.Express = express();
 
-	app.set("trust proxy", 1);
-
 	// initialize RestLess server translation
 	const restLessMiddleware: () => express.RequestHandler = () => {
 		const restLessServer = new RestLessServer({ requestSizeLimit: requestSize });
@@ -81,22 +74,6 @@ export function create(
 		};
 	};
 	app.use(restLessMiddleware());
-
-	app.use((req, res, next) => {
-		const XForwardedFor = "x-forwarded-for";
-		const headers = safeStringify(req.headers);
-		let hashedClientIP = "";
-		if (req.headers[XForwardedFor]) {
-			const XForwardedForHeaderValue = safeStringify(req.headers[XForwardedFor]);
-			hashedClientIP = shajs("sha256").update(`${XForwardedForHeaderValue}`).digest("hex");
-		}
-		Lumberjack.log(
-			`XForwardedFor: ${req.headers[XForwardedFor]}, Hashed XForwardedFor: ${hashedClientIP}, req.ip: ${req.ip}`,
-			LogLevel.Info,
-		);
-		Lumberjack.log(`Request headers: ${headers}`, LogLevel.Info);
-		next();
-	});
 
 	// Running behind iisnode
 	app.set("trust proxy", 1);
@@ -113,6 +90,12 @@ export function create(
 			jsonMorganLoggerMiddleware(
 				"alfred",
 				(tokens, req, res) => {
+					const XForwardedFor = "x-forwarded-for";
+					let hashedClientIP = "";
+					if (req.headers[XForwardedFor]) {
+						const XForwardedForHeaderValue = safeStringify(req.headers[XForwardedFor]);
+						hashedClientIP = shajs("sha256").update(`${XForwardedForHeaderValue}`).digest("hex");
+					}
 					const additionalProperties: Record<string, any> = {
 						[HttpProperties.driverVersion]: tokens.req(
 							req,
@@ -122,6 +105,7 @@ export function create(
 						[BaseTelemetryProperties.tenantId]: getTenantIdFromRequest(req.params),
 						[BaseTelemetryProperties.documentId]: getIdFromRequest(req.params),
 					};
+					additionalProperties.hashedClientIPAddress = hashedClientIP;
 					if (req.body?.isEphemeralContainer !== undefined) {
 						additionalProperties.isEphemeralContainer = req.body.isEphemeralContainer;
 					}
