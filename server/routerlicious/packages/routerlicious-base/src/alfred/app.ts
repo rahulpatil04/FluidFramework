@@ -94,7 +94,9 @@ export function create(
 					let hashedClientIP = "";
 					if (req.headers[XForwardedFor]) {
 						const XForwardedForHeaderValue = safeStringify(req.headers[XForwardedFor]);
-						hashedClientIP = shajs("sha256").update(`${XForwardedForHeaderValue}`).digest("hex");
+						hashedClientIP = shajs("sha256")
+							.update(`${XForwardedForHeaderValue}`)
+							.digest("hex");
 					}
 					const additionalProperties: Record<string, any> = {
 						[HttpProperties.driverVersion]: tokens.req(
