@@ -21,7 +21,6 @@ import { json, urlencoded } from "body-parser";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import express from "express";
-import safeStringify from "json-stringify-safe";
 import shajs from "sha.js";
 import { Provider } from "nconf";
 import { DriverVersionHeaderName, IAlfredTenant } from "@fluidframework/server-services-client";
