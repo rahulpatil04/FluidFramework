@@ -7,6 +7,7 @@ import { EventEmitter } from "events";
 import * as util from "util";
 import * as core from "@fluidframework/server-services-core";
 import * as Redis from "ioredis";
+import { getRedisClient } from "@fluidframework/server-services-utils";
 import { Emitter as SocketIoEmitter } from "@socket.io/redis-emitter";
 
 /**
@@ -28,15 +29,12 @@ export class SocketIoRedisPublisher implements core.IPublisher {
 	private readonly io: any;
 	private readonly events = new EventEmitter();
 
-	constructor(options: Redis.RedisOptions, enableClustering: boolean = false) {
-		this.redisClient = enableClustering
-			? new Redis.Cluster([{ port: options.port, host: options.host }], {
-					redisOptions: options,
-					slotsRefreshTimeout: 10000,
-					dnsLookup: (adr, callback) => callback(null, adr),
-					showFriendlyErrorStack: true,
-			  })
-			: new Redis.default(options);
+	constructor(
+		options: Redis.RedisOptions,
+		enableClustering: boolean = false,
+		slotsRefreshTimeout: number = 50000,
+	) {
+		this.redisClient = getRedisClient(options, slotsRefreshTimeout, enableClustering);
 
 		this.io = new SocketIoEmitter(this.redisClient);
 

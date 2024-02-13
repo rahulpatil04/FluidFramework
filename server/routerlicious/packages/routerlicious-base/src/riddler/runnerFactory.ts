@@ -82,10 +82,10 @@ export class RiddlerResourcesFactory implements IResourcesFactory<RiddlerResourc
 				enableReadyCheck: true,
 				maxRetriesPerRequest: redisConfig.maxRetriesPerRequest,
 				enableOfflineQueue: redisConfig.enableOfflineQueue,
-				retryStrategy(times) {
-					const delay = Math.min(times * 50, 2000);
-					return delay;
-				},
+				retryStrategy: utils.getRedisClusterRetryStrategy({
+					delayPerAttemptMs: 50,
+					maxDelayMs: 2000,
+				}),
 			};
 			if (redisConfig.enableAutoPipelining) {
 				/**
@@ -105,35 +105,11 @@ export class RiddlerResourcesFactory implements IResourcesFactory<RiddlerResourc
 				expireAfterSeconds: redisConfig.keyExpireAfterSeconds as number | undefined,
 			};
 
-			const redisOptionsCopy = { ...redisOptions };
-			redisOptionsCopy.password = "REDACTED";
-			Lumberjack.info(
-				`test123 Redis Client Params, redisOptions, CE: ${redisConfig.enableClustering}`,
-				{
-					redisOptionsCopy,
-					slotsRefreshTimeout: 10000,
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-					dnsLookup: (adr, callback) => callback(undefined, adr),
-					showFriendlyErrorStack: true,
-					clusterRetryStrategy(times) {
-						const delay = Math.min(times * 50, 2000);
-						return delay;
-					},
-				},
+			const redisClient: Redis.default | Redis.Cluster = utils.getRedisClient(
+				redisOptions,
+				redisConfig.slotsRefreshTimeout,
+				redisConfig.enableClustering,
 			);
-			Lumberjack.info(
-				`test123 Redis Client Options, redisOptions, CE: ${redisConfig.enableClustering}`,
-				redisOptionsCopy,
-			);
-
-			const redisClient: Redis.default | Redis.Cluster = redisConfig.enableClustering
-				? new Redis.Cluster([{ port: redisConfig.port, host: redisConfig.host }], {
-						redisOptions,
-						slotsRefreshTimeout: 10000,
-						dnsLookup: (adr, callback) => callback(null, adr),
-						showFriendlyErrorStack: true,
-				  })
-				: new Redis.default(redisOptions);
 
 			cache = new RedisCache(redisClient, redisParams);
 		}
