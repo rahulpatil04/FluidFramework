@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 /*!
  * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
  * Licensed under the MIT License.
@@ -6,7 +7,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 
 import { strict as assert } from "node:assert";
-import { stub } from "sinon";
+import sinon from "sinon";
 import { ISnapshot } from "@fluidframework/driver-definitions";
 import { OdspErrorTypes, IOdspResolvedUrl } from "@fluidframework/odsp-driver-definitions";
 import {
@@ -128,7 +129,7 @@ describe("Tests1 for snapshot fetch", () => {
 			_response: Promise<ISnapshotRequestAndResponseOptions>,
 			callback: () => Promise<T>,
 		): Promise<T> {
-			const getDownloadSnapshotStub = stub(fetchSnapshotImport, "downloadSnapshot");
+			const getDownloadSnapshotStub = sinon.stub(fetchSnapshotImport, "downloadSnapshot");
 			getDownloadSnapshotStub.returns(_response);
 			try {
 				return await callback();
@@ -170,7 +171,7 @@ describe("Tests1 for snapshot fetch", () => {
 			_response: Promise<ISnapshotRequestAndResponseOptions>,
 			callback: () => Promise<T>,
 		): Promise<T> {
-			const getDownloadSnapshotStub = stub(fetchSnapshotImport, "downloadSnapshot");
+			const getDownloadSnapshotStub = sinon.stub(fetchSnapshotImport, "downloadSnapshot");
 			getDownloadSnapshotStub.returns(_response);
 			try {
 				return await callback();
@@ -218,7 +219,7 @@ describe("Tests1 for snapshot fetch", () => {
 			_response: Promise<ISnapshotRequestAndResponseOptions>,
 			callback: () => Promise<T>,
 		): Promise<T> {
-			const getDownloadSnapshotStub = stub(fetchSnapshotImport, "downloadSnapshot");
+			const getDownloadSnapshotStub = sinon.stub(fetchSnapshotImport, "downloadSnapshot");
 			getDownloadSnapshotStub.returns(_response);
 			try {
 				return await callback();
@@ -278,7 +279,7 @@ describe("Tests1 for snapshot fetch", () => {
 			_response: Promise<ISnapshotRequestAndResponseOptions>,
 			callback: () => Promise<T>,
 		): Promise<T> {
-			const getDownloadSnapshotStub = stub(fetchSnapshotImport, "downloadSnapshot");
+			const getDownloadSnapshotStub = sinon.stub(fetchSnapshotImport, "downloadSnapshot");
 			getDownloadSnapshotStub.returns(_response);
 			try {
 				return await callback();
@@ -346,7 +347,7 @@ describe("Tests1 for snapshot fetch", () => {
 			_response: Promise<ISnapshotRequestAndResponseOptions>,
 			callback: () => Promise<T>,
 		): Promise<T> {
-			const getDownloadSnapshotStub = stub(fetchSnapshotImport, "downloadSnapshot");
+			const getDownloadSnapshotStub = sinon.stub(fetchSnapshotImport, "downloadSnapshot");
 			getDownloadSnapshotStub.returns(_response);
 			try {
 				return await callback();
@@ -398,7 +399,7 @@ describe("Tests1 for snapshot fetch", () => {
 			_response: Promise<ISnapshotRequestAndResponseOptions>,
 			callback: () => Promise<T>,
 		): Promise<T> {
-			const getDownloadSnapshotStub = stub(fetchSnapshotImport, "downloadSnapshot");
+			const getDownloadSnapshotStub = sinon.stub(fetchSnapshotImport, "downloadSnapshot");
 			getDownloadSnapshotStub.returns(_response);
 			try {
 				return await callback();
