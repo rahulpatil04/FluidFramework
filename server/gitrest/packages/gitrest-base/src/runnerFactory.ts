@@ -8,7 +8,6 @@ import * as core from "@fluidframework/server-services-core";
 import * as services from "@fluidframework/server-services-shared";
 import { normalizePort } from "@fluidframework/server-services-utils";
 import { Provider } from "nconf";
-import { Lumberjack } from "@fluidframework/server-services-telemetry";
 import {
 	RedisClientConnectionManager,
 	IRedisClientConnectionManager,
@@ -107,14 +106,12 @@ export class GitrestResourcesFactory implements core.IResourcesFactory<GitrestRe
 			const redisConfig = config.get("redis");
 			const redisClientConnectionManager =
 				redisClientConnectionManagerCustomization ??
-				new RedisClientConnectionManager(undefined, redisConfig);
-			await redisClientConnectionManager.authenticateAndCreateRedisClient().catch((error) => {
-				Lumberjack.error(
-					"[DHRUV DEBUG] Error creating Redis client connection:",
+				new RedisClientConnectionManager(
 					undefined,
-					error,
+					redisConfig,
+					redisConfig.enableClustering,
+					redisConfig.slotsRefreshTimeout,
 				);
-			});
 			return new RedisFsManagerFactory(config, redisClientConnectionManager);
 		}
 		throw new Error("Invalid file system name.");

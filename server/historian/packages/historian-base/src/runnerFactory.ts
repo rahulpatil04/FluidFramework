@@ -8,7 +8,6 @@ import * as core from "@fluidframework/server-services-core";
 import * as utils from "@fluidframework/server-services-utils";
 import { Provider } from "nconf";
 import winston from "winston";
-import { Lumberjack } from "@fluidframework/server-services-telemetry";
 import { RedisClientConnectionManager } from "./redisClientConnectionManager";
 import * as historianServices from "./services";
 import { normalizePort, Constants } from "./utils";
@@ -49,15 +48,12 @@ export class HistorianResourcesFactory implements core.IResourcesFactory<Histori
 		const redisConfig = config.get("redis");
 		const redisClientConnectionManager = customizations?.redisClientConnectionManager
 			? customizations.redisClientConnectionManager
-			: new RedisClientConnectionManager(undefined, redisConfig);
-		await redisClientConnectionManager.authenticateAndCreateRedisClient().catch((error) => {
-			winston.error("[DHRUV DEBUG] Error creating Redis client connection:", error);
-			Lumberjack.error(
-				"[DHRUV DEBUG] Error creating Redis client connection:",
-				undefined,
-				error,
-			);
-		});
+			: new RedisClientConnectionManager(
+					undefined,
+					redisConfig,
+					redisConfig.enableClustering,
+					redisConfig.slotsRefreshTimeout,
+			  );
 
 		const redisParams = {
 			expireAfterSeconds: redisConfig.keyExpireAfterSeconds as number | undefined,
@@ -87,20 +83,12 @@ export class HistorianResourcesFactory implements core.IResourcesFactory<Histori
 		const redisClientConnectionManagerForThrottling =
 			customizations?.redisClientConnectionManagerForThrottling
 				? customizations.redisClientConnectionManagerForThrottling
-				: new RedisClientConnectionManager(undefined, redisConfigForThrottling);
-		await redisClientConnectionManagerForThrottling
-			.authenticateAndCreateRedisClient()
-			.catch((error) => {
-				winston.error(
-					"[DHRUV DEBUG] Error creating Redis client connection for throttling:",
-					error,
-				);
-				Lumberjack.error(
-					"[DHRUV DEBUG] Error creating Redis client connection for throttling:",
-					undefined,
-					error,
-				);
-			});
+				: new RedisClientConnectionManager(
+						undefined,
+						redisConfigForThrottling,
+						redisConfig.enableClustering,
+						redisConfig.slotsRefreshTimeout,
+				  );
 
 		const redisParamsForThrottling = {
 			expireAfterSeconds: redisConfigForThrottling.keyExpireAfterSeconds as

@@ -5,7 +5,6 @@
 
 import { ICache } from "@fluidframework/server-services-core";
 import { IRedisParameters } from "@fluidframework/server-services-utils";
-import * as winston from "winston";
 import { Lumberjack } from "@fluidframework/server-services-telemetry";
 import { IRedisClientConnectionManager } from "@fluidframework/server-services-shared";
 
@@ -29,7 +28,6 @@ export class RedisCache implements ICache {
 		}
 
 		redisClientConnectionManager.getRedisClient().on("error", (err) => {
-			winston.error("[DHRUV DEBUG] Error with Redis:", err);
 			Lumberjack.error("[DHRUV DEBUG] Error with Redis", undefined, err);
 		});
 	}
@@ -38,7 +36,8 @@ export class RedisCache implements ICache {
 			await this.redisClientConnectionManager.getRedisClient().del(this.getKey(key));
 			return true;
 		} catch (error: any) {
-			Lumberjack.error(`Error deleting from cache.`, undefined, error);
+			const newError: Error = { name: error?.name, message: error?.message };
+			Lumberjack.error(`Error deleting from cache.`, undefined, newError);
 			return false;
 		}
 	}
@@ -47,8 +46,12 @@ export class RedisCache implements ICache {
 		try {
 			return this.redisClientConnectionManager.getRedisClient().get(this.getKey(key));
 		} catch (error: any) {
-			Lumberjack.error(`Error getting ${key.substring(0, 20)} from cache.`, undefined, error);
 			const newError: Error = { name: error?.name, message: error?.message };
+			Lumberjack.error(
+				`Error getting ${key.substring(0, 20)} from cache.`,
+				undefined,
+				newError,
+			);
 			throw newError;
 		}
 	}
@@ -62,8 +65,12 @@ export class RedisCache implements ICache {
 				throw new Error(result);
 			}
 		} catch (error: any) {
-			Lumberjack.error(`Error setting ${key.substring(0, 20)} in cache.`, undefined, error);
 			const newError: Error = { name: error?.name, message: error?.message };
+			Lumberjack.error(
+				`Error setting ${key.substring(0, 20)} in cache.`,
+				undefined,
+				newError,
+			);
 			throw newError;
 		}
 	}
@@ -72,12 +79,12 @@ export class RedisCache implements ICache {
 		try {
 			return this.redisClientConnectionManager.getRedisClient().incr(key);
 		} catch (error: any) {
+			const newError: Error = { name: error?.name, message: error?.message };
 			Lumberjack.error(
 				`Error while incrementing counter for ${key.substring(0, 20)} in redis.`,
 				undefined,
-				error,
+				newError,
 			);
-			const newError: Error = { name: error?.name, message: error?.message };
 			throw newError;
 		}
 	}
@@ -86,12 +93,12 @@ export class RedisCache implements ICache {
 		try {
 			return this.redisClientConnectionManager.getRedisClient().decr(key);
 		} catch (error: any) {
+			const newError: Error = { name: error?.name, message: error?.message };
 			Lumberjack.error(
 				`Error while decrementing counter for ${key.substring(0, 20)} in redis.`,
 				undefined,
-				error,
+				newError,
 			);
-			const newError: Error = { name: error?.name, message: error?.message };
 			throw newError;
 		}
 	}

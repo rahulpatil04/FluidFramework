@@ -31,6 +31,7 @@ export class MemFsManagerFactory implements IFileSystemManagerFactory {
 export class RedisFsManagerFactory implements IFileSystemManagerFactory {
 	private readonly redisParams: RedisParams;
 	private readonly redisFsConfig: RedisFsConfig;
+
 	constructor(
 		config: Provider,
 		private readonly redisClientConnectionManager: IRedisClientConnectionManager,
