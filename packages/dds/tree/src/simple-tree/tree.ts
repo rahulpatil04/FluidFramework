@@ -7,7 +7,7 @@ import { IChannel } from "@fluidframework/datastore-definitions";
 import { ISubscribable } from "../events/index.js";
 import { IDisposable, disposeSymbol } from "../util/index.js";
 import { FlexTreeView } from "../shared-tree/index.js";
-import { FlexFieldSchema } from "../feature-libraries/index.js";
+import { FlexFieldSchema, FlexTreeContext } from "../feature-libraries/index.js";
 import { getProxyForField } from "./proxies.js";
 import {
 	ImplicitFieldSchema,
@@ -118,7 +118,9 @@ export class WrapperTreeView<
 	TView extends FlexTreeView<FlexFieldSchema>,
 > implements TreeView<TreeFieldFromImplicitField<TSchema>>
 {
-	public constructor(public readonly view: TView) {}
+	public constructor(public readonly view: TView) {
+		viewFromContext.set(view.context, this);
+	}
 
 	public [disposeSymbol](): void {
 		this.view[disposeSymbol]();
@@ -131,4 +133,36 @@ export class WrapperTreeView<
 	public get root(): TreeFieldFromImplicitField<TSchema> {
 		return getProxyForField(this.view.flexTree) as TreeFieldFromImplicitField<TSchema>;
 	}
+
+	/**
+	 * Run the given transaction by delegating to this view's checkout's transaction API.
+	 */
+	public runTransaction(transaction: (root: this["root"]) => void | "rollback") {
+		this.view.checkout.transaction.start();
+		try {
+			if (transaction(this.root) === "rollback") {
+				this.view.checkout.transaction.abort();
+			} else {
+				this.view.checkout.transaction.commit();
+			}
+		} catch (e) {
+			// An unhandled exception thrown in a transaction should cancel and roll back the transaction, but we still want to let the exception propagate up.
+			this.view.checkout.transaction.abort();
+			throw e;
+		}
+	}
 }
+
+/**
+ * Maps the context object of a flex tree to that flex tree's view.
+ * @remarks
+ * This allows the lookup of the tree view from any flex tree node.
+ * First, get the context from the node and then look it up in this map.
+ * This map should be updated any time a {@link WrapperTreeView} is created, therefore under normal circumstances every flex node/tree has exactly one view.
+ * However, in mock/test scenarios that create a flex tree without a view, this map will not contain an entry for that tree.
+ * @internal
+ */
+export const viewFromContext = new WeakMap<
+	FlexTreeContext,
+	WrapperTreeView<any, FlexTreeView<FlexFieldSchema>>
+>();
