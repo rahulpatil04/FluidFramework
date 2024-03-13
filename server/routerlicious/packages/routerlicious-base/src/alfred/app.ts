@@ -99,6 +99,8 @@ export function create(
 						[BaseTelemetryProperties.tenantId]: getTenantIdFromRequest(req.params),
 						[BaseTelemetryProperties.documentId]: getIdFromRequest(req.params),
 					};
+                    const serverAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+                    additionalProperties.serverAddress = serverAddress;
 					if (enableClientIPLogging === true) {
 						const hashedClientIP = req.ip
 							? shajs("sha256").update(`${req.ip}`).digest("hex")
