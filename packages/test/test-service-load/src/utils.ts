@@ -46,7 +46,8 @@ class FileLogger implements ITelemetryBufferedLogger {
 	private static readonly loggerP = (minLogLevel?: LogLevel) =>
 		new LazyPromise<FileLogger>(async () => {
 			if (process.env.FLUID_TEST_LOGGER_PKG_PATH !== undefined) {
-				await import(process.env.FLUID_TEST_LOGGER_PKG_PATH);
+				// eslint-disable-next-line @typescript-eslint/no-require-imports
+				require(process.env.FLUID_TEST_LOGGER_PKG_PATH);
 				const logger = getTestLogger?.();
 				assert(logger !== undefined, "Expected getTestLogger to return something");
 				return new FileLogger(logger, minLogLevel);
