@@ -116,6 +116,9 @@ export function create(
 							? shajs("sha256").update(`${req.headers[XAzureSocketIP]}`).digest("hex")
 							: "";
 						additionalProperties.hashedAzureSocketIPAddress = hashedAzureSocketIP;
+
+						const xForwardedForIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+                        additionalProperties.xForwardedForIPAddress = xForwardedForIP;
 					}
 					if (req.body?.isEphemeralContainer !== undefined) {
 						additionalProperties.isEphemeralContainer = req.body.isEphemeralContainer;
