@@ -117,8 +117,9 @@ export function create(
 							: "";
 						additionalProperties.hashedAzureSocketIPAddress = hashedAzureSocketIP;
 
-						const xForwardedForIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-                        additionalProperties.xForwardedForIPAddress = xForwardedForIP;
+						const xForwardedForIP =
+							req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+						additionalProperties.xForwardedForIPAddress = xForwardedForIP;
 					}
 					if (req.body?.isEphemeralContainer !== undefined) {
 						additionalProperties.isEphemeralContainer = req.body.isEphemeralContainer;
