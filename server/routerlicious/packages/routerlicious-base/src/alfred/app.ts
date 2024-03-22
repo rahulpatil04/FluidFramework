@@ -36,6 +36,7 @@ import { BaseTelemetryProperties, HttpProperties } from "@fluidframework/server-
 import { catch404, getIdFromRequest, getTenantIdFromRequest, handleError } from "../utils";
 import { IDocumentDeleteService } from "./services";
 import * as alfredRoutes from "./routes";
+import { Lumberjack, getLumberBaseProperties } from "@fluidframework/server-services-telemetry";
 
 export function create(
 	config: Provider,
@@ -120,6 +121,13 @@ export function create(
 						const xForwardedForIP =
 							req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 						additionalProperties.xForwardedForIPAddress = xForwardedForIP;
+						const lumberjackProperties = {
+							...getLumberBaseProperties(documentId, tenantId),
+						};
+						Lumberjack.log(
+							`This is the xForwardedForIP ${xForwardedForIP}`,
+							lumberjackProperties,
+						);
 					}
 					if (req.body?.isEphemeralContainer !== undefined) {
 						additionalProperties.isEphemeralContainer = req.body.isEphemeralContainer;
