@@ -33,10 +33,10 @@ import {
 } from "@fluidframework/server-services-utils";
 import { RestLessServer, IHttpServerConfig } from "@fluidframework/server-services";
 import { BaseTelemetryProperties, HttpProperties } from "@fluidframework/server-services-telemetry";
+import { Lumberjack, getLumberBaseProperties } from "@fluidframework/server-services-telemetry";
 import { catch404, getIdFromRequest, getTenantIdFromRequest, handleError } from "../utils";
 import { IDocumentDeleteService } from "./services";
 import * as alfredRoutes from "./routes";
-import { Lumberjack, getLumberBaseProperties } from "@fluidframework/server-services-telemetry";
 
 export function create(
 	config: Provider,
