@@ -112,7 +112,18 @@ export function create(
 						`Print Req.headers: ${JSON.stringify(req.headers)}`,
 						lumberjackProperties,
 					);
-					Lumberjack.info(`Print Req: ${JSON.stringify(req)}`, lumberjackProperties);
+					Lumberjack.info(
+						`Print Req.body: ${JSON.stringify(req.body)}`,
+						lumberjackProperties,
+					);
+					Lumberjack.info(
+						`Print Req.query: ${JSON.stringify(req.query)}`,
+						lumberjackProperties,
+					);
+					Lumberjack.info(
+						`Print Req.ips: ${JSON.stringify(req.ips)}`,
+						lumberjackProperties,
+					);
 					Lumberjack.info(
 						`enableClientIPLogging result in jsonmorgan: ${enableClientIPLogging}`,
 						lumberjackProperties,
