@@ -122,7 +122,10 @@ export function create(
 							req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 						additionalProperties.xForwardedForIPAddress = xForwardedForIP;
 						const lumberjackProperties = {
-							...getLumberBaseProperties(getIdFromRequest(req.params), getTenantIdFromRequest(req.params)),
+							...getLumberBaseProperties(
+								getIdFromRequest(req.params),
+								getTenantIdFromRequest(req.params),
+							),
 						};
 						const reqIP = req.ip ? req.ip : "";
 						Lumberjack.log(
