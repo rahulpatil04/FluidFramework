@@ -358,7 +358,7 @@ stages:
               action: 'Run a Docker command'
               customCommand: 'run --user root -v $(Build.ArtifactStagingDirectory)/${{ parameters.buildDirectory }}/nyc:${{ parameters.containerBaseDir }}/nyc -t $(baseContainerTag) npm run ci:test:coverage'
 
-          - task: PublishCodeCoverageResults@1
+          - task: PublishCodeCoverageResults@2
             displayName: Publish Code Coverage
             inputs:
               codeCoverageTool: Cobertura
