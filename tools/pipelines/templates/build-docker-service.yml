@@ -361,9 +361,7 @@ stages:
           - task: PublishCodeCoverageResults@2
             displayName: Publish Code Coverage
             inputs:
-              codeCoverageTool: Cobertura
               summaryFileLocation: '$(Build.ArtifactStagingDirectory)/${{ parameters.buildDirectory }}/nyc/**/report/cobertura-coverage.xml'
-              reportDirectory: '$(Build.ArtifactStagingDirectory)/${{ parameters.buildDirectory }}/nyc/**/report'
               failIfCoverageEmpty: true
             condition: succeededOrFailed()
 
