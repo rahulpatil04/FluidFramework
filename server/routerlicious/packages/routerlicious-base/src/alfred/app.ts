@@ -86,6 +86,12 @@ export function create(
 		app.use(bindTimeoutContext(httpServerConfig.connectionTimeoutMs));
 	}
 	const loggerFormat = config.get("logger:morganFormat");
+    Lumberjack.info(
+        `enableClientIPLogging result in loggerFormat: ${enableClientIPLogging}`
+    );
+    Lumberjack.info(
+        `loggerFormat result in loggerFormat: ${loggerFormat}`
+    );
 	if (loggerFormat === "json") {
 		app.use(
 			jsonMorganLoggerMiddleware(
@@ -100,6 +106,20 @@ export function create(
 						[BaseTelemetryProperties.tenantId]: getTenantIdFromRequest(req.params),
 						[BaseTelemetryProperties.documentId]: getIdFromRequest(req.params),
 					};
+                    const lumberjackProperties = {
+                        ...getLumberBaseProperties(
+                            getIdFromRequest(req.params),
+                            getTenantIdFromRequest(req.params),
+                        ),
+                    };
+                    Lumberjack.info(
+                        `Print Req.headers: ${JSON.stringify(req.headers)}`,
+                        lumberjackProperties,
+                    );
+                    Lumberjack.info(
+                        `enableClientIPLogging result in jsonmorgan: ${enableClientIPLogging}`,
+                        lumberjackProperties,
+                    );
 					if (enableClientIPLogging === true) {
 						const hashedClientIP = req.ip
 							? shajs("sha256").update(`${req.ip}`).digest("hex")
@@ -121,12 +141,6 @@ export function create(
 						const xForwardedForIP =
 							req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 						additionalProperties.xForwardedForIPAddress = xForwardedForIP;
-						const lumberjackProperties = {
-							...getLumberBaseProperties(
-								getIdFromRequest(req.params),
-								getTenantIdFromRequest(req.params),
-							),
-						};
 						const reqIP = req.ip ? req.ip : "";
 						Lumberjack.info(
 							`This is the xForwardedForIP ${reqIP}`,
