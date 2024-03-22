@@ -128,11 +128,11 @@ export function create(
 							),
 						};
 						const reqIP = req.ip ? req.ip : "";
-						Lumberjack.log(
+						Lumberjack.info(
 							`This is the xForwardedForIP ${reqIP}`,
 							lumberjackProperties,
 						);
-						Lumberjack.log(
+						Lumberjack.info(
 							`This is the xForwardedForIP ${xForwardedForIP}`,
 							lumberjackProperties,
 						);
