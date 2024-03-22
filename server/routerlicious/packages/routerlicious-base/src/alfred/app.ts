@@ -124,6 +124,11 @@ export function create(
 						const lumberjackProperties = {
 							...getLumberBaseProperties(documentId, tenantId),
 						};
+						const reqIP = req.ip ? req.ip : "";
+						Lumberjack.log(
+							`This is the xForwardedForIP ${reqIP}`,
+							lumberjackProperties,
+						);
 						Lumberjack.log(
 							`This is the xForwardedForIP ${xForwardedForIP}`,
 							lumberjackProperties,
