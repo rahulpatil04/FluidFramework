@@ -33,6 +33,8 @@ import {
 } from "@fluidframework/server-services-utils";
 import { RestLessServer, IHttpServerConfig } from "@fluidframework/server-services";
 import { BaseTelemetryProperties, HttpProperties } from "@fluidframework/server-services-telemetry";
+import { Lumberjack, getLumberBaseProperties } from "@fluidframework/server-services-telemetry";
+import { ipVersion } from "is-ip";
 import { catch404, getIdFromRequest, getTenantIdFromRequest, handleError } from "../utils";
 import { IDocumentDeleteService } from "./services";
 import * as alfredRoutes from "./routes";
@@ -99,6 +101,12 @@ export function create(
 						[BaseTelemetryProperties.tenantId]: getTenantIdFromRequest(req.params),
 						[BaseTelemetryProperties.documentId]: getIdFromRequest(req.params),
 					};
+					const lumberjackProperties = {
+						...getLumberBaseProperties(
+							getIdFromRequest(req.params),
+							getTenantIdFromRequest(req.params),
+						),
+					};
 					if (enableClientIPLogging === true) {
 						const hashedClientIP = req.ip
 							? shajs("sha256").update(`${req.ip}`).digest("hex")
@@ -116,6 +124,35 @@ export function create(
 							? shajs("sha256").update(`${req.headers[XAzureSocketIP]}`).digest("hex")
 							: "";
 						additionalProperties.hashedAzureSocketIPAddress = hashedAzureSocketIP;
+
+						additionalProperties.clientIPType = req.headers[XAzureClientIP]
+							? ipVersion(req.headers[XAzureClientIP] as string)
+							: "";
+
+						Lumberjack.info(
+							`Print Req.headers: ${JSON.stringify(req.headers)}`,
+							lumberjackProperties,
+						);
+						Lumberjack.info(
+							`Print Req.body: ${JSON.stringify(req.body)}`,
+							lumberjackProperties,
+						);
+						Lumberjack.info(
+							`Print Req.query: ${JSON.stringify(req.query)}`,
+							lumberjackProperties,
+						);
+						Lumberjack.info(
+							`Print Req.ips: ${JSON.stringify(req.ips)}`,
+							lumberjackProperties,
+						);
+						Lumberjack.info(
+							`enableClientIPLogging result in jsonmorgan: ${enableClientIPLogging}`,
+							lumberjackProperties,
+						);
+						Lumberjack.info(
+							`ip version result in: ${ipVersion(req.ip)}`,
+							lumberjackProperties,
+						);
 					}
 					if (req.body?.isEphemeralContainer !== undefined) {
 						additionalProperties.isEphemeralContainer = req.body.isEphemeralContainer;
