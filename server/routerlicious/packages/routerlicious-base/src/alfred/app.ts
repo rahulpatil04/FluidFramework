@@ -34,6 +34,7 @@ import {
 import { RestLessServer, IHttpServerConfig } from "@fluidframework/server-services";
 import { BaseTelemetryProperties, HttpProperties } from "@fluidframework/server-services-telemetry";
 import { Lumberjack, getLumberBaseProperties } from "@fluidframework/server-services-telemetry";
+import { ipVersion } from "is-ip";
 import { catch404, getIdFromRequest, getTenantIdFromRequest, handleError } from "../utils";
 import { IDocumentDeleteService } from "./services";
 import * as alfredRoutes from "./routes";
@@ -85,6 +86,11 @@ export function create(
 		// If connectionTimeoutMs configured and not 0, bind timeout context.
 		app.use(bindTimeoutContext(httpServerConfig.connectionTimeoutMs));
 	}
+
+	app.use(cookieParser());
+	app.use(json({ limit: requestSize }));
+	app.use(urlencoded({ limit: requestSize, extended: true }));
+
 	const loggerFormat = config.get("logger:morganFormat");
 	Lumberjack.info(`enableClientIPLogging result in loggerFormat: ${enableClientIPLogging}`);
 	Lumberjack.info(`loggerFormat result in loggerFormat: ${loggerFormat}`);
@@ -126,6 +132,10 @@ export function create(
 					);
 					Lumberjack.info(
 						`enableClientIPLogging result in jsonmorgan: ${enableClientIPLogging}`,
+						lumberjackProperties,
+					);
+					Lumberjack.info(
+						`ip version result in: ${ipVersion(req.ip)}`,
 						lumberjackProperties,
 					);
 					if (enableClientIPLogging === true) {
@@ -170,10 +180,6 @@ export function create(
 	} else {
 		app.use(alternativeMorganLoggerMiddleware(loggerFormat));
 	}
-
-	app.use(cookieParser());
-	app.use(json({ limit: requestSize }));
-	app.use(urlencoded({ limit: requestSize, extended: false }));
 
 	app.use(bindCorrelationId());
 
