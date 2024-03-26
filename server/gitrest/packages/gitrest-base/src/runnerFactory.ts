@@ -114,7 +114,7 @@ export class GitrestResourcesFactory implements core.IResourcesFactory<GitrestRe
 				retryDelayOnMoved: redisConfig.retryDelayOnMoved ?? 100,
 				maxRedirections: redisConfig.maxRedirections ?? 16,
 			};
-			
+
 			const redisClientConnectionManager =
 				redisClientConnectionManagerCustomization ??
 				new RedisClientConnectionManager(
