@@ -106,6 +106,15 @@ export class GitrestResourcesFactory implements core.IResourcesFactory<GitrestRe
 			return new NodeFsManagerFactory();
 		} else if (fileSystemName === "redisFs") {
 			const redisConfig = config.get("redis");
+
+			const retryDelays = {
+				retryDelayOnFailover: 100,
+				retryDelayOnClusterDown: 100,
+				retryDelayOnTryAgain: 100,
+				retryDelayOnMoved: redisConfig.retryDelayOnMoved ?? 100,
+				maxRedirections: redisConfig.maxRedirections ?? 16,
+			};
+
 			const redisClientConnectionManager =
 				redisClientConnectionManagerCustomization ??
 				new RedisClientConnectionManager(
@@ -113,6 +122,7 @@ export class GitrestResourcesFactory implements core.IResourcesFactory<GitrestRe
 					redisConfig,
 					redisConfig.enableClustering,
 					redisConfig.slotsRefreshTimeout,
+					retryDelays,
 				);
 			return new RedisFsManagerFactory(config, redisClientConnectionManager);
 		}
