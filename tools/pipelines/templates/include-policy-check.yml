@@ -65,5 +65,6 @@ stages:
             if [ `cat git_status.log | wc -l` != "0" ]; then
               cat git_status.log
               echo "##vso[task.logissue type=error]Build should not create extraneous files"
+              git diff
               exit -1;
             fi
