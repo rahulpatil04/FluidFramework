@@ -6,7 +6,8 @@
 import { EventEmitter } from "events";
 import { Lumberjack } from "@fluidframework/server-services-telemetry";
 import { IContextErrorData } from "@fluidframework/server-services-core";
-import type * as kafkaTypes from "node-rdkafka";
+import type * as kafkaTypes from "astan-node-rdkafka";
+import { DefaultAzureCredential } from "@azure/identity";
 import { tryImportNodeRdkafka } from "./tryImport";
 
 export interface IKafkaBaseOptions {
@@ -15,7 +16,8 @@ export interface IKafkaBaseOptions {
 	disableTopicCreation?: boolean;
 	sslCACertFilePath?: string;
 	restartOnKafkaErrorCodes?: number[];
-	eventHubConnString?: string;
+	eventHubConnString?: string; // deprecated in favor of eventHubsConfig
+	eventHubsConfig?: object;
 }
 
 export interface IKafkaEndpoints {
@@ -23,11 +25,18 @@ export interface IKafkaEndpoints {
 	zooKeeper?: string[];
 }
 
+interface IEventHubsConfig {
+	azureClientId: string;
+	audience: string;
+	azureCredential?: DefaultAzureCredential;
+}
+
 export abstract class RdkafkaBase extends EventEmitter {
 	protected readonly kafka: typeof kafkaTypes;
 	protected readonly sslOptions?: kafkaTypes.ConsumerGlobalConfig;
 	protected defaultRestartOnKafkaErrorCodes: number[] = [];
 	private readonly options: IKafkaBaseOptions;
+	private readonly eventHubsConfig?: IEventHubsConfig;
 
 	constructor(
 		protected readonly endpoints: IKafkaEndpoints,
@@ -72,6 +81,26 @@ export abstract class RdkafkaBase extends EventEmitter {
 				"security.protocol": "ssl",
 				"ssl.ca.location": options?.sslCACertFilePath,
 			};
+		} else if (options?.eventHubsConfig) {
+			if (!kafka.features.filter((feature) => feature.toLowerCase().includes("sasl_ssl"))) {
+				throw new Error(
+					"Attempted to configure SASL_SSL for Event Hubs, but rdkafka has not been built to support it. " +
+						"Please make sure OpenSSL is available and build rdkafka again.",
+				);
+			}
+
+			if (!RdkafkaBase.isIEventHubsConfig(options?.eventHubsConfig)) {
+				throw new Error("eventHubsConfig is malformed");
+			}
+
+			this.eventHubsConfig = options.eventHubsConfig;
+			this.eventHubsConfig.azureCredential = new DefaultAzureCredential({
+				managedIdentityClientId: this.eventHubsConfig.azureClientId,
+			});
+			this.sslOptions = {
+				"security.protocol": "sasl_ssl",
+				"sasl.mechanisms": "OAUTHBEARER",
+			};
 		} else if (options?.eventHubConnString) {
 			if (!kafka.features.filter((feature) => feature.toLowerCase().includes("sasl_ssl"))) {
 				throw new Error(
@@ -92,6 +121,19 @@ export abstract class RdkafkaBase extends EventEmitter {
 	}
 
 	protected abstract connect(): void;
+
+	protected async getAzureIdentityToken() {
+		if (!this.eventHubsConfig) {
+			throw new Error(
+				"getAzureIdentityToken() was invoked without setting managed identity config",
+			);
+		}
+
+		const tokenHolder = await this.eventHubsConfig.azureCredential?.getToken(
+			this.eventHubsConfig.audience,
+		);
+		return tokenHolder?.token;
+	}
 
 	private async initialize() {
 		try {
@@ -155,5 +197,13 @@ export abstract class RdkafkaBase extends EventEmitter {
 
 	protected static isObject(value: any): value is object {
 		return value !== null && typeof value === "object";
+	}
+
+	private static isIEventHubsConfig(value: any): value is IEventHubsConfig {
+		return (
+			value !== null &&
+			typeof value.azureClientId === "string" &&
+			typeof value.audience === "string"
+		);
 	}
 }

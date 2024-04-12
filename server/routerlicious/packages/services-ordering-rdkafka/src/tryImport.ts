@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import type * as kafkaTypes from "node-rdkafka";
+import type * as kafkaTypes from "astan-node-rdkafka";
 
 let tryImport = false;
 let nodeRdkafkaModule: typeof kafkaTypes | undefined;

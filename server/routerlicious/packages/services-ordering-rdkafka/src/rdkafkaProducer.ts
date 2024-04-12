@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import type * as kafkaTypes from "node-rdkafka";
+import type * as kafkaTypes from "astan-node-rdkafka";
 import {
 	BoxcarType,
 	IBoxcarMessage,
@@ -46,7 +46,6 @@ export interface IKafkaProducerOptions extends Partial<IKafkaBaseOptions> {
 
 	pollIntervalMs: number;
 	maxMessageSize: number;
-	eventHubConnString?: string;
 }
 
 /**
@@ -189,9 +188,17 @@ export class RdkafkaProducer extends RdkafkaBase implements IProducer {
 			this.emit("log", event);
 		});
 
-		producer.connect();
+		const p = this.getAzureIdentityToken() ?? Promise.resolve();
 
-		producer.setPollInterval(this.producerOptions.pollIntervalMs);
+		p.then((token) => {
+			producer.setOauthBearerToken(token ?? "");
+
+			producer.connect();
+
+			producer.setPollInterval(this.producerOptions.pollIntervalMs);
+		}).catch((err) => {
+			Lumberjack.error("Error initializing rdkafka", undefined, err);
+		});
 	}
 
 	/**

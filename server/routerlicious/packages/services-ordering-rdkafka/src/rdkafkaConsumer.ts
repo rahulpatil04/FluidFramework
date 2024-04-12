@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import type * as kafkaTypes from "node-rdkafka";
+import type * as kafkaTypes from "astan-node-rdkafka";
 
 import { Deferred } from "@fluidframework/common-utils";
 import {
@@ -39,7 +39,6 @@ export interface IKafkaConsumerOptions extends Partial<IKafkaBaseOptions> {
 	 * See https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
 	 */
 	additionalOptions?: kafkaTypes.ConsumerGlobalConfig;
-	eventHubConnString?: string;
 }
 
 /**
@@ -317,7 +316,15 @@ export class RdkafkaConsumer extends RdkafkaBase implements IConsumer {
 			this.emit("log", event);
 		});
 
-		consumer.connect();
+		const p = this.getAzureIdentityToken() ?? Promise.resolve();
+
+		p.then((token) => {
+			consumer.setOauthBearerToken(token ?? "");
+
+			consumer.connect();
+		}).catch((error) => {
+			this.error(error, { restart: true, errorLabel: "rdkafkaConsumer:rebalance.error" });
+		});
 	}
 
 	public async close(reconnecting: boolean = false): Promise<void> {
