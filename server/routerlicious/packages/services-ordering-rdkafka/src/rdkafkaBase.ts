@@ -176,13 +176,27 @@ export abstract class RdkafkaBase extends EventEmitter {
 	}
 
 	protected async ensureTopics() {
+		if (!this.eventHubsConfig) {
+			throw new Error("ensureTopics() was invoked without setting managed identity config");
+		}
+
+		if (!this.eventHubsConfig.azureCredential) {
+			throw new Error(
+				"ensureTopics() was invoked without setting managed identity config. No azureCredential",
+			);
+		}
+
+		const th = await this.eventHubsConfig.azureCredential.getToken(
+			this.eventHubsConfig.audience,
+		);
+
 		const options: kafkaTypes.GlobalConfig = {
 			"client.id": `${this.clientId}-admin`,
 			"metadata.broker.list": this.endpoints.kafka.join(","),
 			...this.sslOptions,
 		};
 
-		const adminClient = this.kafka.AdminClient.create(options);
+		const adminClient = this.kafka.AdminClient.create(options, th.token);
 
 		const newTopic: kafkaTypes.NewTopic = {
 			topic: this.topic,
