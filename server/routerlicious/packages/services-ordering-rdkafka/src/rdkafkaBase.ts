@@ -122,7 +122,7 @@ export abstract class RdkafkaBase extends EventEmitter {
 
 	protected abstract connect(): void;
 
-	protected async getAzureIdentityToken() {
+	protected async getAzureIdentityToken(cb: (token: string) => void) {
 		if (!this.eventHubsConfig) {
 			throw new Error(
 				"getAzureIdentityToken() was invoked without setting managed identity config",
@@ -132,7 +132,29 @@ export abstract class RdkafkaBase extends EventEmitter {
 		const tokenHolder = await this.eventHubsConfig.azureCredential?.getToken(
 			this.eventHubsConfig.audience,
 		);
-		return tokenHolder?.token;
+
+		if (!tokenHolder) {
+			throw new Error("getAzureIdentityToken() could not fetch azure token");
+		}
+
+		const now = new Date().getTime();
+
+		setTimeout(
+			() => {
+				this.getAzureIdentityToken(cb)
+					.then((token) => cb(token))
+					.catch((err) => {});
+			},
+			tokenHolder.expiresOnTimestamp - now - 120_000,
+		);
+
+		Lumberjack.warning(
+			`OAUTHBEARER AZURE TOKEN: new token will expire at ${
+				tokenHolder.expiresOnTimestamp
+			}, refresh in ${tokenHolder.expiresOnTimestamp - now - 120_000}`,
+		);
+
+		return tokenHolder.token;
 	}
 
 	private async initialize() {

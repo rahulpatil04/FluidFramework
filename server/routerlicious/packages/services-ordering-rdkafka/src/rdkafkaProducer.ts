@@ -188,7 +188,10 @@ export class RdkafkaProducer extends RdkafkaBase implements IProducer {
 			this.emit("log", event);
 		});
 
-		const p = this.getAzureIdentityToken() ?? Promise.resolve();
+		const p =
+			this.getAzureIdentityToken((token: string) => {
+				producer.setOauthBearerToken(token);
+			}) ?? Promise.resolve();
 
 		p.then((token) => {
 			producer.setOauthBearerToken(token ?? "");

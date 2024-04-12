@@ -316,7 +316,10 @@ export class RdkafkaConsumer extends RdkafkaBase implements IConsumer {
 			this.emit("log", event);
 		});
 
-		const p = this.getAzureIdentityToken() ?? Promise.resolve();
+		const p =
+			this.getAzureIdentityToken((token: string) => {
+				consumer.setOauthBearerToken(token);
+			}) ?? Promise.resolve();
 
 		p.then((token) => {
 			consumer.setOauthBearerToken(token ?? "");
