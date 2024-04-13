@@ -958,7 +958,7 @@ importers:
       '@types/lru-cache': ^5.1.0
       '@types/node': ^18.17.1
       '@types/sinon': ^9.0.9
-      astan-node-rdkafka: ^2.18.1
+      astan-node-rdkafka: ^2.18.2
       concurrently: ^8.2.1
       eslint: ~8.55.0
       events: ^3.1.0
@@ -974,7 +974,7 @@ importers:
       '@fluidframework/server-services-client': link:../services-client
       '@fluidframework/server-services-core': link:../services-core
       '@fluidframework/server-services-telemetry': link:../services-telemetry
-      astan-node-rdkafka: 2.18.1
+      astan-node-rdkafka: 2.18.2
       events: 3.3.0
       nconf: 0.12.0
       sillyname: 0.1.0
@@ -6901,8 +6901,8 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /astan-node-rdkafka/2.18.1:
-    resolution: {integrity: sha512-3RF0/YEi0kxc3+C/dOoVVaVEZUNrr5GfiNif6LjmWAs8X53zwZm4a1YOBaVqxjb3HSxehY5LOMDHOF4xZFEUnQ==}
+  /astan-node-rdkafka/2.18.2:
+    resolution: {integrity: sha512-i/Xxu+WhqxuotpHpSlAs8VAJNjaX+lqMdbGHiq9ZMR/qCOhqab/E9GQBdwlL3PqCBsf4RrVvbfPsKY1Xn0aSjw==}
     engines: {node: '>=6.0.0'}
     requiresBuild: true
     dependencies:
