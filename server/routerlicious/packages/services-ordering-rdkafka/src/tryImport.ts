@@ -26,8 +26,8 @@ export function tryImportNodeRdkafka() {
 	if (!tryImport) {
 		tryImport = true;
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-require-imports
-			nodeRdkafkaModule = require("node-rdkafka");
+			// eslint-disable-next-line @typescript-eslint/no-require-imports, import/no-extraneous-dependencies
+			nodeRdkafkaModule = require("astan-node-rdkafka");
 		} catch (e) {}
 	}
 	return nodeRdkafkaModule;
