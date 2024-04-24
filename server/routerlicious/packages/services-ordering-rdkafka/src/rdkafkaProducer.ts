@@ -127,6 +127,8 @@ export class RdkafkaProducer extends RdkafkaBase implements IProducer {
 			...this.sslOptions,
 		};
 
+		Lumberjack.info(`KafkaProducer options:\n ${JSON.stringify(options)}`);
+
 		const producer: kafkaTypes.Producer = (this.connectingProducer =
 			new this.kafka.HighLevelProducer(options, this.producerOptions.topicConfig));
 
@@ -187,6 +189,7 @@ export class RdkafkaProducer extends RdkafkaBase implements IProducer {
 
 		producer.on("event.log", (event) => {
 			this.emit("log", event);
+			Lumberjack.warning(`KafkaConsumer log: ${event}`);
 		});
 
 		producer.connect();

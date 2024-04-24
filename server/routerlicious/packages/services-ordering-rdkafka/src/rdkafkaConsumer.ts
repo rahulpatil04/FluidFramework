@@ -13,6 +13,7 @@ import {
 	IZookeeperClient,
 	ZookeeperClientConstructor,
 } from "@fluidframework/server-services-core";
+import { Lumberjack } from "@fluidframework/server-services-telemetry";
 import { IKafkaBaseOptions, IKafkaEndpoints, RdkafkaBase } from "./rdkafkaBase";
 
 /**
@@ -140,6 +141,8 @@ export class RdkafkaConsumer extends RdkafkaBase implements IConsumer {
 			...this.consumerOptions.additionalOptions,
 			...this.sslOptions,
 		};
+
+		Lumberjack.info(`KafkaConsumer options:\n ${JSON.stringify(options)}`);
 
 		consumer = this.consumer = new this.kafka.KafkaConsumer(options, {
 			"auto.offset.reset": "latest",
@@ -315,6 +318,7 @@ export class RdkafkaConsumer extends RdkafkaBase implements IConsumer {
 
 		consumer.on("event.log", (event) => {
 			this.emit("log", event);
+			Lumberjack.warning(`KafkaConsumer log: ${event}`);
 		});
 
 		consumer.connect();
