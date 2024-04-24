@@ -130,11 +130,15 @@ jobs:
             targetType: 'inline'
             script: |
 
+              curl https://alfred.r11s-wu2.prague.office-int.com/documents/fluid
+
               # Extract public part from cert
               openssl x509 -in $(downloadCertTask.secureFilePath) -out cert.crt
               # Install cert
               sudo cp cert.crt /usr/local/share/ca-certificates/
               sudo update-ca-certificates
+
+              curl https://alfred.r11s-wu2.prague.office-int.com/documents/fluid
 
       # Print parameters/Vars
       # Variables declared outside this template will only work with "macro syntax": $(name).
@@ -150,6 +154,7 @@ jobs:
             Pipeline Parameters:
               poolBuild=${{ parameters.poolBuild }}
               testPackage=${{ parameters.testPackage }}
+              r11sSelfSignedCertSecureFile=${{ parameters.r11sSelfSignedCertSecureFile }}
 
             Pipeline Variables:
               isTestBranch=${{ variables.isTestBranch }}
@@ -164,215 +169,3 @@ jobs:
               artifactPipeline=${{ variables.artifactPipeline }}
               artifactBuildId=${{ parameters.artifactBuildId }}
             "
-
-      - template: include-use-node-version.yml
-
-      # Download artifact
-      - task: DownloadPipelineArtifact@2
-        displayName: Download test package
-        inputs:
-          source: specific
-          project: internal
-          pipeline: ${{ variables.artifactPipeline }}
-          buildVersionToDownload: specific
-          buildId: ${{ parameters.artifactBuildId }}
-          artifact: pack
-          patterns: "**/${{ variables.testPackageFilePattern }}"
-          path: $(Pipeline.Workspace)/client/pack
-          # allowPartiallySucceededBuilds: true # No effect as long as we have buildVersionToDownload: specific
-          # branchName: $(Build.SourceBranch)   # No effect as long as we have buildVersionToDownload: specific
-          # It seems there's a bug and preferTriggeringPipeline is not respected.
-          # We force the behavior by explicitly specifying:
-          # - buildVersionToDownload: specific
-          # - buildId: <the id of the triggering build>
-          # preferTriggeringPipeline: true
-
-
-      - task: Bash@3
-        displayName: Create test directory
-        inputs:
-          targetType: 'inline'
-          script: |
-            mkdir ${{ parameters.testWorkspace }}
-
-      - task: Bash@3
-        name: Initialize
-        displayName: Initialize
-        inputs:
-          targetType: 'inline'
-          workingDirectory: ${{ parameters.testWorkspace }}
-          # Note: $(ado-feeds-build) and $(ado-feeds-office) come from the ado-feeds variable group
-          script: |
-            echo Initialize package
-            npm init --yes
-
-            echo Generating .npmrc
-            echo "registry=https://registry.npmjs.org" >> ./.npmrc
-            echo "always-auth=false" >> ./.npmrc
-
-            echo "@fluidframework:registry=${{ variables.feed }}" >> ./.npmrc
-            echo "@fluid-experimental:registry=${{ variables.feed }}" >> ./.npmrc
-
-            # This is confusing, but we are using the .npmrc here to load dependencies from different feeds. These
-            # scopes must be loaded from the "dev" feed because that is the only place they are published. Ideally this
-            # logic will be centralized outside of CI in the future.
-            echo "@fluid-internal:registry=${{ variables.devFeed }}" >> ./.npmrc
-            echo "@fluid-private:registry=${{ variables.devFeed }}" >> ./.npmrc
-
-            # This scope must be loaded from the "build" feed
-            echo "@ff-internal:registry=$(ado-feeds-build)" >> ./.npmrc
-
-            # This scope must be loaded from the internal Office feed
-            echo "@microsoft:registry=$(ado-feeds-office)" >> ./.npmrc
-
-            echo "always-auth=true" >> ./.npmrc
-            cat .npmrc
-
-            if [[ `ls -1 ${{ variables.testPackagePathPattern }} | wc -l` -eq 1 ]]; then
-              echo "##vso[task.setvariable variable=testPackageTgz;isOutput=true]`ls ${{ variables.testPackagePathPattern }}`"
-            else
-              ls -1 ${{ variables.testPackagePathPattern }}
-              echo "##vso[task.logissue type=error]Test package '${{ parameters.testPackage }}' not found, or there are more than one found"
-              exit -1
-            fi
-
-      # Auth to internal feed
-      - task: npmAuthenticate@0
-        displayName: 'npm authenticate (internal feed)'
-        inputs:
-          workingFile: ${{ parameters.testWorkspace }}/.npmrc
-
-      # Install test and logger package
-      - task: Npm@1
-        displayName: 'npm install'
-        inputs:
-          command: 'custom'
-          workingDir: ${{ parameters.testWorkspace }}
-          customCommand: 'install $(Initialize.testPackageTgz) ${{ parameters.loggerPackage }}'
-          customRegistry: 'useNpmrc'
-
-      # Download Test Files & Install Extra Dependencies
-      # These steps are intended to include extra dependencies that are not available as
-      # part of the normal package .tgz installed previously in the pipeline.
-      - ${{ if ne(parameters.testFileTarName, 'null') }}:
-        # Download Artifact - Test Files
-        - task: DownloadPipelineArtifact@2
-          displayName: Download test files
-          inputs:
-            source: specific
-            project: internal
-            pipeline: ${{ variables.artifactPipeline }}
-            buildVersionToDownload: specific
-            buildId: ${{ parameters.artifactBuildId }}
-            artifact: test-files
-            path: $(Pipeline.Workspace)/test-files
-            # allowPartiallySucceededBuilds: true # No effect as long as we have buildVersionToDownload: specific
-            # branchName: $(Build.SourceBranch)   # No effect as long as we have buildVersionToDownload: specific
-            # It seems there's a bug and preferTriggeringPipeline is not respected.
-            # We force the behavior by explicitly specifying:
-            # - buildVersionToDownload: specific
-            # - buildId: <the id of the triggering build>
-            # preferTriggeringPipeline: true
-
-        # Unpack test files
-        - task: Bash@3
-          displayName: Unpack test files
-          inputs:
-            workingDirectory: ${{ parameters.testWorkspace }}/node_modules/${{ parameters.testPackage }}
-            targetType: 'inline'
-            script: |
-              TAR_PATH=$(Pipeline.Workspace)/test-files/${{ parameters.testFileTarName }}.test-files.tar
-              echo "Unpacking test files for ${{ parameters.testPackage }} from file '$TAR_PATH' in '$(pwd)'"
-              # Note: we could skip the last argument and have it unpack everything at once, but if we later change
-              # the structure/contents of the tests tar file, the extraction could overwrite things we didn't intend to,
-              # so keeping the paths to extract explicit.
-              # Also, extracting is finicky with the exact format of the last argument, it needs to match how the
-              # tarfile was created (e.g. './lib/test' works here but 'lib/test' does not).
-              tar --extract --verbose --file $TAR_PATH ./lib/test
-              tar --extract --verbose --file $TAR_PATH ./dist/test
-              tar --extract --verbose --file $TAR_PATH ./src/test
-
-        - task: Bash@3
-          displayName: Copy devDependencies
-          inputs:
-            workingDirectory: ${{ parameters.testWorkspace }}
-            targetType: 'inline'
-            script: |
-              testPkgJsonPath=${{ parameters.testWorkspace }}/node_modules/${{ parameters.testPackage }}/package.json
-              pkgJsonPath=${{ parameters.testWorkspace }}/package.json
-              node -e "
-                const { devDependencies } = require('$testPkgJsonPath');
-                const pkg = require('$pkgJsonPath');
-                pkg.devDependencies=devDependencies;
-                require('fs').writeFileSync('$pkgJsonPath', JSON.stringify(pkg));
-              "
-
-        - task: Npm@1
-          displayName: 'npm install - extra dependencies for test files'
-          inputs:
-            command: 'custom'
-            workingDir: ${{ parameters.testWorkspace }}
-            customCommand: 'install'
-            customRegistry: 'useNpmrc'
-
-      # run the test
-      - task: Npm@1
-        displayName: '[test] ${{ parameters.testCommand }} ${{ variant.flags }}'
-        continueOnError: ${{ parameters.continueOnError }}
-        env:
-          ${{ parameters.env }}
-        inputs:
-          command: 'custom'
-          workingDir: ${{ parameters.testWorkspace }}/node_modules/${{ parameters.testPackage }}
-          customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
-
-      - ${{ if eq(parameters.skipTestResultPublishing, false) }}:
-        # filter report
-        - task: Bash@3
-          displayName: Filter skipped test from report
-          condition: succeededOrFailed()
-          inputs:
-            workingDir: ${{ variables.testPackageDir }}/nyc
-            targetType: 'inline'
-            script: |
-              if [[ -d ${{ variables.testPackageDir }}/nyc ]]; then
-                echo "directory '${{ variables.testPackageDir }}/nyc' exists."
-                cd ${{ variables.testPackageDir }}/nyc
-                if ! [[ -z "$(ls -A .)" ]]; then
-                  curdirfiles=`ls`
-                  echo "report file(s) ${curdirfiles} found. Filtering skipped tests..."
-                  for i in `ls`; do sed -i '/<skipped/d' $i; done
-                else
-                  echo "No report files found in '${{ variables.testPackageDir }}/nyc'"
-                fi
-              else
-                echo "Directory '${{ variables.testPackageDir }}/nyc' not found"
-              fi
-
-        # Upload results
-        - task: PublishTestResults@2
-          displayName: Publish Test Results
-          inputs:
-            testResultsFormat: 'JUnit'
-            testResultsFiles: '**/*junit-report.xml'
-            searchFolder: ${{ variables.testPackageDir }}/nyc
-            mergeTestResults: false
-          condition: succeededOrFailed()
-
-      # Publish tinylicious log for troubleshooting
-      - ${{ if or(contains(convertToJson(parameters.testCommand), 'tinylicious'), contains(convertToJson(parameters.testCommand), 't9s')) }}:
-        - task: PublishPipelineArtifact@1
-          displayName: Publish Artifact - Tinylicious Log
-          inputs:
-            targetPath: '${{ parameters.testWorkspace }}/node_modules/${{ parameters.testPackage }}/tinylicious.log'
-            artifactName: 'tinyliciousLog_attempt-$(System.JobAttempt)'
-            publishLocation: 'pipeline'
-          condition: succeededOrFailed()
-          continueOnError: true # Keep running subsequent tasks even if this one fails (e.g. the tinylicious log wasn't there)
-
-      # Log Test Failures
-      # - template: include-process-test-results.yml
-      #   parameters:
-      #     buildDirectory: ${{ variables.testPackageDir }}
-
-      - ${{ parameters.additionalSteps }}
