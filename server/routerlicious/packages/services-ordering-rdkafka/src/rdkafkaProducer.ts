@@ -189,7 +189,7 @@ export class RdkafkaProducer extends RdkafkaBase implements IProducer {
 
 		producer.on("event.log", (event) => {
 			this.emit("log", event);
-			Lumberjack.warning(`KafkaConsumer log: ${event}`);
+			Lumberjack.warning(`KafkaConsumer log: ${event.message}`);
 		});
 
 		producer.connect();
