@@ -135,7 +135,39 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 						redisConfig2.slotsRefreshTimeout,
 						retryDelays,
 				  );
+
+		const redisClientConnectionManagerForErrorTest =
+			customizations?.redisClientConnectionManagerForJwtCache
+				? customizations.redisClientConnectionManagerForJwtCache
+				: new RedisClientConnectionManager(
+						undefined,
+						redisConfig2,
+						false,
+						redisConfig2.slotsRefreshTimeout,
+						retryDelays,
+				  );
 		const redisJwtCache = new services.RedisCache(redisClientConnectionManagerForJwtCache);
+
+		redisClientConnectionManagerForJwtCache.addErrorHandler();
+		redisClientConnectionManagerForErrorTest.addErrorHandler();
+
+		// Temporary error test
+		await redisClientConnectionManagerForJwtCache
+			.getRedisClient()
+			.hset("testhash", "testkey", "testvalue");
+		await redisClientConnectionManagerForErrorTest.getRedisClient().hget("testhash", "testkey");
+		await redisClientConnectionManagerForJwtCache
+			.getRedisClient()
+			.hset("testhash1", "testkey1", "testvalue1");
+		await redisClientConnectionManagerForErrorTest
+			.getRedisClient()
+			.hget("testhash1", "testkey1");
+		await redisClientConnectionManagerForJwtCache
+			.getRedisClient()
+			.hset("testhash2", "testkey2", "testvalue2");
+		await redisClientConnectionManagerForErrorTest
+			.getRedisClient()
+			.hget("testhash2", "testkey2");
 
 		// Database connection for global db if enabled
 		let globalDbMongoManager;
