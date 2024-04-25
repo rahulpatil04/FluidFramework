@@ -171,11 +171,9 @@ export class SerializedStateManager {
 				snapshotBlobs,
 				snapshotSequenceNumber: attributes.sequenceNumber,
 			};
-
-			if (this.mc.config.getBoolean("Fluid.Container.enableOfflineSnapshotRefresh") === true)
-				this.refreshSnapshot ??= (async () => {
-					await this.refreshLatestSnapshot(supportGetSnapshotApi);
-				})();
+			this.refreshSnapshot ??= (async () => {
+				await this.refreshLatestSnapshot(supportGetSnapshotApi);
+			})();
 
 			return { baseSnapshot, version: undefined };
 		}
