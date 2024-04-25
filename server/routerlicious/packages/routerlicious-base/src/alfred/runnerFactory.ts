@@ -136,16 +136,13 @@ export class AlfredResourcesFactory implements core.IResourcesFactory<AlfredReso
 						retryDelays,
 				  );
 
-		const redisClientConnectionManagerForErrorTest =
-			customizations?.redisClientConnectionManagerForJwtCache
-				? customizations.redisClientConnectionManagerForJwtCache
-				: new RedisClientConnectionManager(
-						undefined,
-						redisConfig2,
-						false,
-						redisConfig2.slotsRefreshTimeout,
-						retryDelays,
-				  );
+		const redisClientConnectionManagerForErrorTest = new RedisClientConnectionManager(
+			undefined,
+			redisConfig2,
+			false,
+			redisConfig2.slotsRefreshTimeout,
+			retryDelays,
+		);
 		const redisJwtCache = new services.RedisCache(redisClientConnectionManagerForJwtCache);
 
 		redisClientConnectionManagerForJwtCache.addErrorHandler();
