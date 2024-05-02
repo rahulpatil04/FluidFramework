@@ -102,6 +102,8 @@
 	"dependencies": {
 		"@fluid-internal/test-driver-definitions": "workspace:~",
 		"@fluidframework/aqueduct": "workspace:~",
+		"@fluidframework/azure-client": "workspace:~",
+		"@fluidframework/azure-client-legacy": "npm:@fluidframework/azure-client@^1.2.0",
 		"@fluidframework/container-definitions": "workspace:~",
 		"@fluidframework/container-loader": "workspace:~",
 		"@fluidframework/container-runtime": "workspace:~",
@@ -112,6 +114,7 @@
 		"@fluidframework/datastore-definitions": "workspace:~",
 		"@fluidframework/driver-definitions": "workspace:~",
 		"@fluidframework/driver-utils": "workspace:~",
+		"@fluidframework/fluid-static": "workspace:~",
 		"@fluidframework/local-driver": "workspace:~",
 		"@fluidframework/map": "workspace:~",
 		"@fluidframework/protocol-definitions": "^3.2.0",
@@ -120,6 +123,7 @@
 		"@fluidframework/runtime-definitions": "workspace:~",
 		"@fluidframework/runtime-utils": "workspace:~",
 		"@fluidframework/telemetry-utils": "workspace:~",
+		"@fluidframework/test-runtime-utils": "workspace:~",
 		"best-random": "^1.0.0",
 		"debug": "^4.3.4",
 		"mocha": "^10.2.0",
@@ -159,6 +163,10 @@
 				"backCompat": false
 			},
 			"ClassDeclaration_TestObjectProvider": {
+				"backCompat": false,
+				"forwardCompat": false
+			},
+			"ClassDeclaration_TestObjectProviderWithAzureClient": {
 				"backCompat": false,
 				"forwardCompat": false
 			},

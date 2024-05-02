@@ -34,6 +34,7 @@ export {
 	ITestContainerConfig,
 	ITestObjectProvider,
 	TestObjectProvider,
+	TestObjectProviderWithAzureClient,
 	TestObjectProviderWithVersionedLoad,
 } from "./testObjectProvider.js";
 export {

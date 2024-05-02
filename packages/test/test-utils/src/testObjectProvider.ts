@@ -18,15 +18,19 @@ import {
 } from "@fluidframework/container-loader/internal";
 import { IContainerRuntimeOptions } from "@fluidframework/container-runtime/internal";
 import {
+	ConfigTypes,
+	IConfigProviderBase,
 	IRequestHeader,
 	ITelemetryBaseEvent,
 	ITelemetryBaseLogger,
 } from "@fluidframework/core-interfaces";
+import { ContainerSchema } from "@fluidframework/fluid-static";
 import {
 	IDocumentServiceFactory,
 	IResolvedUrl,
 	IUrlResolver,
 } from "@fluidframework/driver-definitions/internal";
+import { SharedMap } from "@fluidframework/map/internal";
 import { type ITelemetryGenericEventExt } from "@fluidframework/telemetry-utils";
 import {
 	createChildLogger,
@@ -34,7 +38,10 @@ import {
 	type ITelemetryLoggerPropertyBags,
 } from "@fluidframework/telemetry-utils/internal";
 import { v4 as uuid } from "uuid";
-
+import { AzureClient } from "@fluidframework/azure-client";
+import { AzureClient as AzureClientLegacy } from "@fluidframework/azure-client-legacy";
+import { createAzureClient } from "./AzureClientFactory.js";
+import { createAzureClient as createAzureClientLegacy } from "./AzureClientLegacyFactory.js";
 import { LoaderContainerTracker } from "./loaderContainerTracker.js";
 import { LocalCodeLoader, fluidEntryPoint } from "./localCodeLoader.js";
 import { createAndAttachContainer } from "./localLoader.js";
@@ -62,7 +69,10 @@ export interface ITestObjectProvider {
 	/**
 	 * Indicates which type of test object provider is being used.
 	 */
-	type: "TestObjectProvider" | "TestObjectProviderWithVersionedLoad";
+	type:
+		| "TestObjectProvider"
+		| "TestObjectProviderWithVersionedLoad"
+		| "TestObjectProviderWithAzureClient";
 
 	/**
 	 * The document id to retrieve or create containers
@@ -705,6 +715,346 @@ export class TestObjectProvider implements ITestObjectProvider {
 		this._loaderContainerTracker.reset();
 		this._loaderContainerTracker = new LoaderContainerTracker(syncSummarizerClients);
 	}
+}
+
+/**
+ * Implements {@link ITestObjectProvider}, but uses Azure Client to create and load containers.
+ *
+ * @internal
+ */
+export class TestObjectProviderWithAzureClient implements ITestObjectProvider {
+	/**
+	 * {@inheritDoc ITestObjectProvider."type"}
+	 */
+	public readonly type = "TestObjectProviderWithAzureClient";
+	private _loaderContainerTracker = new LoaderContainerTracker();
+	private _logger: ITelemetryBaseLogger | undefined;
+	private _tracker: EventAndErrorTrackingLogger | undefined;
+	private readonly _documentIdStrategy: IDocumentIdStrategy;
+	private _documentServiceFactory: IDocumentServiceFactory | undefined;
+	private _urlResolver: IUrlResolver | undefined;
+	// Since documentId doesn't change we can only create/make one container. Call the load functions instead.
+	private _documentCreated = false;
+	private _containerId;
+	private _schema;
+
+	/**
+	 * Used to determine which APIs to use when creating a loader.
+	 *
+	 * The first load will always use the create APIs, and then useCreateApi will be set to false to ensure all
+	 * subsequent loads use the load APIs.
+	 */
+	// private useCreateApi: boolean = true;
+
+	constructor(private readonly LoaderConstructor: typeof Loader) {
+		this._documentIdStrategy = getDocumentIdStrategy(this.driver.type);
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.logger}
+	 */
+	public get logger() {
+		if (this._logger === undefined) {
+			this._logger = createChildLogger({
+				logger: this._tracker,
+			});
+		}
+		return this._logger;
+	}
+
+	public get tracker() {
+		void this.logger;
+		assert(this._tracker !== undefined, "should be initialized");
+		return this._tracker;
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.documentServiceFactory}
+	 */
+	public get documentServiceFactory() {
+		if (!this._documentServiceFactory) {
+			this._documentServiceFactory = this.driver.createDocumentServiceFactory();
+		}
+		return this._documentServiceFactory;
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.urlResolver}
+	 */
+	public get urlResolver() {
+		if (!this._urlResolver) {
+			this._urlResolver = this.driver.createUrlResolver();
+		}
+		return this._urlResolver;
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.documentId}
+	 */
+	public get documentId() {
+		return this._documentIdStrategy.get();
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.defaultCodeDetails}
+	 */
+	public get defaultCodeDetails() {
+		return defaultCodeDetails;
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.opProcessingController}
+	 */
+	public get opProcessingController(): IOpProcessingController {
+		return this._loaderContainerTracker;
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.driver}
+	 */
+	public get driver(): ITestDriver {
+		return this.driver;
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.createFluidEntryPoint}
+	 */
+	public get createFluidEntryPoint(): (
+		testContainerConfig?: ITestContainerConfig,
+	) => fluidEntryPoint {
+		return this.createFluidEntryPoint;
+	}
+
+	private async resolveContainer(
+		loader: ILoader,
+		headers?: IRequestHeader,
+		driver?: ITestDriver,
+		pendingLocalState?: string,
+	) {
+		return loader.resolve(
+			{
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				url: await driver!.createContainerUrl(this.documentId),
+				headers,
+			},
+			pendingLocalState,
+		);
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.makeTestContainer}
+	 */
+	public async makeTestContainer(
+		testContainerConfig?: ITestContainerConfig,
+	): Promise<IContainer> {
+		if (this._documentCreated) {
+			throw new Error(
+				"Only one container/document can be created. To load the container/document use loadTestContainer",
+			);
+		}
+
+		const client: AzureClient = createAzureClient("test-user-id-1", "test-user-name-1");
+		const schema: ContainerSchema = {
+			initialObjects: {
+				map1: SharedMap,
+			},
+		};
+		const { container } = await client.createContainer(schema);
+		const containerId = await container.attach();
+
+		const fluidContainer = container as { INTERNAL_CONTAINER_DO_NOT_USE?: () => IContainer };
+		if (fluidContainer.INTERNAL_CONTAINER_DO_NOT_USE === undefined) {
+			console.error("Missing Container accessor on FluidContainer.");
+			throw new Error("Missing Container accessor on FluidContainer.");
+		}
+		const innerContainer = fluidContainer.INTERNAL_CONTAINER_DO_NOT_USE();
+
+		this._documentCreated = true;
+		this._containerId = containerId;
+		this._schema = schema;
+		// r11s driver will generate a new ID for the new container.
+		// update the document ID with the actual ID of the attached container.
+		this._documentIdStrategy.update(innerContainer.resolvedUrl);
+		return innerContainer;
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.loadTestContainer}
+	 */
+	public async loadTestContainer(
+		testContainerConfig?: ITestContainerConfig,
+		requestHeader?: IRequestHeader,
+		pendingLocalState?: string,
+	): Promise<IContainer> {
+		// Keep track of which Loader we are about to use so we can pass the correct driver through
+		// const driver = this.useCreateApi ? this.driverForCreating : this.driverForLoading;
+		// const loader = this.makeTestLoader(testContainerConfig);
+		// const container = await this.resolveContainer(
+		// 	loader,
+		// 	requestHeader,
+		// 	driver,
+		// 	pendingLocalState,
+		// );
+		const configProvider = (settings: Record<string, ConfigTypes>): IConfigProviderBase => ({
+			getRawConfig: (name: string): ConfigTypes => settings[name],
+		});
+
+		/* This is a workaround for a known bug, we should have one member (self) upon container connection */
+		// const originalSelf = await waitForMember(services.audience, "test-user-id-1");
+
+		const client2: AzureClientLegacy = createAzureClientLegacy(
+			"test-user-id-2",
+			"test-user-name-2",
+			undefined,
+			configProvider({
+				"Fluid.Container.ForceWriteConnection": true,
+			}),
+		);
+
+		const { container } = await client2.getContainer(this._containerId, this._schema);
+
+		/* This is a workaround for a known bug, we should have one member (self) upon container connection */
+		// const partner = await waitForMember(servicesGet.audience, "test-user-id-2");
+		// await this.waitContainerToCatchUp(container);
+
+		const fluidContainer = container as { INTERNAL_CONTAINER_DO_NOT_USE?: () => IContainer };
+		if (fluidContainer.INTERNAL_CONTAINER_DO_NOT_USE === undefined) {
+			console.error("Missing Container accessor on FluidContainer.");
+			throw new Error("Missing Container accessor on FluidContainer.");
+		}
+		const innerContainer = fluidContainer.INTERNAL_CONTAINER_DO_NOT_USE();
+
+		await this.waitContainerToCatchUp(innerContainer);
+
+		return innerContainer;
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.reset}
+	 */
+	public reset() {
+		// this.useCreateApi = true;
+		this._loaderContainerTracker.reset();
+		this._logger = undefined;
+		this._tracker = undefined;
+		this._documentServiceFactory = undefined;
+		this._urlResolver = undefined;
+		this._documentIdStrategy.reset();
+		const logError = getUnexpectedLogErrorException(this._tracker);
+		if (logError) {
+			throw logError;
+		}
+		this._documentCreated = false;
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.ensureSynchronized}
+	 */
+	public async ensureSynchronized(): Promise<void> {
+		return this._loaderContainerTracker.ensureSynchronized();
+	}
+
+	private async waitContainerToCatchUp(container: IContainer) {
+		// The original waitContainerToCatchUp() from container loader uses either Container.resume()
+		// or Container.connect() as part of its implementation. However, resume() was deprecated
+		// and eventually replaced with connect(). To avoid issues during LTS compatibility testing
+		// with older container versions issues, we use resume() when connect() is unavailable.
+		if ((container as any).connect === undefined) {
+			(container as any).connect = (container as any).resume;
+		}
+
+		return waitContainerToCatchUp_original(container);
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.updateDocumentId}
+	 */
+	public updateDocumentId(resolvedUrl: IResolvedUrl | undefined) {
+		this._documentIdStrategy.update(resolvedUrl);
+	}
+
+	/**
+	 * {@inheritDoc ITestObjectProvider.resetLoaderContainerTracker}
+	 */
+	public resetLoaderContainerTracker(syncSummarizerClients: boolean = false) {
+		this._loaderContainerTracker.reset();
+		this._loaderContainerTracker = new LoaderContainerTracker(syncSummarizerClients);
+	}
+
+	// /////////////////////// putting in required functions below for testobjectprovider
+	public createLoader(
+		packageEntries: Iterable<[IFluidCodeDetails, fluidEntryPoint]>,
+		loaderProps?: Partial<ILoaderProps>,
+	) {
+		// const logger = createMultiSinkLogger({
+		// 	loggers: [this.logger, loaderProps?.logger],
+		// });
+
+		const loader = new this.LoaderConstructor({
+			...loaderProps,
+			codeLoader: loaderProps?.codeLoader ?? new LocalCodeLoader(packageEntries),
+			urlResolver: loaderProps?.urlResolver ?? this.urlResolver,
+			documentServiceFactory:
+				loaderProps?.documentServiceFactory ?? this.documentServiceFactory,
+		});
+		this._loaderContainerTracker.add(loader);
+		return loader;
+	}
+	public async createContainer(entryPoint: fluidEntryPoint, loaderProps?: Partial<ILoaderProps>) {
+		if (this._documentCreated) {
+			throw new Error(
+				"Only one container/document can be created. To load the container/document use loadContainer",
+			);
+		}
+		const loader = this.createLoader([[defaultCodeDetails, entryPoint]], loaderProps);
+		const container = await createAndAttachContainer(
+			defaultCodeDetails,
+			loader,
+			this.driver.createCreateNewRequest(this.documentId),
+		);
+		this._documentCreated = true;
+		// r11s driver will generate a new ID for the new container.
+		// update the document ID with the actual ID of the attached container.
+		this._documentIdStrategy.update(container.resolvedUrl);
+		return container;
+	}
+	public async createDetachedContainer(
+		entryPoint: fluidEntryPoint,
+		loaderProps?: Partial<ILoaderProps> | undefined,
+	): Promise<IContainer> {
+		if (this._documentCreated) {
+			throw new Error(
+				"Only one container/document can be created. To load the container/document use loadContainer",
+			);
+		}
+		const loader = this.createLoader([[defaultCodeDetails, entryPoint]], loaderProps);
+		return loader.createDetachedContainer(defaultCodeDetails);
+	}
+	public async attachDetachedContainer(container: IContainer): Promise<void> {
+		if (this._documentCreated) {
+			throw new Error(
+				"Only one container/document can be created. To load the container/document use loadContainer",
+			);
+		}
+		await container.attach(this.driver.createCreateNewRequest(this.documentId));
+		this._documentCreated = true;
+		this._documentIdStrategy.update(container.resolvedUrl);
+	}
+	public async loadContainer(
+		entryPoint: fluidEntryPoint,
+		loaderProps?: Partial<ILoaderProps>,
+		requestHeader?: IRequestHeader,
+	): Promise<IContainer> {
+		const loader = this.createLoader([[defaultCodeDetails, entryPoint]], loaderProps);
+		return this.resolveContainer(loader, requestHeader);
+	}
+	public makeTestLoader(testContainerConfig?: ITestContainerConfig) {
+		return this.createLoader(
+			[[defaultCodeDetails, this.createFluidEntryPoint(testContainerConfig)]],
+			testContainerConfig?.loaderProps,
+		);
+	}
+	// /////////////////////////////// end of required functions
 }
 
 /**

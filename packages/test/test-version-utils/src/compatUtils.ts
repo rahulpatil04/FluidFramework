@@ -32,6 +32,7 @@ import {
 	ChannelFactoryRegistry,
 	createTestContainerRuntimeFactory,
 	TestObjectProvider,
+	TestObjectProviderWithAzureClient,
 	TestObjectProviderWithVersionedLoad,
 } from "@fluidframework/test-utils/internal";
 import * as semver from "semver";
@@ -289,7 +290,7 @@ export async function getCompatVersionedTestObjectProviderFromApis(
 		type: TestDriverTypes;
 		config: FluidTestDriverConfig;
 	},
-): Promise<TestObjectProviderWithVersionedLoad> {
+): Promise<TestObjectProviderWithAzureClient> {
 	assert(apis.driverForLoading !== undefined, "driverForLoading must be defined");
 	assert(apis.loaderForLoading !== undefined, "loaderForLoading must be defined");
 	assert(apis.dataRuntimeForLoading !== undefined, "dataRuntimeForLoading must be defined");
@@ -387,7 +388,7 @@ export async function getCompatVersionedTestObjectProviderFromApis(
 		);
 	};
 
-	return new TestObjectProviderWithVersionedLoad(
+	const testO = new TestObjectProviderWithVersionedLoad(
 		apis.loader.Loader,
 		apis.loaderForLoading.Loader,
 		driverForCreating,
@@ -404,4 +405,8 @@ export async function getCompatVersionedTestObjectProviderFromApis(
 			},
 		},
 	);
+	console.log(testO);
+
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	return new TestObjectProviderWithAzureClient(apis.loader.Loader);
 }

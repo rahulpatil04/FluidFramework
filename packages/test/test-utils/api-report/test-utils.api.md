@@ -245,7 +245,7 @@ export interface ITestObjectProvider {
     reset(): void;
     resetLoaderContainerTracker(syncSummarizerClients?: boolean): any;
     tracker: IEventAndErrorTrackingLogger;
-    type: "TestObjectProvider" | "TestObjectProviderWithVersionedLoad";
+    type: "TestObjectProvider" | "TestObjectProviderWithVersionedLoad" | "TestObjectProviderWithAzureClient";
     updateDocumentId(url: IResolvedUrl | undefined): void;
     urlResolver: IUrlResolver;
 }
@@ -361,6 +361,40 @@ export class TestObjectProvider implements ITestObjectProvider {
     // (undocumented)
     get tracker(): EventAndErrorTrackingLogger;
     readonly type = "TestObjectProvider";
+    updateDocumentId(resolvedUrl: IResolvedUrl | undefined): void;
+    get urlResolver(): IUrlResolver;
+}
+
+// @internal
+export class TestObjectProviderWithAzureClient implements ITestObjectProvider {
+    constructor(LoaderConstructor: typeof Loader);
+    // (undocumented)
+    attachDetachedContainer(container: IContainer): Promise<void>;
+    // (undocumented)
+    createContainer(entryPoint: fluidEntryPoint, loaderProps?: Partial<ILoaderProps>): Promise<IContainer>;
+    // (undocumented)
+    createDetachedContainer(entryPoint: fluidEntryPoint, loaderProps?: Partial<ILoaderProps> | undefined): Promise<IContainer>;
+    get createFluidEntryPoint(): (testContainerConfig?: ITestContainerConfig) => fluidEntryPoint;
+    // (undocumented)
+    createLoader(packageEntries: Iterable<[IFluidCodeDetails, fluidEntryPoint]>, loaderProps?: Partial<ILoaderProps>): Loader;
+    get defaultCodeDetails(): IFluidCodeDetails;
+    get documentId(): string;
+    get documentServiceFactory(): IDocumentServiceFactory;
+    get driver(): ITestDriver;
+    ensureSynchronized(): Promise<void>;
+    // (undocumented)
+    loadContainer(entryPoint: fluidEntryPoint, loaderProps?: Partial<ILoaderProps>, requestHeader?: IRequestHeader): Promise<IContainer>;
+    loadTestContainer(testContainerConfig?: ITestContainerConfig, requestHeader?: IRequestHeader, pendingLocalState?: string): Promise<IContainer>;
+    get logger(): ITelemetryBaseLogger;
+    makeTestContainer(testContainerConfig?: ITestContainerConfig): Promise<IContainer>;
+    // (undocumented)
+    makeTestLoader(testContainerConfig?: ITestContainerConfig): Loader;
+    get opProcessingController(): IOpProcessingController;
+    reset(): void;
+    resetLoaderContainerTracker(syncSummarizerClients?: boolean): void;
+    // (undocumented)
+    get tracker(): EventAndErrorTrackingLogger;
+    readonly type = "TestObjectProviderWithAzureClient";
     updateDocumentId(resolvedUrl: IResolvedUrl | undefined): void;
     get urlResolver(): IUrlResolver;
 }
