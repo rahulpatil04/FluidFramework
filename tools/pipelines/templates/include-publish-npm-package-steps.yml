@@ -35,7 +35,7 @@ steps:
 - task: npmAuthenticate@0
   displayName: npm Authenticate for ${{ parameters.artifactPath }}
   inputs:
-    workingFile: $(Pipeline.Workspace)/pack//${{ parameters.artifactPath }}/.npmrc
+    workingFile: $(Pipeline.Workspace)/pack/${{ parameters.artifactPath }}/.npmrc
     customEndPoint: ${{ parameters.customEndPoint }}
 - task: Bash@3
   displayName: Publish Packages for ${{ parameters.artifactPath }}
@@ -57,10 +57,11 @@ steps:
       cp .npmrc ~/.npmrc
 
       maximumRetryIfNetworkError=3
+      tarballsDir=$(Pipeline.Workspace)/pack/${{ parameters.artifactPath }}
       orderFile=$(Pipeline.Workspace)/pack/packagePublishOrder-${{ parameters.feedKind }}.txt
 
       flub publish tarballs \
-      --dir ${{ parameters.artifactPath }} \
+      --dir $tarballsDir \
       --orderFile $orderFile \
       --publishArgs $tag \
       --retry $maximumRetryIfNetworkError \
