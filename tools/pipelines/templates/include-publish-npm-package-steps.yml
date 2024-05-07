@@ -63,7 +63,7 @@ steps:
       flub publish tarballs \
       --dir $tarballsDir \
       --orderFile $orderFile \
-      --publishArgs $tag \
+      --publishArgs '$tag' \
       --retry $maximumRetryIfNetworkError \
       --tarball \
       --verbose \
