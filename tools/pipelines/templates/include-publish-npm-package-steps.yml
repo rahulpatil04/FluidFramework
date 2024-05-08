@@ -62,14 +62,16 @@ steps:
 
       echo "flub publish tarballs --dir $tarballsDir --orderFile $orderFile --publishArgs \"$tag\" --retry $maximumRetryIfNetworkError --tarball --verbose --dryRun"
 
-      flub publish tarballs \
-      --dir $tarballsDir \
-      --orderFile $orderFile \
-      --publishArgs "$tag" \
-      --retry $maximumRetryIfNetworkError \
-      --tarball \
-      --verbose \
-      --dryRun
+      flub publish tarballs --dir $tarballsDir --orderFile $orderFile --publishArgs "$tag" --retry $maximumRetryIfNetworkError --tarball --verbose --dryRun
+
+      # flub publish tarballs \
+      # --dir $tarballsDir \
+      # --orderFile $orderFile \
+      # --publishArgs "$tag" \
+      # --retry $maximumRetryIfNetworkError \
+      # --tarball \
+      # --verbose \
+      # --dryRun
 
       if [[ -f $(Pipeline.Workspace)/pack/packagePublishOrder-${{ parameters.feedKind }}.txt ]]; then
         packages=$(cat $(Pipeline.Workspace)/pack/packagePublishOrder-${{ parameters.feedKind }}.txt)
