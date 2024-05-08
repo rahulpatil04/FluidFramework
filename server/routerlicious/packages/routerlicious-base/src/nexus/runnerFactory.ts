@@ -150,7 +150,8 @@ export class NexusResourcesFactory implements core.IResourcesFactory<NexusResour
 		const kafkaProducerGlobalAdditionalConfig = config.get(
 			"kafka:lib:producerGlobalAdditionalConfig",
 		);
-		const eventHubConnString: string = config.get("kafka:lib:eventHubConnString");
+		const eventHubConnString: string = config.get("kafka:lib:eventHubConnString"); // deprecated
+		const oauthBearerConfig = config.get("kafka:lib:oauthBearerConfig");
 
 		const producer = services.createProducer(
 			kafkaLibrary,
@@ -165,6 +166,7 @@ export class NexusResourcesFactory implements core.IResourcesFactory<NexusResour
 			kafkaSslCACertFilePath,
 			eventHubConnString,
 			kafkaProducerGlobalAdditionalConfig,
+			oauthBearerConfig,
 		);
 
 		const redisConfig = config.get("redis");
