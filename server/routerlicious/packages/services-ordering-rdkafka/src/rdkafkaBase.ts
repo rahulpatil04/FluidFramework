@@ -192,17 +192,12 @@ export abstract class RdkafkaBase extends EventEmitter {
 		};
 
 		let oauthBearerToken;
-		Lumberjack.info("rdkafkaBase AdminClient, checking oauthBearerConfig existance");
 		if (this.oauthBearerConfig?.tokenProvider) {
 			const tokenResponse = await this.oauthBearerConfig.tokenProvider();
 			oauthBearerToken = tokenResponse?.tokenStr;
-			Lumberjack.info(
-				`rdkafkaBase AdminClient EH token ${tokenResponse?.tokenStr.slice(
-					0,
-					5,
-				)}, refresh: ${tokenResponse?.refreshInMs}`,
-			);
 		}
+
+        Lumberjack.info(`rdkafkaBase AdminClient, config: '${JSON.stringify(options)}', token: '${oauthBearerToken}'`);
 
 		const adminClient = this.kafka.AdminClient.create(options, oauthBearerToken);
 
