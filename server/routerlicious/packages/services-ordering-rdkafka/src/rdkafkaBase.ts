@@ -65,7 +65,7 @@ export abstract class RdkafkaBase extends EventEmitter {
 		// To build node-rdkafka with SSL support, make sure OpenSSL libraries are available in the
 		// environment node-rdkafka would be running. Once OpenSSL is available, building node-rdkafka
 		// as usual will automatically include SSL support.
-        const lcKafkaFeatures = kafka.features.map(s => s.toLowerCase());
+		const lcKafkaFeatures = kafka.features.map((s) => s.toLowerCase());
 		if (options?.sslCACertFilePath) {
 			// If the use of SSL is desired, but rdkafka has not been built with SSL support,
 			// throw an error making that clear to the user.
