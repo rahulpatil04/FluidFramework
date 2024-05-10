@@ -65,14 +65,11 @@ export abstract class RdkafkaBase extends EventEmitter {
 		// To build node-rdkafka with SSL support, make sure OpenSSL libraries are available in the
 		// environment node-rdkafka would be running. Once OpenSSL is available, building node-rdkafka
 		// as usual will automatically include SSL support.
-		const rdKafkaHasSSLEnabled = kafka.features.filter((feature) =>
-			feature.toLowerCase().includes("ssl"),
-		);
-
+        const lcKafkaFeatures = kafka.features.map(s => s.toLowerCase());
 		if (options?.sslCACertFilePath) {
 			// If the use of SSL is desired, but rdkafka has not been built with SSL support,
 			// throw an error making that clear to the user.
-			if (!rdKafkaHasSSLEnabled) {
+			if (!lcKafkaFeatures.includes("ssl")) {
 				throw new Error(
 					"Attempted to configure SSL, but rdkafka has not been built to support it. " +
 						"Please make sure OpenSSL is available and build rdkafka again.",
@@ -84,9 +81,9 @@ export abstract class RdkafkaBase extends EventEmitter {
 				"ssl.ca.location": options?.sslCACertFilePath,
 			};
 		} else if (options?.oauthBearerConfig) {
-			if (!kafka.features.filter((feature) => feature.toLowerCase().includes("sasl_ssl"))) {
+			if (!lcKafkaFeatures.includes("ssl") || !lcKafkaFeatures.includes("sasl_oauthbearer")) {
 				throw new Error(
-					"Attempted to configure SASL_SSL for OAUTHBEARER, but rdkafka has not been built to support it. " +
+					"Attempted to configure SASL_OAUTHBEARER for OAUTHBEARER, but rdkafka has not been built to support it. " +
 						"Please make sure OpenSSL is available and build rdkafka again.",
 				);
 			}
@@ -112,7 +109,7 @@ export abstract class RdkafkaBase extends EventEmitter {
 				"sasl.mechanisms": "OAUTHBEARER",
 			};
 		} else if (options?.eventHubConnString) {
-			if (!kafka.features.filter((feature) => feature.toLowerCase().includes("sasl_ssl"))) {
+			if (!lcKafkaFeatures.includes("ssl") || !lcKafkaFeatures.includes("sasl")) {
 				throw new Error(
 					"Attempted to configure SASL_SSL for Event Hubs, but rdkafka has not been built to support it. " +
 						"Please make sure OpenSSL is available and build rdkafka again.",
