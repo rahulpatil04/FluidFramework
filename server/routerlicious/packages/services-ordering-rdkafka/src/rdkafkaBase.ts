@@ -30,7 +30,7 @@ export interface IOauthBearerResponse {
 }
 
 export interface IOauthBearerConfig {
-	tokenProvider?: () => Promise<IOauthBearerResponse>;
+	tokenProvider: () => Promise<IOauthBearerResponse>;
 }
 
 export abstract class RdkafkaBase extends EventEmitter {
@@ -38,7 +38,6 @@ export abstract class RdkafkaBase extends EventEmitter {
 	protected readonly sslOptions?: kafkaTypes.ConsumerGlobalConfig;
 	protected defaultRestartOnKafkaErrorCodes: number[] = [];
 	private readonly options: IKafkaBaseOptions;
-	private readonly oauthBearerConfig?: IOauthBearerConfig;
 
 	constructor(
 		protected readonly endpoints: IKafkaEndpoints,
@@ -88,10 +87,6 @@ export abstract class RdkafkaBase extends EventEmitter {
 				);
 			}
 
-			Lumberjack.info(
-				"rdkafkaBase OAuthBearer config exists in the configuration, checking its validity...",
-			);
-
 			if (
 				!options.oauthBearerConfig.tokenProvider ||
 				typeof options.oauthBearerConfig.tokenProvider !== "function"
@@ -99,11 +94,6 @@ export abstract class RdkafkaBase extends EventEmitter {
 				throw new Error("oauthBearerConfig is malformed");
 			}
 
-			Lumberjack.info(
-				"rdkafkaBase OAuthBearer config is valid, configuring SSL options according to the flow",
-			);
-
-			this.oauthBearerConfig = options.oauthBearerConfig;
 			this.sslOptions = {
 				"security.protocol": "sasl_ssl",
 				"sasl.mechanisms": "OAUTHBEARER",
@@ -130,34 +120,31 @@ export abstract class RdkafkaBase extends EventEmitter {
 	protected abstract connect(): Promise<void>;
 
 	protected async setOauthBearerTokenIfNeeded(client: kafkaTypes.Client<any>) {
-		if (!this.oauthBearerConfig?.tokenProvider) {
+		if (!this.options.oauthBearerConfig?.tokenProvider) {
 			return;
 		}
 
 		Lumberjack.info("Setting up kafka client with oauthbearer token provider");
 
-		const tokenResponse = await this.oauthBearerConfig.tokenProvider();
+		const tokenResponse = await this.options.oauthBearerConfig.tokenProvider();
 
-		if (!tokenResponse) {
-			throw new Error("Token provider returned undefined response");
+		if (!tokenResponse?.tokenStr || !tokenResponse.refreshInMs) {
+			Lumberjack.error("Token provider returned malformed return value");
+			throw new Error("Token provider returned malformed return value");
 		}
 
-		Lumberjack.info(
-			`rdkafkaBase EH token ${tokenResponse.tokenStr.slice(0, 5)}, refresh: ${
-				tokenResponse.refreshInMs
-			}`,
-		);
+		if (tokenResponse.refreshInMs <= 0) {
+			Lumberjack.error("Token provider returned zero or negative 'refreshInMs'");
+			throw new Error("Token provider returned zero or negative 'refreshInMs'");
+		}
 
 		client.setOauthBearerToken(tokenResponse.tokenStr);
 
-		setTimeout(
-			() => {
-				this.setOauthBearerTokenIfNeeded(client).catch((err) => {
-					Lumberjack.error("OAuthBearer token refresh has failed", undefined, err);
-				});
-			},
-			tokenResponse.refreshInMs > 0 ? tokenResponse.refreshInMs : 5000,
-		).unref();
+		setTimeout(() => {
+			this.setOauthBearerTokenIfNeeded(client).catch((err) => {
+				Lumberjack.error("OAuthBearer token refresh has failed", undefined, err);
+			});
+		}, tokenResponse.refreshInMs).unref();
 	}
 
 	private async initialize() {
@@ -189,16 +176,10 @@ export abstract class RdkafkaBase extends EventEmitter {
 		};
 
 		let oauthBearerToken;
-		if (this.oauthBearerConfig?.tokenProvider) {
-			const tokenResponse = await this.oauthBearerConfig.tokenProvider();
+		if (this.options.oauthBearerConfig?.tokenProvider) {
+			const tokenResponse = await this.options.oauthBearerConfig.tokenProvider();
 			oauthBearerToken = tokenResponse?.tokenStr;
 		}
-
-		Lumberjack.info(
-			`rdkafkaBase AdminClient, config: '${JSON.stringify(
-				options,
-			)}', token: '${oauthBearerToken}'`,
-		);
 
 		const adminClient = this.kafka.AdminClient.create(options, oauthBearerToken);
 
