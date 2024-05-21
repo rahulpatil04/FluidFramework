@@ -313,7 +313,7 @@ jobs:
 
         - task: Npm@1
           displayName: 'npm install - extra dependencies for test files'
-          retryCountOnTaskFailure: 5
+          retryCountOnTaskFailure: 10
           inputs:
             command: 'custom'
             workingDir: ${{ parameters.testWorkspace }}
