@@ -312,14 +312,21 @@ jobs:
               "
 
         - task: Bash@3
+          displayName: 'Install pnpm'
+          inputs:
+            targetType: 'inline'
+            script: |
+              npm install -g pnpm
+
+        - task: Bash@3
           displayName: 'npm install - extra dependencies for test files - test'
           retryCountOnTaskFailure: 10
           inputs:
             targetType: 'inline'
-            workingDirectory: .
+            workingDirectory: ${{ parameters.testWorkspace }}
             script: |
               # We only need to install the root dependencies
-              pnpm install
+              pnpm install --frozen-lockfile
 
 
         # - task: Npm@1
