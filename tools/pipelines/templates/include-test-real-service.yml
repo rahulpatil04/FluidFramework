@@ -316,7 +316,7 @@ jobs:
           retryCountOnTaskFailure: 10
           inputs:
             targetType: 'inline'
-            workingDirectory: ${{ parameters.testWorkspace }}
+            workingDirectory: .
             script: |
               # We only need to install the root dependencies
               pnpm install
