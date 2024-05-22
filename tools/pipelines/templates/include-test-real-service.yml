@@ -311,14 +311,25 @@ jobs:
                 require('fs').writeFileSync('$pkgJsonPath', JSON.stringify(pkg));
               "
 
-        - task: Npm@1
-          displayName: 'npm install - extra dependencies for test files'
-          retryCountOnTaskFailure: 20
+        - task: Bash@3
+          displayName: 'npm install - extra dependencies for test files - test'
+          retryCountOnTaskFailure: 10
           inputs:
-            command: 'custom'
-            workingDir: ${{ parameters.testWorkspace }}
-            customCommand: 'install'
-            customRegistry: 'useNpmrc'
+            targetType: 'inline'
+            workingDirectory: ${{ parameters.testWorkspace }}
+            script: |
+              # We only need to install the root dependencies
+              pnpm install
+
+
+        # - task: Npm@1
+        #   displayName: 'npm install - extra dependencies for test files'
+        #   retryCountOnTaskFailure: 10
+        #   inputs:
+        #     command: 'custom'
+        #     workingDir: ${{ parameters.testWorkspace }}
+        #     customCommand: 'install'
+        #     customRegistry: 'useNpmrc'
 
       # run the test
       - task: Npm@1
