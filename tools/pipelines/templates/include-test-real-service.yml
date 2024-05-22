@@ -311,32 +311,14 @@ jobs:
                 require('fs').writeFileSync('$pkgJsonPath', JSON.stringify(pkg));
               "
 
-        - task: Bash@3
-          displayName: 'Install pnpm'
-          inputs:
-            targetType: 'inline'
-            script: |
-              npm install -g pnpm
-
-        - task: Bash@3
-          displayName: 'npm install - extra dependencies for test files - test'
+        - task: Npm@1
+          displayName: 'npm install - extra dependencies for test files'
           retryCountOnTaskFailure: 10
           inputs:
-            targetType: 'inline'
-            workingDirectory: ${{ parameters.testWorkspace }}
-            script: |
-              # We only need to install the root dependencies
-              pnpm install --frozen-lockfile
-
-
-        # - task: Npm@1
-        #   displayName: 'npm install - extra dependencies for test files'
-        #   retryCountOnTaskFailure: 10
-        #   inputs:
-        #     command: 'custom'
-        #     workingDir: ${{ parameters.testWorkspace }}
-        #     customCommand: 'install'
-        #     customRegistry: 'useNpmrc'
+            command: 'custom'
+            workingDir: ${{ parameters.testWorkspace }}
+            customCommand: 'install $(pkgJsonPath)'
+            customRegistry: 'useNpmrc'
 
       # run the test
       - task: Npm@1
