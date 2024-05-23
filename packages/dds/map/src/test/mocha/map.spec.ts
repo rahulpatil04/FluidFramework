@@ -68,7 +68,7 @@ class TestSharedMap extends SharedMapInternal {
 }
 
 describe("Map", () => {
-	describe("Local state", () => {
+	describe("Local state2", () => {
 		let map: SharedMap;
 
 		beforeEach("createLocalMap", async () => {

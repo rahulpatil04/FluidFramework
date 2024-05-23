@@ -212,6 +212,7 @@ jobs:
 
             echo "@fluidframework:registry=${{ variables.feed }}" >> ./.npmrc
             echo "@fluid-experimental:registry=${{ variables.feed }}" >> ./.npmrc
+            echo "@fluid-tools:registry=${{ variables.devFeed }}" >> ./.npmrc
 
             # This is confusing, but we are using the .npmrc here to load dependencies from different feeds. These
             # scopes must be loaded from the "dev" feed because that is the only place they are published. Ideally this
