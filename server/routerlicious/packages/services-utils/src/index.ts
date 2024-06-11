@@ -59,5 +59,6 @@ export { WebSocketTracker } from "./webSocketTracker";
 export {
 	RedisClientConnectionManager,
 	IRedisClientConnectionManager,
+	RedisClusterWrapper,
 } from "./redisClientConnectionManager";
 export { ITenantKeyGenerator, TenantKeyGenerator } from "./tenantKeyGenerator";
