@@ -12,14 +12,18 @@ export class RedisClusterWrapper extends Redis.Cluster {
 		super(startupNodes, options);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	private execWrappedMethod(commandName: string, func: Function, ...args: any[]): any {
+	private async execWrappedMethod(
+		commandName: string,
+		func: Function, // eslint-disable-line @typescript-eslint/ban-types
+		...args: any[]
+	): Promise<any> {
 		try {
 			if (commandName === "get" || commandName === "publish") {
 				Lumberjack.info(
 					`Doing redis command: ${commandName} with args: ${JSON.stringify(args)}`,
 				);
 			}
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return func(...args);
 		} catch (err: any) {
 			Lumberjack.error(`Error in command: ${commandName}: ${err}`);
@@ -43,7 +47,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			super.get.bind(this),
 			key,
 			...(callback ? [callback] : []),
-		) as string;
+		) as unknown as string;
 	}
 
 	async set(
@@ -57,7 +61,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			key,
 			value,
 			overloadedArgs,
-		) as "OK";
+		) as unknown as "OK";
 	}
 
 	async del(
@@ -67,7 +71,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			| [...keys: Redis.RedisKey[]]
 			| [keys: Redis.RedisKey[]]
 	): Promise<number> {
-		return this.execWrappedMethod("del", super.del.bind(this), args) as number;
+		return this.execWrappedMethod("del", super.del.bind(this), args) as unknown as number;
 	}
 
 	async lpush(
@@ -79,7 +83,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			  ]
 			| [key: Redis.RedisKey, ...elements: (string | Buffer | number)[]]
 	): Promise<number> {
-		return this.execWrappedMethod("lpush", super.lpush.bind(this), args) as number;
+		return this.execWrappedMethod("lpush", super.lpush.bind(this), args) as unknown as number;
 	}
 
 	async rpop(key: Redis.RedisKey, callback?: Redis.Callback<string>): Promise<string>;
@@ -89,7 +93,9 @@ export class RedisClusterWrapper extends Redis.Cluster {
 		callback?: Redis.Callback<string[]>,
 	): Promise<string[]>;
 	async rpop(...args: any[]): Promise<any> {
-		return this.execWrappedMethod("rpop", super.rpop.bind(this), ...args) as string | string[];
+		return this.execWrappedMethod("rpop", super.rpop.bind(this), ...args) as unknown as
+			| string
+			| string[];
 	}
 
 	async hset(
@@ -108,7 +114,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 		...args: [key: Redis.RedisKey, ...fieldValues: (string | Buffer | number)[]]
 	): Promise<number>;
 	async hset(...args: any[]): Promise<number> {
-		return this.execWrappedMethod("hset", super.hset.bind(this), args) as number;
+		return this.execWrappedMethod("hset", super.hset.bind(this), args) as unknown as number;
 	}
 
 	async hget(
@@ -122,7 +128,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			key,
 			field,
 			...(callback ? [callback] : []),
-		) as string | null;
+		) as unknown as string | null;
 	}
 
 	async hdel(
@@ -134,7 +140,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			  ]
 			| [key: Redis.RedisKey, ...fields: (string | Buffer)[]]
 	): Promise<number> {
-		return this.execWrappedMethod("hdel", super.hdel.bind(this), args) as number;
+		return this.execWrappedMethod("hdel", super.hdel.bind(this), args) as unknown as number;
 	}
 
 	async hstrlen(
@@ -148,7 +154,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			key,
 			field,
 			...(callback ? [callback] : []),
-		) as number;
+		) as unknown as number;
 	}
 
 	async hgetall(
@@ -160,7 +166,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			super.hgetall.bind(this),
 			key,
 			...(callback ? [callback] : []),
-		) as Record<string, string>;
+		) as unknown as Record<string, string>;
 	}
 
 	async strlen(key: Redis.RedisKey, callback?: Redis.Callback<number>): Promise<number> {
@@ -169,7 +175,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			super.strlen.bind(this),
 			key,
 			...(callback ? [callback] : []),
-		) as number;
+		) as unknown as number;
 	}
 
 	async unlink(
@@ -179,7 +185,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			| [...keys: Redis.RedisKey[]]
 			| [keys: Redis.RedisKey[]]
 	): Promise<number> {
-		return this.execWrappedMethod("unlink", super.unlink.bind(this), args) as number;
+		return this.execWrappedMethod("unlink", super.unlink.bind(this), args) as unknown as number;
 	}
 
 	async keys(pattern: string, callback?: Redis.Callback<string[]>): Promise<string[]> {
@@ -188,7 +194,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			super.keys.bind(this),
 			pattern,
 			...(callback ? [callback] : []),
-		) as string[];
+		) as unknown as string[];
 	}
 
 	async exists(
@@ -198,7 +204,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			| [...keys: Redis.RedisKey[]]
 			| [keys: Redis.RedisKey[]]
 	): Promise<number> {
-		return this.execWrappedMethod("exists", super.exists.bind(this), args) as number;
+		return this.execWrappedMethod("exists", super.exists.bind(this), args) as unknown as number;
 	}
 
 	async expire(
@@ -231,7 +237,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 		callback?: Redis.Callback<number>,
 	): Promise<number>;
 	async expire(...args: any[]): Promise<number> {
-		return this.execWrappedMethod("expire", super.expire.bind(this), args) as number;
+		return this.execWrappedMethod("expire", super.expire.bind(this), args) as unknown as number;
 	}
 
 	async incr(key: Redis.RedisKey, callback?: Redis.Callback<number>): Promise<number> {
@@ -240,7 +246,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			super.incr.bind(this),
 			key,
 			...(callback ? [callback] : []),
-		) as number;
+		) as unknown as number;
 	}
 
 	async decr(key: Redis.RedisKey, callback?: Redis.Callback<number>): Promise<number> {
@@ -249,7 +255,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			super.decr.bind(this),
 			key,
 			...(callback ? [callback] : []),
-		) as number;
+		) as unknown as number;
 	}
 
 	async publish(
@@ -263,7 +269,7 @@ export class RedisClusterWrapper extends Redis.Cluster {
 			channel,
 			message,
 			...(callback ? [callback] : []),
-		) as number;
+		) as unknown as number;
 	}
 
 	async subscribe(
