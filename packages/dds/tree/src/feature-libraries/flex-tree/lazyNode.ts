@@ -70,7 +70,7 @@ import {
 	tryMoveCursorToAnchorSymbol,
 } from "./lazyEntity.js";
 import { makeField } from "./lazyField.js";
-import { FlexTreeNodeEvents } from "./treeEvents.js";
+import { FlexTreeNodeEvents, onNodeChanged, onTreeChanged } from "./treeEvents.js";
 import { unboxedField } from "./unboxed.js";
 import { treeStatusFromAnchorCache } from "./utilities.js";
 
@@ -90,10 +90,7 @@ export function makeTree(context: Context, cursor: ITreeSubscriptionCursor): Laz
 		return cached as LazyTreeNode;
 	}
 	const schema = context.schema.nodeSchema.get(cursor.type) ?? fail("missing schema");
-	const output = buildSubclass(context, schema, cursor, anchorNode, anchor);
-	anchorNode.slots.set(flexTreeSlot, output);
-	anchorNode.on("afterDestroy", cleanupTree);
-	return output;
+	return buildSubclass(context, schema, cursor, anchorNode, anchor);
 }
 
 function cleanupTree(anchor: AnchorNode): void {
@@ -285,6 +282,18 @@ export abstract class LazyTreeNode<TSchema extends FlexTreeNodeSchema = FlexTree
 					(anchorNode: AnchorNode) => listener(anchorNode),
 				);
 				return unsubscribeFromSubtreeChange;
+			}
+			case "nodeChanged": {
+				return onNodeChanged(
+					this.anchorNode,
+					listener as FlexTreeNodeEvents["nodeChanged"],
+				);
+			}
+			case "treeChanged": {
+				return onTreeChanged(
+					this.anchorNode,
+					listener as FlexTreeNodeEvents["treeChanged"],
+				);
 			}
 			default:
 				unreachableCase(eventName);

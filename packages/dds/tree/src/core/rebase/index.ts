@@ -23,6 +23,7 @@ export {
 	taggedOptAtomId,
 	offsetChangeAtomId,
 	replaceAtomRevisions,
+	replaceChange,
 } from "./types.js";
 export { RevisionTagCodec } from "./revisionTagCodec.js";
 export {
@@ -37,14 +38,6 @@ export {
 	RevisionMetadataSource,
 	RevisionInfo,
 } from "./changeRebaser.js";
-export {
-	Exception,
-	Failure,
-	noFailure,
-	OutputType,
-	verifyChangeRebaser,
-	Violation,
-} from "./verifyChangeRebaser.js";
 export {
 	findAncestor,
 	findCommonAncestor,

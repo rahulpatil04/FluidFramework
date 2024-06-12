@@ -10,29 +10,28 @@ import {
 	IGetPendingLocalStateProps,
 	IRuntime,
 } from "@fluidframework/container-definitions/internal";
+import type { ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
+import { Deferred } from "@fluidframework/core-utils/internal";
 import {
 	FetchSource,
 	IResolvedUrl,
 	ISnapshot,
 	ISnapshotFetchOptions,
-} from "@fluidframework/driver-definitions/internal";
-import { getSnapshotTree } from "@fluidframework/driver-utils/internal";
-import {
 	IDocumentAttributes,
-	ISequencedDocumentMessage,
 	ISnapshotTree,
 	IVersion,
 	MessageType,
-} from "@fluidframework/protocol-definitions";
+	ISequencedDocumentMessage,
+} from "@fluidframework/driver-definitions/internal";
+import { getSnapshotTree } from "@fluidframework/driver-utils/internal";
 import { MockLogger, mixinMonitoringContext } from "@fluidframework/telemetry-utils/internal";
 
-import { Deferred } from "@fluidframework/core-utils/internal";
-import type { ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
 import {
 	type IPendingContainerState,
 	SerializedStateManager,
 	type ISerializedStateManagerDocumentStorageService,
 } from "../serializedStateManager.js";
+
 import { failSometimeProxy } from "./failProxy.js";
 
 const snapshot = {
@@ -221,10 +220,15 @@ describe("serializedStateManager", () => {
 			() => false,
 		);
 		// equivalent to attach
-		serializedStateManager.setInitialSnapshot({
-			baseSnapshot: snapshot,
-			snapshotBlobs: { attributesId: '{"minimumSequenceNumber" : 0, "sequenceNumber": 0}' },
-		});
+		serializedStateManager.setInitialSnapshot(
+			{
+				baseSnapshot: snapshot,
+				snapshotBlobs: {
+					attributesId: '{"minimumSequenceNumber" : 0, "sequenceNumber": 0}',
+				},
+			},
+			false,
+		);
 		await serializedStateManager.getPendingLocalState(
 			{ notifyImminentClosure: false },
 			"clientId",
@@ -516,7 +520,6 @@ describe("serializedStateManager", () => {
 				eventEmitter,
 				isDirtyF,
 			);
-
 			const firstProcessedOpSequenceNumber = 13; // greater than snapshotSequenceNumber + 1
 			const lastProcessedOpSequenceNumber = 40;
 			let seq = firstProcessedOpSequenceNumber;
@@ -817,7 +820,6 @@ describe("serializedStateManager", () => {
 					eventEmitter,
 					() => isDirty,
 				);
-
 				const lastProcessedOpSequenceNumber = 10;
 				let seq = 1;
 				while (seq <= lastProcessedOpSequenceNumber) {
@@ -869,7 +871,6 @@ describe("serializedStateManager", () => {
 					eventEmitter,
 					isDirtyF,
 				);
-
 				const lastProcessedOpSequenceNumber = 10;
 				let seq = 1;
 				while (seq <= lastProcessedOpSequenceNumber) {

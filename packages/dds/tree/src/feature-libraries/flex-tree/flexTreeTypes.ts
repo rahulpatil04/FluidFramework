@@ -21,11 +21,11 @@ import {
 	FlexFieldNodeSchema,
 	FlexFieldSchema,
 	FlexList,
-	FlexListToUnion,
 	FlexMapNodeSchema,
 	FlexObjectNodeFields,
 	FlexObjectNodeSchema,
 	FlexTreeNodeSchema,
+	InternalFlexListTypes,
 	LazyItem,
 	LeafNodeSchema,
 } from "../typed-schema/index.js";
@@ -131,6 +131,11 @@ export enum TreeStatus {
 	 * Is removed and cannot be added back to the original document tree.
 	 */
 	Deleted = 2,
+
+	/**
+	 * Is created but has not yet been inserted into the tree.
+	 */
+	New = 3,
 }
 
 /**
@@ -228,6 +233,11 @@ export interface FlexTreeNode extends FlexTreeEntity<FlexTreeNodeSchema> {
  */
 export interface FlexTreeField extends FlexTreeEntity<FlexFieldSchema> {
 	readonly [flexTreeMarker]: FlexTreeEntityKind.Field;
+
+	/**
+	 * The number of nodes in this field
+	 */
+	readonly length: number;
 
 	/**
 	 * The `FieldKey` this field is under.
@@ -1016,7 +1026,7 @@ export type FlexTreeTypedFieldInner<
  */
 export type FlexTreeTypedNodeUnion<T extends FlexAllowedTypes> =
 	T extends FlexList<FlexTreeNodeSchema>
-		? FlexTreeTypedNode<Assume<FlexListToUnion<T>, FlexTreeNodeSchema>>
+		? FlexTreeTypedNode<Assume<InternalFlexListTypes.FlexListToUnion<T>, FlexTreeNodeSchema>>
 		: FlexTreeNode;
 
 /**

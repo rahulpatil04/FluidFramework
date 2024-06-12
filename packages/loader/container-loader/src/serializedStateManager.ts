@@ -3,32 +3,31 @@
  * Licensed under the MIT License.
  */
 
+import { stringToBuffer } from "@fluid-internal/client-utils";
 import {
 	IGetPendingLocalStateProps,
 	IRuntime,
 } from "@fluidframework/container-definitions/internal";
-import { stringToBuffer } from "@fluid-internal/client-utils";
+import type { IEventProvider, IEvent, ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
 import { assert } from "@fluidframework/core-utils/internal";
 import {
 	FetchSource,
 	IDocumentStorageService,
 	IResolvedUrl,
 	ISnapshot,
-} from "@fluidframework/driver-definitions/internal";
-import { getSnapshotTree } from "@fluidframework/driver-utils/internal";
-import {
 	type IDocumentAttributes,
-	ISequencedDocumentMessage,
 	ISnapshotTree,
 	IVersion,
-} from "@fluidframework/protocol-definitions";
+	ISequencedDocumentMessage,
+} from "@fluidframework/driver-definitions/internal";
+import { getSnapshotTree } from "@fluidframework/driver-utils/internal";
 import {
 	MonitoringContext,
 	PerformanceEvent,
 	UsageError,
 	createChildMonitoringContext,
 } from "@fluidframework/telemetry-utils/internal";
-import type { ITelemetryBaseLogger, IEventProvider, IEvent } from "@fluidframework/core-interfaces";
+
 import { ISerializableBlobContents, getBlobContentsFromTree } from "./containerStorageAdapter.js";
 import { convertSnapshotToSnapshotInfo, getDocumentAttributes } from "./utils.js";
 
@@ -93,6 +92,8 @@ export interface IPendingDetachedContainerState extends SnapshotWithBlobs {
 	attached: false;
 	/** Indicates whether we expect the rehydrated container to have non-empty Detached Blob Storage */
 	hasAttachmentBlobs: boolean;
+	/** Used by the memory blob storage to persisted attachment blobs */
+	attachmentBlobs?: string;
 	/**
 	 * Runtime-specific state that will be needed to properly rehydrate
 	 * (it's included in ContainerContext passed to instantiateRuntime)
@@ -130,6 +131,19 @@ export class SerializedStateManager {
 	private latestSnapshot: ISnapshotInfo | undefined;
 	private refreshSnapshotP: Promise<void> | undefined;
 	private readonly lastSavedOpSequenceNumber: number = 0;
+	private _supportGetSnapshotApi: boolean | undefined;
+
+	private set supportGetSnapshotApi(value: boolean | undefined) {
+		assert(
+			this._supportGetSnapshotApi === undefined,
+			"supportGetSnapshotApi should be declared just once",
+		);
+		this._supportGetSnapshotApi = value;
+	}
+
+	private get supportGetSnapshotApi(): boolean | undefined {
+		return this._supportGetSnapshotApi;
+	}
 
 	/**
 	 * @param pendingLocalState - The pendingLocalState being rehydrated, if any (undefined when loading directly from storage)
@@ -152,6 +166,9 @@ export class SerializedStateManager {
 			namespace: "serializedStateManager",
 		});
 
+		// special case handle. Obtaining the last saved op seq num to avoid
+		// refreshing the snapshot before we have processed it. It could cause
+		// a subsequent stashing to have a newer snapshot than allowed.
 		if (pendingLocalState && pendingLocalState.savedOps.length > 0) {
 			const savedOpsSize = pendingLocalState.savedOps.length;
 			this.lastSavedOpSequenceNumber =
@@ -195,11 +212,12 @@ export class SerializedStateManager {
 		specifiedVersion: string | undefined,
 		supportGetSnapshotApi: boolean,
 	) {
+		this.supportGetSnapshotApi = supportGetSnapshotApi;
 		if (this.pendingLocalState === undefined) {
 			const { baseSnapshot, version } = await getSnapshot(
 				this.mc,
 				this.storageAdapter,
-				supportGetSnapshotApi,
+				this.supportGetSnapshotApi,
 				specifiedVersion,
 			);
 			const baseSnapshotTree: ISnapshotTree | undefined = getSnapshotTree(baseSnapshot);
@@ -234,7 +252,7 @@ export class SerializedStateManager {
 				this.mc.config.getBoolean("Fluid.Container.enableOfflineSnapshotRefresh") === true
 			) {
 				// Don't block on the refresh snapshot call - it is for the next time we serialize, not booting this incarnation
-				this.refreshSnapshotP = this.refreshLatestSnapshot(supportGetSnapshotApi);
+				this.refreshSnapshotP = this.refreshLatestSnapshot(this.supportGetSnapshotApi);
 				this.refreshSnapshotP.catch((e) => {
 					this.mc.logger.sendErrorEvent({
 						eventName: "RefreshLatestSnapshotFailed",
@@ -352,7 +370,11 @@ export class SerializedStateManager {
 	 * base snapshot when attaching.
 	 * @param snapshot - snapshot and blobs collected while attaching (a form of the attach summary)
 	 */
-	public setInitialSnapshot(snapshot: SnapshotWithBlobs | undefined) {
+	public setInitialSnapshot(
+		snapshot: SnapshotWithBlobs | undefined,
+		supportGetSnapshotApi: boolean,
+	) {
+		this.supportGetSnapshotApi = supportGetSnapshotApi;
 		if (this.offlineLoadEnabled) {
 			assert(
 				this.snapshot === undefined,

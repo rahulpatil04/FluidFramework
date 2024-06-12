@@ -43,7 +43,6 @@ export {
 	mapCursorField,
 	mapCursorFields,
 	iterateCursorField,
-	getMapTreeField,
 	MapTree,
 	detachedFieldAsKey,
 	keyAsDetachedField,
@@ -130,6 +129,7 @@ export {
 	schemaDataIsEmpty,
 	SchemaEvents,
 	forbiddenFieldKindIdentifier,
+	identifierFieldKindIdentifier,
 	storedEmptyFieldSchema,
 	StoredSchemaCollection,
 	schemaFormat,
@@ -174,9 +174,6 @@ export {
 	makeAnonChange,
 	tagChange,
 	mapTaggedChange,
-	noFailure,
-	OutputType,
-	verifyChangeRebaser,
 	tagRollbackInverse,
 	SessionIdSchema,
 	mintCommit,
@@ -193,6 +190,7 @@ export {
 	taggedOptAtomId,
 	offsetChangeAtomId,
 	replaceAtomRevisions,
+	replaceChange,
 } from "./rebase/index.js";
 
 export {

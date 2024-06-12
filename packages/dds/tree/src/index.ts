@@ -87,6 +87,7 @@ export {
 	RevertibleStatus,
 	CommitMetadata,
 	forbiddenFieldKindIdentifier,
+	identifierFieldKindIdentifier,
 	StoredSchemaCollection,
 	ErasedTreeNodeSchemaDataFormat,
 	ObjectNodeStoredSchema,
@@ -103,7 +104,6 @@ export {
 	brand,
 	ValueFromBranded,
 	NameFromBranded,
-	JsonCompatibleReadOnly,
 	JsonCompatible,
 	JsonCompatibleObject,
 	NestedMap,
@@ -120,9 +120,10 @@ export {
 } from "./util/index.js";
 
 export {
-	Events,
-	IsEvent,
-	ISubscribable,
+	Listeners,
+	IsListener,
+	Listenable,
+	Off,
 	createEmitter,
 	IEmitter,
 	NoListenersCallback,
@@ -224,7 +225,6 @@ export {
 	NormalizeFieldSchema,
 	FlexObjectNodeFields,
 	FlexMapFieldSchema,
-	ExtractItemType,
 	LazyItem,
 	PropertyNameFromFieldKey,
 	ReservedObjectNodeFieldPropertyNames,
@@ -289,13 +289,13 @@ export {
 	type,
 	WithType,
 	AllowedTypes,
-	ApplyKind,
 	FieldKind,
 	FieldSchema,
 	ImplicitAllowedTypes,
 	InsertableObjectFromSchemaRecord,
 	InsertableTreeFieldFromImplicitField,
 	InsertableTypedNode,
+	InternalSimpleTreeTypes,
 	NodeBuilderData,
 	NodeKind,
 	ObjectFromSchemaRecord,
@@ -383,7 +383,7 @@ export {
 	UnbrandedName,
 	EmptyObject,
 	FlexList,
-	FlexListToUnion,
+	InternalFlexListTypes,
 
 	// These field kind types really only need to show up via FieldKinds.name, and not as top level names in the package.
 	// These names also are collision prone.

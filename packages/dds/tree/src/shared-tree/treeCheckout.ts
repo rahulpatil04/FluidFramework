@@ -35,7 +35,7 @@ import {
 	tagChange,
 	visitDelta,
 } from "../core/index.js";
-import { HasListeners, IEmitter, ISubscribable, createEmitter } from "../events/index.js";
+import { HasListeners, IEmitter, Listenable, createEmitter } from "../events/index.js";
 import {
 	FieldBatchCodec,
 	TreeCompressionStrategy,
@@ -177,12 +177,12 @@ export interface ITreeCheckout extends AnchorLocator {
 	/**
 	 * Events about this view.
 	 */
-	readonly events: ISubscribable<CheckoutEvents>;
+	readonly events: Listenable<CheckoutEvents>;
 
 	/**
 	 * Events about the root of the tree in this view.
 	 */
-	readonly rootEvents: ISubscribable<AnchorSetRootEvents>;
+	readonly rootEvents: Listenable<AnchorSetRootEvents>;
 
 	/**
 	 * Returns a JsonableTree for each tree that was removed from (and not restored to) the document.
@@ -211,7 +211,7 @@ export function createTreeCheckout(
 		schema?: TreeStoredSchemaRepository;
 		forest?: IEditableForest;
 		fieldBatchCodec?: FieldBatchCodec;
-		events?: ISubscribable<CheckoutEvents> &
+		events?: Listenable<CheckoutEvents> &
 			IEmitter<CheckoutEvents> &
 			HasListeners<CheckoutEvents>;
 		removedRoots?: DetachedFieldIndex;
@@ -254,6 +254,7 @@ export function createTreeCheckout(
 		events,
 		mintRevisionTag,
 		revisionTagCodec,
+		idCompressor,
 		args?.removedRoots,
 	);
 }
@@ -368,14 +369,16 @@ export class TreeCheckout implements ITreeCheckoutFork {
 		private readonly changeFamily: ChangeFamily<SharedTreeEditBuilder, SharedTreeChange>,
 		public readonly storedSchema: TreeStoredSchemaRepository,
 		public readonly forest: IEditableForest,
-		public readonly events: ISubscribable<CheckoutEvents> &
+		public readonly events: Listenable<CheckoutEvents> &
 			IEmitter<CheckoutEvents> &
 			HasListeners<CheckoutEvents>,
 		private readonly mintRevisionTag: () => RevisionTag,
 		private readonly revisionTagCodec: RevisionTagCodec,
+		private readonly idCompressor: IIdCompressor,
 		private readonly removedRoots: DetachedFieldIndex = makeDetachedFieldIndex(
 			"repair",
 			revisionTagCodec,
+			idCompressor,
 		),
 	) {
 		// We subscribe to `beforeChange` rather than `afterChange` here because it's possible that the change is invalid WRT our forest.
@@ -457,10 +460,9 @@ export class TreeCheckout implements ITreeCheckoutFork {
 								}
 								this.revertRevertible(revision, data.kind);
 								if (release) {
-									revertible[disposeSymbol]();
+									revertible.dispose();
 								}
 							},
-							[disposeSymbol]: () => revertible.dispose(),
 							dispose: () => {
 								if (revertible.status === RevertibleStatus.Disposed) {
 									throw new UsageError(
@@ -496,7 +498,7 @@ export class TreeCheckout implements ITreeCheckoutFork {
 		assert(!this.isDisposed, 0x911 /* Invalid operation on a disposed TreeCheckout */);
 	}
 
-	public get rootEvents(): ISubscribable<AnchorSetRootEvents> {
+	public get rootEvents(): Listenable<AnchorSetRootEvents> {
 		return this.forest.anchors;
 	}
 
@@ -526,6 +528,7 @@ export class TreeCheckout implements ITreeCheckoutFork {
 			createEmitter(),
 			this.mintRevisionTag,
 			this.revisionTagCodec,
+			this.idCompressor,
 			this.removedRoots.clone(),
 		);
 	}
@@ -571,7 +574,7 @@ export class TreeCheckout implements ITreeCheckoutFork {
 
 	public getRemovedRoots(): [string | number | undefined, number, JsonableTree][] {
 		const trees: [string | number | undefined, number, JsonableTree][] = [];
-		const cursor = this.forest.allocateCursor();
+		const cursor = this.forest.allocateCursor("getRemovedRoots");
 		for (const { id, root } of this.removedRoots.entries()) {
 			const parentField = this.removedRoots.toFieldKey(root);
 			this.forest.moveCursorToPath(
@@ -624,7 +627,7 @@ export class TreeCheckout implements ITreeCheckoutFork {
 					commitToRevert,
 					headCommit,
 					this.mintRevisionTag,
-				),
+				).change,
 			);
 		}
 

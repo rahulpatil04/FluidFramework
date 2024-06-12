@@ -503,6 +503,7 @@ declare function get_old_InterfaceDeclaration_IFluidDataStoreChannel():
 declare function use_current_InterfaceDeclaration_IFluidDataStoreChannel(
     use: TypeOnly<current.IFluidDataStoreChannel>): void;
 use_current_InterfaceDeclaration_IFluidDataStoreChannel(
+    // @ts-expect-error compatibility expected to be broken
     get_old_InterfaceDeclaration_IFluidDataStoreChannel());
 
 /*
@@ -1139,6 +1140,7 @@ declare function get_current_InterfaceDeclaration_ITelemetryContext():
 declare function use_old_InterfaceDeclaration_ITelemetryContext(
     use: TypeOnly<old.ITelemetryContext>): void;
 use_old_InterfaceDeclaration_ITelemetryContext(
+    // @ts-expect-error compatibility expected to be broken
     get_current_InterfaceDeclaration_ITelemetryContext());
 
 /*

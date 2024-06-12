@@ -16,7 +16,6 @@ import { UsageError } from "@fluidframework/telemetry-utils/internal";
 
 import { ICodecOptions, noopValidator } from "../codec/index.js";
 import {
-	AnchorSet,
 	JsonableTree,
 	RevisionTagCodec,
 	TreeStoredSchema,
@@ -24,7 +23,7 @@ import {
 	makeDetachedFieldIndex,
 	moveToDetachedField,
 } from "../core/index.js";
-import { HasListeners, IEmitter, ISubscribable, createEmitter } from "../events/index.js";
+import { HasListeners, IEmitter, Listenable, createEmitter } from "../events/index.js";
 import {
 	DetachedFieldIndexSummarizer,
 	FlexFieldSchema,
@@ -41,13 +40,16 @@ import {
 	makeMitigatedChangeFamily,
 	makeTreeChunker,
 } from "../feature-libraries/index.js";
-import { ExplicitCoreCodecVersions, SharedTreeCore } from "../shared-tree-core/index.js";
+import {
+	DefaultResubmitMachine,
+	ExplicitCoreCodecVersions,
+	SharedTreeCore,
+} from "../shared-tree-core/index.js";
 import { ITree, ImplicitFieldSchema, TreeConfiguration, TreeView } from "../simple-tree/index.js";
 
-import { DefaultCommitEnricher } from "./defaultCommitEnricher.js";
 import { InitializeAndSchematizeConfiguration, ensureSchema } from "./schematizeTree.js";
 import { SchematizingSimpleTreeView, requireSchema } from "./schematizingTreeView.js";
-import { SharedTreeChangeEnricher } from "./sharedTreeChangeEnricher.js";
+import { SharedTreeReadonlyChangeEnricher } from "./sharedTreeChangeEnricher.js";
 import { SharedTreeChangeFamily } from "./sharedTreeChangeFamily.js";
 import { SharedTreeChange } from "./sharedTreeChangeTypes.js";
 import { SharedTreeEditBuilder } from "./sharedTreeEditBuilder.js";
@@ -145,7 +147,7 @@ export class SharedTree
 	extends SharedTreeCore<SharedTreeEditBuilder, SharedTreeChange>
 	implements ISharedTree
 {
-	private readonly _events: ISubscribable<CheckoutEvents> &
+	private readonly _events: Listenable<CheckoutEvents> &
 		IEmitter<CheckoutEvents> &
 		HasListeners<CheckoutEvents>;
 	public readonly checkout: TreeCheckout;
@@ -172,7 +174,12 @@ export class SharedTree
 				? buildChunkedForest(makeTreeChunker(schema, defaultSchemaPolicy))
 				: buildForest();
 		const revisionTagCodec = new RevisionTagCodec(runtime.idCompressor);
-		const removedRoots = makeDetachedFieldIndex("repair", revisionTagCodec, options);
+		const removedRoots = makeDetachedFieldIndex(
+			"repair",
+			revisionTagCodec,
+			runtime.idCompressor,
+			options,
+		);
 		const schemaSummarizer = new SchemaSummarizer(runtime, schema, options, {
 			getCurrentSeq: () => this.deltaManager.lastSequenceNumber,
 		});
@@ -184,6 +191,7 @@ export class SharedTree
 				policy: defaultSchemaPolicy,
 			},
 			encodeType: options.treeEncodeType,
+			idCompressor: runtime.idCompressor,
 		};
 		const forestSummarizer = new ForestSummarizer(
 			forest,
@@ -191,6 +199,7 @@ export class SharedTree
 			fieldBatchCodec,
 			encoderContext,
 			options,
+			runtime.idCompressor,
 		);
 		const removedRootsSummarizer = new DetachedFieldIndexSummarizer(removedRoots);
 		const innerChangeFamily = new SharedTreeChangeFamily(
@@ -221,6 +230,7 @@ export class SharedTree
 				throw error;
 			},
 		);
+		const changeEnricher = new SharedTreeReadonlyChangeEnricher(forest, schema, removedRoots);
 		super(
 			[schemaSummarizer, forestSummarizer, removedRootsSummarizer],
 			changeFamily,
@@ -232,15 +242,11 @@ export class SharedTree
 			telemetryContextPrefix,
 			schema,
 			defaultSchemaPolicy,
-			new DefaultCommitEnricher(
+			new DefaultResubmitMachine(
 				changeFamily.rebaser.invert.bind(changeFamily.rebaser),
-				() => {
-					return new SharedTreeChangeEnricher(
-						forest.clone(schema, new AnchorSet()),
-						removedRoots.clone(),
-					);
-				},
+				changeEnricher,
 			),
+			changeEnricher,
 		);
 		this._events = createEmitter<CheckoutEvents>();
 		const localBranch = this.getLocalBranch();
@@ -262,7 +268,7 @@ export class SharedTree
 	}
 
 	public contentSnapshot(): SharedTreeContentSnapshot {
-		const cursor = this.checkout.forest.allocateCursor();
+		const cursor = this.checkout.forest.allocateCursor("contentSnapshot");
 		try {
 			moveToDetachedField(this.checkout.forest, cursor);
 			return {
