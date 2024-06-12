@@ -72,7 +72,7 @@ stages:
     condition: succeededOrFailed()
     dependsOn:
     - ${{ each package in parameters.packages }}:
-      - ${{ replace(replace(package.name, '@fluidframework/', ''), '@fluid-experimental/', 'experimental-') }}-stress-tests
+      - ${{ replace(replace(package.name, '@fluidframework/', ''), '@fluid-experimental/', 'experimental_') }}_stress_tests
     jobs:
     - job: FollowupJob
       steps:
