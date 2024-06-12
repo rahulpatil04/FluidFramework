@@ -28,6 +28,9 @@ parameters:
 - name: artifactBuildId
   type: string
 
+variables:
+  stageNames: []
+
 stages:
   - stage: CheckAffectedPaths
     displayName: Determine changed packages
@@ -60,7 +63,7 @@ stages:
             AFFECTED_PATHS: ${{ join(';', package.affectedPaths) }}
 
   - ${{ each package in parameters.packages }}:
-    - stage:
+    - stage: ${{ replace(replace(package.name, '@fluidframework/', ''), '@fluid-experimental/', 'experimental-') }}-stress-tests
       dependsOn: CheckAffectedPaths
       displayName: Run ${{ package.name }} stress tests
       jobs:
@@ -80,3 +83,6 @@ stages:
             testCommand: ${{ package.testCommand }}
             env:
               FUZZ_STRESS_RUN: true
+      variables:
+          - name: stageNames
+            value: ${{ variables['stageNames'] }} ${{ replace(replace(package.name, '@fluidframework/', ''), '@fluid-experimental/', 'experimental') }}-stress-tests
