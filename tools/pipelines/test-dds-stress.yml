@@ -26,6 +26,59 @@ variables:
   value: $(Build.SourcesDirectory)/tools/telemetry-generator
   readonly: true
 
+parameters:
+- name: packages
+  type: object
+  default:
+  - name: "@fluidframework/sequence"
+    affectedPaths:
+    - packages/dds/sequence
+    - packages/dds/merge-tree
+    testFileTarName: sequence
+    testCommand: test:stress
+  - name: "@fluid-experimental/tree"
+    affectedPaths:
+    - experimental/dds/tree
+    testFileTarName: experimental-tree
+    testCommand: test:stress
+  - name: "@fluidframework/tree"
+    affectedPaths:
+    - packages/dds/tree
+    testFileTarName: tree
+    testCommand: test:stress
+  - name: "@fluidframework/map"
+    affectedPaths:
+    - packages/dds/map
+    - packages/dds/merge-tree
+    testFileTarName: map
+    testCommand: test:stress
+  - name: "@fluidframework/matrix"
+    affectedPaths:
+    - packages/dds/matrix
+    - packages/dds/merge-tree
+    testFileTarName: matrix
+    testCommand: test:stress
+
+
+    stages:
+      - template: templates/include-conditionally-run-stress-tests.yml
+        parameters:
+          artifactBuildId: $(resources.pipeline.client.runID)
+          packages: ${{ parameters.packages }}
+          testWorkspace: ${{ variables.testWorkspace }}
+
+      - stage: FollowupStage
+        displayName: Test Test Test
+        condition: succeededOrFailed()
+        dependsOn:
+          - ${{ each package in parameters.packages }}:
+            - ${{ replace(replace(package.name, '@fluidframework/', ''), '@fluid-experimental/', 'experimental-') }}-stress-tests
+        jobs:
+          - job: FollowupJob
+            steps:
+            - script: echo "This is the follow-up stage."
+
+## Backup plan - 1
 # stages:
 #   # stress tests for sequence
 #   - stage: stress_test_sequence
@@ -103,51 +156,3 @@ variables:
 #           testFileTarName: matrix
 #           testCommand: test:stress
 #         testWorkspace: ${{ variables.testWorkspace }}
-
-
-
-stages:
-  - template: templates/include-conditionally-run-stress-tests.yml
-    parameters:
-      artifactBuildId: $(resources.pipeline.client.runID)
-      packages:
-      - name: "@fluidframework/sequence"
-        affectedPaths:
-        - packages/dds/sequence
-        - packages/dds/merge-tree
-        testFileTarName: sequence
-        testCommand: test:stress
-      - name: "@fluid-experimental/tree"
-        affectedPaths:
-        - experimental/dds/tree
-        testFileTarName: experimental-tree
-        testCommand: test:stress
-      - name: "@fluidframework/tree"
-        affectedPaths:
-        - packages/dds/tree
-        testFileTarName: tree
-        testCommand: test:stress
-      - name: "@fluidframework/map"
-        affectedPaths:
-        - packages/dds/map
-        - packages/dds/merge-tree
-        testFileTarName: map
-        testCommand: test:stress
-      - name: "@fluidframework/matrix"
-        affectedPaths:
-        - packages/dds/matrix
-        - packages/dds/merge-tree
-        testFileTarName: matrix
-        testCommand: test:stress
-      testWorkspace: ${{ variables.testWorkspace }}
-
-  - stage: FollowupStage
-    displayName: Test Test Test
-    condition: succeededOrFailed()
-    dependsOn:
-      - ${{ each package in parameters.packages }}:
-        - ${{ replace(replace(package.name, '@fluidframework/', ''), '@fluid-experimental/', 'experimental-') }}-stress-tests
-    jobs:
-      - job: FollowupJob
-        steps:
-        - script: echo "This is the follow-up stage."
