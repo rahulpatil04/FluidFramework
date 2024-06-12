@@ -142,7 +142,11 @@ stages:
       testWorkspace: ${{ variables.testWorkspace }}
 
   - stage: FollowupStage
-    dependsOn: ${{ parameters.stageNames }}
+    displayName: Test Test Test
+    condition: succeededOrFailed()
+    dependsOn:
+      - ${{ each package in parameters.packages }}:
+        - ${{ replace(replace(package.name, '@fluidframework/', ''), '@fluid-experimental/', 'experimental-') }}-stress-tests
     jobs:
       - job: FollowupJob
         steps:
