@@ -22,38 +22,121 @@ resources:
 variables:
 - name: testWorkspace
   value: $(Pipeline.Workspace)/test
+- name: absolutePathToTelemetryGenerator
+  value: $(Build.SourcesDirectory)/tools/telemetry-generator
+  readonly: true
 
 stages:
-  - template: templates/include-conditionally-run-stress-tests.yml
-    parameters:
-      artifactBuildId: $(resources.pipeline.client.runID)
-      packages:
-      - name: "@fluidframework/sequence"
-        affectedPaths:
-        - packages/dds/sequence
-        - packages/dds/merge-tree
-        testFileTarName: sequence
-        testCommand: test:stress
-      - name: "@fluid-experimental/tree"
-        affectedPaths:
-        - experimental/dds/tree
-        testFileTarName: experimental-tree
-        testCommand: test:stress
-      - name: "@fluidframework/tree"
-        affectedPaths:
-        - packages/dds/tree
-        testFileTarName: tree
-        testCommand: test:stress
-      - name: "@fluidframework/map"
-        affectedPaths:
-        - packages/dds/map
-        - packages/dds/merge-tree
-        testFileTarName: map
-        testCommand: test:stress
-      - name: "@fluidframework/matrix"
-        affectedPaths:
-        - packages/dds/matrix
-        - packages/dds/merge-tree
-        testFileTarName: matrix
-        testCommand: test:stress
-      testWorkspace: ${{ variables.testWorkspace }}
+  # stress tests for sequence
+  - stage: stress_test_sequence
+    displayName: Stress tests - Sequence
+    jobs:
+    - template: templates/include-conditionally-run-stress-tests.yml
+      parameters:
+        artifactBuildId: $(resources.pipeline.client.runID)
+        packages:
+        - name: "@fluidframework/sequence"
+          affectedPaths:
+          - packages/dds/sequence
+          - packages/dds/merge-tree
+          testFileTarName: sequence
+          testCommand: test:stress
+        testWorkspace: ${{ variables.testWorkspace }}
+
+  # stress tests for experimental tree
+  - stage: stress_test_experimental_tree
+    displayName: Stress tests - Experimental Tree
+    jobs:
+    - template: templates/include-conditionally-run-stress-tests.yml
+      parameters:
+        artifactBuildId: $(resources.pipeline.client.runID)
+        packages:
+        - name: "@fluid-experimental/tree"
+          affectedPaths:
+          - experimental/dds/tree
+          testFileTarName: experimental-tree
+          testCommand: test:stress
+        testWorkspace: ${{ variables.testWorkspace }}
+
+  # stress tests for tree
+  - stage: stress_test_tree
+    displayName: Stress tests - Tree
+    jobs:
+    - template: templates/include-conditionally-run-stress-tests.yml
+      parameters:
+        artifactBuildId: $(resources.pipeline.client.runID)
+        packages:
+        - name: "@fluidframework/tree"
+          affectedPaths:
+          - packages/dds/tree
+          testFileTarName: tree
+          testCommand: test:stress
+        testWorkspace: ${{ variables.testWorkspace }}
+
+  # stress tests for map
+  - stage: stress_test_map
+    displayName: Stress tests - Map
+    jobs:
+    - template: templates/include-conditionally-run-stress-tests.yml
+      parameters:
+        artifactBuildId: $(resources.pipeline.client.runID)
+        packages:
+        - name: "@fluidframework/map"
+          affectedPaths:
+          - packages/dds/map
+          testFileTarName: map
+          testCommand: test:stress
+        testWorkspace: ${{ variables.testWorkspace }}
+
+  # stress tests for matrix
+  - stage: stress_test_matrix
+    displayName: Stress tests - Matrix
+    jobs:
+    - template: templates/include-conditionally-run-stress-tests.yml
+      parameters:
+        artifactBuildId: $(resources.pipeline.client.runID)
+        packages:
+        - name: "@fluidframework/matrix"
+          affectedPaths:
+          - packages/dds/matrix
+          - packages/dds/merge-tree
+          testFileTarName: matrix
+          testCommand: test:stress
+        testWorkspace: ${{ variables.testWorkspace }}
+
+
+
+# stages:
+#   - template: templates/include-conditionally-run-stress-tests.yml
+#     parameters:
+#       artifactBuildId: $(resources.pipeline.client.runID)
+#       packages:
+#       - name: "@fluidframework/sequence"
+#         affectedPaths:
+#         - packages/dds/sequence
+#         - packages/dds/merge-tree
+#         testFileTarName: sequence
+#         testCommand: test:stress
+#       - name: "@fluid-experimental/tree"
+#         affectedPaths:
+#         - experimental/dds/tree
+#         testFileTarName: experimental-tree
+#         testCommand: test:stress
+#       - name: "@fluidframework/tree"
+#         affectedPaths:
+#         - packages/dds/tree
+#         testFileTarName: tree
+#         testCommand: test:stress
+#       - name: "@fluidframework/map"
+#         affectedPaths:
+#         - packages/dds/map
+#         - packages/dds/merge-tree
+#         testFileTarName: map
+#         testCommand: test:stress
+#       - name: "@fluidframework/matrix"
+#         affectedPaths:
+#         - packages/dds/matrix
+#         - packages/dds/merge-tree
+#         testFileTarName: matrix
+#         testCommand: test:stress
+#       testWorkspace: ${{ variables.testWorkspace }}
