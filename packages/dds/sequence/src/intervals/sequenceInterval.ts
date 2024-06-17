@@ -147,7 +147,9 @@ export class SequenceInterval implements ISerializableInterval {
 		}
 	}
 
-	private callbacks?: Record<"beforePositionChange" | "afterPositionChange", () => void>;
+	private callbacks?:
+		| Record<"beforePositionChange" | "afterPositionChange", () => void>
+		| undefined;
 
 	/**
 	 * Subscribes to position change events on this interval if there are no current listeners.

@@ -267,8 +267,8 @@ export class Client extends TypedEventEmitter<IClientEvents> {
 	 * @param pos - The position to insert the segment at
 	 * @param segment - The segment to insert
 	 */
-	public insertSegmentLocal(pos: number, segment: ISegment): IMergeTreeInsertMsg | undefined {
-		if (segment.cachedLength <= 0) {
+	public insertSegmentLocal(pos: number, segment: ISegment | undefined): IMergeTreeInsertMsg | undefined {
+		if (segment === undefined || segment.cachedLength <= 0) {
 			return undefined;
 		}
 		const insertOp = createInsertSegmentOp(pos, segment);

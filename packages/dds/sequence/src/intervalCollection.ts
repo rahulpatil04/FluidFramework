@@ -966,7 +966,7 @@ export class IntervalCollection<TInterval extends ISerializableInterval>
 	extends TypedEventEmitter<IIntervalCollectionEvent<TInterval>>
 	implements IIntervalCollection<TInterval>
 {
-	private savedSerializedIntervals?: ISerializedInterval[];
+	private savedSerializedIntervals?: ISerializedInterval[] | undefined;
 	private localCollection: LocalIntervalCollection<TInterval> | undefined;
 	private onDeserialize: DeserializeCallback | undefined;
 	private client: Client | undefined;
@@ -1101,10 +1101,18 @@ export class IntervalCollection<TInterval extends ISerializableInterval>
 		const rebased = { ...original };
 		const { start, end, sequenceNumber } = original;
 		if (start !== undefined) {
-			rebased.start = this.rebasePositionWithSegmentSlide(start, sequenceNumber, localSeq);
+			const rebasedStart = this.rebasePositionWithSegmentSlide(
+				start,
+				sequenceNumber,
+				localSeq,
+			);
+			assert(rebasedStart !== undefined, "rebasedStart should be defined");
+			rebased.start = rebasedStart;
 		}
 		if (end !== undefined) {
-			rebased.end = this.rebasePositionWithSegmentSlide(end, sequenceNumber, localSeq);
+			const rebasedEnd = this.rebasePositionWithSegmentSlide(end, sequenceNumber, localSeq);
+			assert(rebasedEnd !== undefined, "rebasedEnd should be defined");
+			rebased.end = rebasedEnd;
 		}
 		return rebased;
 	}
@@ -1392,9 +1400,13 @@ export class IntervalCollection<TInterval extends ISerializableInterval>
 			const serializedInterval: SerializedIntervalDelta = interval.serialize();
 			const { startPos, startSide, endPos, endSide } = endpointPosAndSide(start, end);
 			const stickiness = computeStickinessFromSide(startPos, startSide, endPos, endSide);
+			assert(startPos !== undefined, "startPos should be defined");
 			serializedInterval.start = startPos;
+			assert(endPos !== undefined, "endPos should be defined");
 			serializedInterval.end = endPos;
+			assert(startSide !== undefined, "startSide should be defined");
 			serializedInterval.startSide = startSide;
+			assert(endSide !== undefined, "endSide should be defined");
 			serializedInterval.endSide = endSide;
 			serializedInterval.stickiness = stickiness;
 			// Emit a property bag containing the ID and the other (if any) properties changed
