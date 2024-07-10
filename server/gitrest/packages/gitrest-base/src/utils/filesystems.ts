@@ -23,6 +23,7 @@ class SimpleFsPromisesWrapper extends FsPromisesBase {
 		maxFileSizeBytes?: number,
 	) {
 		super(maxFileSizeBytes);
+		console.log(`SimpleFsPromisesWrapper: contructor`); //TODO: remove logs after confirmation
 	}
 	protected async readFileCore(
 		...args: Parameters<typeof fsPromises.readFile>
@@ -89,6 +90,7 @@ class SimpleFsPromisesWrapper extends FsPromisesBase {
 export class NodeFsManagerFactory implements IFileSystemManagerFactory {
 	constructor(private readonly maxFileSizeBytes?: number) {}
 	public create(params?: IFileSystemManagerParams): IFileSystemManager {
+		console.log(`NodeFsManagerFactory: create`);  //TODO: remove logs after confirmation
 		return { promises: new SimpleFsPromisesWrapper(fs.promises, this.maxFileSizeBytes) };
 	}
 }
@@ -97,6 +99,7 @@ export class MemFsManagerFactory implements IFileSystemManagerFactory {
 	public readonly volume = new Volume();
 	constructor(private readonly maxFileSizeBytes?: number) {}
 	public create(params?: IFileSystemManagerParams): IFileSystemManager {
+		console.log(`MemFsManagerFactory: create`);   //TODO: remove logs after confirmation
 		return {
 			promises: new SimpleFsPromisesWrapper(
 				this.volume.promises as unknown as IFileSystemPromises,
